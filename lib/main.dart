@@ -46,7 +46,8 @@ class _MyHomePageState extends State<MyHomePage> {
       "password": pass.text,
     });
     var data = json.decode(response.body);
-    if (data.toString() == "Success") {
+
+    if (data["status"] == "Success") {
       Fluttertoast.showToast(
         msg: 'Login Successful',
         backgroundColor: Colors.green,
@@ -57,14 +58,44 @@ class _MyHomePageState extends State<MyHomePage> {
       // Save user session data to SharedPreferences
       SharedPreferences prefs = await SharedPreferences.getInstance();
       prefs.setString('username', user.text);
-      // You can also save other user data here, such as user ID, etc.
 
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => DashBoard(),
-        ),
-      );
+      if (data.containsKey('user_id')) {
+        int? userId = int.tryParse(data['user_id']);
+        if (userId != null) {
+          prefs.setInt('user_id', userId);
+
+          if (data.containsKey('icNumber')) {
+            String icNumber = data['icNumber'];
+            prefs.setString('icNumber', icNumber);
+          }
+
+          if (data.containsKey('fullName')) {
+            String fullName = data['fullName'];
+            prefs.setString('fullName', fullName);
+          }
+
+          if (data.containsKey('phoneNumber')) {
+            String phoneNumber = data['phoneNumber'];
+            prefs.setString('phoneNumber', phoneNumber);
+          }
+
+          if (data.containsKey('emailAddress')) {
+            String emailAddress = data['emailAddress'];
+            prefs.setString('emailAddress', emailAddress);
+          }
+
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => DashBoard(),
+            ),
+          );
+        } else {
+          print('Failed to parse user_id as int');
+        }
+      } else {
+        print('user_id not found in response');
+      }
     } else {
       Fluttertoast.showToast(
         backgroundColor: Colors.red,
@@ -72,7 +103,8 @@ class _MyHomePageState extends State<MyHomePage> {
         msg: 'Username and password invalid',
         toastLength: Toast.LENGTH_SHORT,
       );
-    }  }
+    }
+  }
 
   bool isPasswordVisible = false;
 

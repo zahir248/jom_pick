@@ -15,18 +15,11 @@ class DashBoard extends StatefulWidget {
 class _DashBoardState extends State<DashBoard> {
   int _selectedIndex = 0; // Index of the selected tab
   String? username = '';
+  String? user_id; // Define user_id as an instance variable
 
   @override
   void initState() {
     super.initState();
-    loadUsername();
-  }
-
-  Future<void> loadUsername() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    setState(() {
-      username = prefs.getString('username');
-    });
   }
 
   void handleSetting() async {
@@ -67,7 +60,6 @@ class _DashBoardState extends State<DashBoard> {
     }
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -100,20 +92,8 @@ class _DashBoardState extends State<DashBoard> {
               ),
             ),
           ),
-
           Expanded(
             child: Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Text(
-                    'Welcome $username!',
-                    style: TextStyle(fontSize: 24),
-                  ),
-                  // Content for the selected tab
-                  // Add content for other tabs as needed
-                ],
-              ),
             ),
           ),
         ],

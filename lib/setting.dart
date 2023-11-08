@@ -15,8 +15,13 @@ class _SettingState extends State<Setting> {
   void handleLogout() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
-    // Clear the user session data (in this case, just the username)
+    // Clear the user session data
     prefs.remove('username');
+    prefs.remove('icNumber');
+    prefs.remove('fullName');
+    prefs.remove('phoneNumber');
+    prefs.remove('emailAddress');
+    prefs.remove('user_id');
 
     // Show a toast message to indicate successful logout
     Fluttertoast.showToast(
