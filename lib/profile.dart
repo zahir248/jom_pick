@@ -58,6 +58,119 @@ class _ProfileState extends State<Profile> {
     }
   }
 
+  Future<void> _showEditDialog(String label, String currentValue) async {
+    TextEditingController controller = TextEditingController(text: currentValue);
+    TextInputType keyboardType = TextInputType.text; // Default to a text keyboard
+
+    // Set the keyboardType based on the label
+    if (label == 'Phone Number' || label == 'IC Number') {
+      keyboardType = TextInputType.number;
+    }
+
+    await showDialog<void>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Edit $label'),
+          content: TextField(
+            controller: controller,
+            keyboardType: keyboardType, // Set the keyboard type
+            decoration: InputDecoration(labelText: label),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: Text('Cancel'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: Text('Save'),
+              onPressed: () {
+                // Update the respective value based on the label
+                setState(() {
+                  if (label == 'Full Name') {
+                    fullName = controller.text;
+                  } else if (label == 'Phone Number') {
+                    phoneNumber = controller.text;
+                  } else if (label == 'IC Number') {
+                    icNumber = controller.text;
+                  } else if (label == 'Email Address') {
+                    emailAddress = controller.text;
+                  }
+                });
+                // Update SharedPreferences here
+                updateSharedPreferences();
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<void> updateProfile() async {
+    try {
+      // Assuming you have an API endpoint for updating the user profile
+      final response = await http.post(
+        Uri.http('10.200.90.242', '/update.php', {'q': '{http}'}),
+        body: {
+          'user_id': userId.toString(),
+          'fullName': fullName,
+          'phoneNumber': phoneNumber,
+          'icNumber': icNumber,
+          'emailAddress': emailAddress,
+        },
+      );
+
+      if (response.statusCode == 200) {
+        // Successfully updated the profile
+        // Parse the JSON response
+        final Map<String, dynamic> responseData = json.decode(response.body);
+
+        if (responseData['success']) {
+          // Update was successful, show the toast and update state
+          Fluttertoast.showToast(
+            backgroundColor: Colors.green,
+            textColor: Colors.white,
+            msg: 'Profile updated successfully',
+            toastLength: Toast.LENGTH_SHORT,
+          );
+
+          // Update the state variables directly
+          setState(() {
+            fullName = responseData['fullName'];
+            phoneNumber = responseData['phoneNumber'];
+            icNumber = responseData['icNumber'];
+            emailAddress = responseData['emailAddress'];
+          });
+
+          // Update SharedPreferences here
+          updateSharedPreferences();
+        } else {
+          // Update failed, show an error toast
+          Fluttertoast.showToast(msg: 'No changes to update');
+        }
+      } else {
+        // HTTP request failed, show an error toast
+        Fluttertoast.showToast(msg: 'Failed to update profile');
+      }
+    } catch (error) {
+      // Handle any exceptions that might occur during the update
+      print('Error updating profile: $error');
+    }
+  }
+
+
+  void updateSharedPreferences() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString('icNumber', icNumber);
+    prefs.setString('fullName', fullName);
+    prefs.setString('phoneNumber', phoneNumber);
+    prefs.setString('emailAddress', emailAddress);
+  }
+
   void _onItemTapped(int index) {
     if (index == 2) {
       // If the "Profile" button is tapped (index 2), navigate to the profile page
@@ -106,9 +219,10 @@ class _ProfileState extends State<Profile> {
                   ),
                 ),
                 IconButton(
-                  icon: Icon(Icons.edit), // Edit icon
+                  icon: Icon(Icons.edit),
                   onPressed: () {
-                    // Handle the edit action here
+                    // Show the edit dialog when the edit icon is pressed
+                    _showEditDialog(label, value);
                   },
                 ),
               ],
@@ -125,9 +239,6 @@ class _ProfileState extends State<Profile> {
       ),
     );
   }
-
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -154,7 +265,7 @@ class _ProfileState extends State<Profile> {
                 width: 300, // Set a fixed width for all the buttons, you can adjust this value
                 child:ElevatedButton(
                   onPressed: () {
-                    // Handle the update action here
+                    updateProfile();
                   },
                   child: Text('Update',
                     style: TextStyle(fontSize: 15), // Increase the font size here
@@ -186,3 +297,8 @@ class _ProfileState extends State<Profile> {
     );
   }
 }
+
+
+
+
+

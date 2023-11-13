@@ -19,6 +19,10 @@ class _RegisterState extends State<Register> {
   TextEditingController emailAddress = TextEditingController();
   TextEditingController icNumber = TextEditingController();
   TextEditingController phoneNumber = TextEditingController();
+  TextEditingController matriculationNumber = TextEditingController();
+
+  String? _userType; // to store the selected user type
+
 
   Future register() async {
     bool isFormValid = true;
@@ -32,7 +36,7 @@ class _RegisterState extends State<Register> {
         toastLength: Toast.LENGTH_SHORT,
       );
     } else {
-      var url = Uri.http("10.200.91.85", '/register.php', {'q': '{http}'});
+      var url = Uri.http("10.200.90.242", '/register.php', {'q': '{http}'});
       var response = await http.post(url, body: {
         "username": user.text.toString(),
         "password": pass.text.toString(),
@@ -40,6 +44,8 @@ class _RegisterState extends State<Register> {
         "emailAddress": emailAddress.text.toString(),
         "icNumber": icNumber.text.toString(),
         "phoneNumber": phoneNumber.text.toString(),
+        "matricNumber": matriculationNumber.text.toString(),
+        "userType": _userType.toString(), // Include userType in the request
       });
       var data = json.decode(response.body);
       if (data == "Error") {
@@ -70,27 +76,148 @@ class _RegisterState extends State<Register> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back),
-          onPressed: () {
-            Navigator.pop(context); // Redirects to the previous page (login page)
-          },
-        ),
-      ),
       body: Center(
         child: SingleChildScrollView(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text(
-                'Register',
-                style: TextStyle(
-                  fontSize: 30,
-                  fontWeight: FontWeight.bold,
+              Padding(
+                padding: const EdgeInsets.fromLTRB(16.0, 50, 16.0, 0),
+                child: Container(
+                  alignment: Alignment.centerLeft,
+                  child: IconButton(
+                    icon: Icon(Icons.arrow_back, color: Colors.black),
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                  ),
                 ),
               ),
-              const SizedBox(height: 20),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(16.0, 1.0, 16.0, 10.0),
+                child: Text(
+                  'Register',
+                  style: TextStyle(
+                    fontSize: 30,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 5),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(16.0, 20.0, 16.0, 16.0), // Adjust the bottom padding
+                child: TextField(
+                  controller: fullName,
+                  decoration: InputDecoration(
+                    labelText: 'Full Name',
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text(
+                  'Choose One:',
+                  style: TextStyle(
+                    fontSize: 18,
+                  ),
+                ),
+              ),
+              // Small text below "Choose One" for the note about "Public" role
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text(
+                  '(Public don\'t need to put Matric number)',
+                  style: TextStyle(
+                    color: Colors.red,
+                  ),
+                ),
+              ),
+              // Radio buttons for user type arranged horizontally
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Row(
+                    children: [
+                      Radio(
+                        value: 'student',
+                        groupValue: _userType,
+                        onChanged: (value) {
+                          setState(() {
+                            _userType = value.toString();
+                          });
+                        },
+                      ),
+                      Text('Student'),
+                    ],
+                  ),
+                  Row(
+                    children: [
+                      Radio(
+                        value: 'staff',
+                        groupValue: _userType,
+                        onChanged: (value) {
+                          setState(() {
+                            _userType = value.toString();
+                          });
+                        },
+                      ),
+                      Text('Staff'),
+                    ],
+                  ),
+                  Row(
+                    children: [
+                      Radio(
+                        value: 'public',
+                        groupValue: _userType,
+                        onChanged: (value) {
+                          setState(() {
+                            _userType = value.toString();
+                          });
+                        },
+                      ),
+                      Text('Public'),
+                    ],
+                  ),
+                ],
+              ),
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: TextField(
+                  controller: matriculationNumber,
+                  decoration: InputDecoration(
+                    labelText: 'Matric Number',
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: TextField(
+                  keyboardType: TextInputType.number,
+                  controller: icNumber,
+                  decoration: InputDecoration(
+                    labelText: 'IC Number',
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: TextField(
+                  controller: emailAddress,
+                  decoration: InputDecoration(
+                    labelText: 'Email Address',
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: TextField(
+                  keyboardType: TextInputType.number,
+                  controller: phoneNumber,
+                  decoration: InputDecoration(
+                    labelText: 'Phone Number',
+                  ),
+                ),
+              ),
               Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: TextField(
@@ -122,50 +249,12 @@ class _RegisterState extends State<Register> {
                   ),
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: TextField(
-                  controller: fullName,
-                  decoration: InputDecoration(
-                    labelText: 'Full Name',
-                  ),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: TextField(
-                  controller: emailAddress,
-                  decoration: InputDecoration(
-                    labelText: 'Email Address',
-                  ),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: TextField(
-                  keyboardType: TextInputType.number,
-                  controller: icNumber,
-                  decoration: InputDecoration(
-                    labelText: 'Ic Number',
-                  ),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: TextField(
-                  keyboardType: TextInputType.number,
-                  controller: phoneNumber,
-                  decoration: InputDecoration(
-                    labelText: 'Phone Number',
-                  ),
-                ),
-              ),
               ElevatedButton(
                 onPressed: () {
                   register();
                 },
                 style: ElevatedButton.styleFrom(
-                  fixedSize: Size(200, 50), // Adjust the width and height as needed
+                  fixedSize: Size(300, 50), // Adjust the width and height as needed
                 ),
                 child: Text('Register', style: TextStyle(fontSize: 18)),
               ),

@@ -40,7 +40,7 @@ class _MyHomePageState extends State<MyHomePage> {
   TextEditingController pass = TextEditingController();
 
   Future login() async {
-    var url = Uri.http("10.200.91.85", '/login.php', {'q': '{http}'});
+    var url = Uri.http("10.200.90.242", '/login.php', {'q': '{http}'});
     var response = await http.post(url, body: {
       "username": user.text,
       "password": pass.text,
