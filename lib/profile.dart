@@ -3,9 +3,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'dashboard.dart';
 import 'penalty.dart';
+import 'history.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'dart:io';
 
 class Profile extends StatefulWidget {
   const Profile({Key? key}) : super(key: key);
@@ -15,12 +15,13 @@ class Profile extends StatefulWidget {
 }
 
 class _ProfileState extends State<Profile> {
-  int _selectedIndex = 2; // Index of the selected tab
+  int _selectedIndex = 3; // Index of the selected tab
   String icNumber = ''; // Variable to store the IC number
   int? userId;
   String fullName = ''; // Variable to store the full name
   String phoneNumber = ''; // Variable to store the phone number
   String emailAddress = ''; // Variable to store the email address
+  String username = ''; // Variable to store the email address
 
   @override
   void initState() {
@@ -35,6 +36,7 @@ class _ProfileState extends State<Profile> {
     String? storedFullName = prefs.getString('fullName');
     String? storedPhoneNumber = prefs.getString('phoneNumber');
     String? storedEmailAddress = prefs.getString('emailAddress');
+    String? storedUsername = prefs.getString('username');
 
     if (storedIcNumber != null) {
       setState(() {
@@ -54,6 +56,11 @@ class _ProfileState extends State<Profile> {
     if (storedEmailAddress != null) {
       setState(() {
         emailAddress = storedEmailAddress;
+      });
+    }
+    if (storedUsername != null) {
+      setState(() {
+        username = storedUsername;
       });
     }
   }
@@ -172,7 +179,7 @@ class _ProfileState extends State<Profile> {
   }
 
   void _onItemTapped(int index) {
-    if (index == 2) {
+    if (index == 3) {
       // If the "Profile" button is tapped (index 2), navigate to the profile page
       Navigator.push(
         context,
@@ -180,11 +187,18 @@ class _ProfileState extends State<Profile> {
           builder: (context) => Profile(),
         ),
       );
-    } else if (index == 1) {
+    } else if (index == 2) {
       Navigator.push(
         context,
         MaterialPageRoute(
           builder: (context) => Penalty(),
+        ),
+      );
+    } else if (index == 1) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => History(),
         ),
       );
     } else {
@@ -247,7 +261,7 @@ class _ProfileState extends State<Profile> {
         child: Column(
           children: [
             Padding(
-              padding: const EdgeInsets.all(70.0),
+              padding: const EdgeInsets.only(top: 70.0), // Adjust the top padding value
               child: Text(
                 'Profile',
                 style: TextStyle(
@@ -256,6 +270,20 @@ class _ProfileState extends State<Profile> {
                 ),
               ),
             ),
+            SizedBox(height: 30), // Adjust the height as needed
+            CircleAvatar(
+              radius: 70, // Adjust the radius as needed
+              backgroundColor: Colors.blue, // Set the background color to blue
+            ),
+            SizedBox(height: 15), // Adjust the height as needed
+            Text(
+              username, // Replace with the actual username variable
+              style: TextStyle(
+                fontSize: 25,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            SizedBox(height: 30), // Add space between the second and third buttons
             buildProfileField('Full Name', fullName),
             buildProfileField('Phone Number', phoneNumber),
             buildProfileField('IC Number', icNumber),
@@ -267,7 +295,15 @@ class _ProfileState extends State<Profile> {
                   onPressed: () {
                     updateProfile();
                   },
-                  child: Text('Update',
+                  style: ButtonStyle(
+                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                      RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10.0), // Adjust the value to control roundness
+                      ),
+                    ),
+                    backgroundColor: MaterialStateProperty.all(Colors.blue), // Change the background color as needed
+                  ),
+                  child: Text('Update Profile',
                     style: TextStyle(fontSize: 15), // Increase the font size here
                   ),
                 )
@@ -277,10 +313,15 @@ class _ProfileState extends State<Profile> {
       ),
 
       bottomNavigationBar: BottomNavigationBar(
+        type: BottomNavigationBarType.fixed,
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: Icon(Icons.home),
             label: 'Home',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.history),
+            label: 'History',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.error),

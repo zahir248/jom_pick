@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
-import 'DashBoard.dart';
 import 'main.dart';
 
 class Register extends StatefulWidget {
@@ -25,10 +24,8 @@ class _RegisterState extends State<Register> {
 
 
   Future register() async {
-    bool isFormValid = true;
 
     if (user.text.isEmpty || pass.text.isEmpty || fullName.text.isEmpty || emailAddress.text.isEmpty || icNumber.text.isEmpty || phoneNumber.text.isEmpty) {
-      isFormValid = false;
       Fluttertoast.showToast(
         backgroundColor: Colors.red,
         textColor: Colors.white,
@@ -258,7 +255,7 @@ class _RegisterState extends State<Register> {
                 ),
                 child: Text('Register', style: TextStyle(fontSize: 18)),
               ),
-              const SizedBox(height: 20),
+              const SizedBox(height: 50),
             ],
           ),
         ),

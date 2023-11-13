@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 import 'dashboard.dart';
 import 'profile.dart';
-import 'history.dart';
+import 'penalty.dart';
 
-class Penalty extends StatefulWidget {
-  const Penalty({Key? key}) : super(key: key);
+class History extends StatefulWidget {
+  const History({Key? key}) : super(key: key);
 
   @override
-  _PenaltyState createState() => _PenaltyState();
+  _HistoryState createState() => _HistoryState();
 }
 
-class _PenaltyState extends State<Penalty> {
-  int _selectedIndex = 2; // Index of the selected tab
+class _HistoryState extends State<History> {
+  int _selectedIndex = 1; // Index of the selected tab
 
   void _onItemTapped(int index) {
     if (index == 3) {
@@ -58,7 +58,7 @@ class _PenaltyState extends State<Penalty> {
             Padding(
               padding: const EdgeInsets.all(70.0),
               child: Text(
-                'Penalty',
+                'History',
                 style: TextStyle(
                   fontSize: 30,
                   fontWeight: FontWeight.bold,

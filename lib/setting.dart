@@ -85,30 +85,6 @@ class _SettingState extends State<Setting> {
                 ),
               ),
             ),
-            SizedBox(height: 5), // Add space between the first and second buttons
-            Container(
-              width: 300, // Set the same fixed width for all buttons
-              child: ElevatedButton(
-                onPressed: () {
-                  // Navigate to History Page
-                },
-                style: ButtonStyle(
-                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                    RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(9.0), // Adjust the value to control roundness
-                    ),
-                  ),
-                  backgroundColor: MaterialStateProperty.all(Colors.blue), // Change the background color as needed
-                ),
-                child: Padding(
-                  padding: EdgeInsets.all(10.0), // Adjust the padding as needed
-                  child: Text(
-                    'History',
-                    style: TextStyle(fontSize: 15), // Increase the font size here
-                  ),
-                ),
-              ),
-            ),
             SizedBox(height: 5), // Add space between the second and third buttons
             Container(
               width: 300, // Set the same fixed width for all buttons

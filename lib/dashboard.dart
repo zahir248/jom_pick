@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'main.dart';
 import 'setting.dart';
 import 'profile.dart';
 import 'penalty.dart';
+import 'history.dart';
 
 class DashBoard extends StatefulWidget {
   const DashBoard({Key? key}) : super(key: key);
@@ -23,35 +22,39 @@ class _DashBoardState extends State<DashBoard> {
   }
 
   void handleSetting() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
 
     // Navigate to the login page (Assuming your login page is named Setting)
     Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Setting()));
   }
 
   void _onItemTapped(int index) {
-    if (index == 2) {
+    if (index == 3) {
       // If the "Profile" button is tapped (index 2), navigate to the profile page
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => Profile(), // Replace "ProfilePage()" with the actual profile page widget
+          builder: (context) => Profile(),
         ),
       );
-    } else if(index == 1) {
+    } else if (index == 2) {
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) =>
-              Penalty(), // Replace "PenaltyPage()" with the actual profile page widget
+          builder: (context) => Penalty(),
         ),
       );
-    } else{
+    } else if (index == 1) {
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) =>
-              DashBoard(), // Replace "DashBoardPage()" with the actual profile page widget
+          builder: (context) => History(),
+        ),
+      );
+    } else {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => DashBoard(),
         ),
       );
       setState(() {
@@ -99,10 +102,15 @@ class _DashBoardState extends State<DashBoard> {
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(
+        type: BottomNavigationBarType.fixed,
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: Icon(Icons.home),
             label: 'Home',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.history),
+            label: 'History',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.error),
