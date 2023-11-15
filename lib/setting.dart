@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:jom_pick/main.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'change_password.dart';
 import 'dashboard.dart';
+import 'user_manual.dart';
 
 class Setting extends StatefulWidget {
   const Setting({Key? key}) : super(key: key);
@@ -38,21 +40,26 @@ class _SettingState extends State<Setting> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back),
-          onPressed: () {
-            // Redirects to the dashboard page
-            Navigator.push(
-                context, MaterialPageRoute(builder: (context) => DashBoard()));
-          },
-        ),
-      ),
       body: Center(
         child: Column(
           children: [
             Padding(
-              padding: const EdgeInsets.all(30.0), // Adjust the padding as needed for the title
+              padding: const EdgeInsets.fromLTRB(16.0, 50, 16.0, 0),
+              child: Container(
+                alignment: Alignment.centerLeft,
+                child: IconButton(
+                  icon: Icon(Icons.arrow_back, color: Colors.black),
+                  onPressed: () {
+                    // Navigate to the home page and replace the current page
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(builder: (context) => DashBoard()),
+                    );                  },
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16.0, 1.0, 16.0, 10.0),
               child: Text(
                 'Setting',
                 style: TextStyle(
@@ -67,7 +74,10 @@ class _SettingState extends State<Setting> {
               child: ElevatedButton(
                 onPressed: () {
                   // Navigate to Change Password Page
-                },
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => ChangePasswordPage()),
+                  );                },
                 style: ButtonStyle(
                   shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                     RoundedRectangleBorder(
@@ -90,8 +100,11 @@ class _SettingState extends State<Setting> {
               width: 300, // Set the same fixed width for all buttons
               child: ElevatedButton(
                 onPressed: () {
-                  // Navigate to User Manual Page
-                },
+                // Navigate to User Manual Page
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => UserManual()),
+                  );},
                 style: ButtonStyle(
                   shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                     RoundedRectangleBorder(

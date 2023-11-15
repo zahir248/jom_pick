@@ -7,6 +7,7 @@ import 'DashBoard.dart';
 import 'package:flutter/gestures.dart'; // Add this import
 import 'splashscreen.dart'; // Import your splash screen
 import 'package:shared_preferences/shared_preferences.dart';
+import 'forgot_password.dart';
 
 void main() {
   runApp(const MyApp());
@@ -40,6 +41,15 @@ class _MyHomePageState extends State<MyHomePage> {
   TextEditingController pass = TextEditingController();
 
   Future login() async {
+    if (user.text.isEmpty || pass.text.isEmpty) {
+      Fluttertoast.showToast(
+        backgroundColor: Colors.red,
+        textColor: Colors.white,
+        msg: 'Please enter both username and password',
+        toastLength: Toast.LENGTH_SHORT,
+      );
+      return; // Exit the function to prevent further execution
+    }
     var url = Uri.http("10.200.90.242", '/login.php', {'q': '{http}'});
     var response = await http.post(url, body: {
       "username": user.text,
@@ -100,7 +110,7 @@ class _MyHomePageState extends State<MyHomePage> {
       Fluttertoast.showToast(
         backgroundColor: Colors.red,
         textColor: Colors.white,
-        msg: 'Username and password invalid',
+        msg: 'Invalid Username or Password',
         toastLength: Toast.LENGTH_SHORT,
       );
     }
@@ -201,6 +211,10 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
               TextButton(
                 onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => ForgotPasswordPage()),
+                  );
                 },
                 child: Text(
                   'Forgot password',

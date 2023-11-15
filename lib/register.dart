@@ -19,17 +19,31 @@ class _RegisterState extends State<Register> {
   TextEditingController icNumber = TextEditingController();
   TextEditingController phoneNumber = TextEditingController();
   TextEditingController matriculationNumber = TextEditingController();
+  TextEditingController confirmPass = TextEditingController();
 
   String? _userType; // to store the selected user type
 
 
   Future register() async {
 
-    if (user.text.isEmpty || pass.text.isEmpty || fullName.text.isEmpty || emailAddress.text.isEmpty || icNumber.text.isEmpty || phoneNumber.text.isEmpty) {
+    if (user.text.isEmpty ||
+        pass.text.isEmpty ||
+        confirmPass.text.isEmpty ||
+        fullName.text.isEmpty ||
+        emailAddress.text.isEmpty ||
+        icNumber.text.isEmpty ||
+        phoneNumber.text.isEmpty) {
       Fluttertoast.showToast(
         backgroundColor: Colors.red,
         textColor: Colors.white,
         msg: 'Please fill in all the fields',
+        toastLength: Toast.LENGTH_SHORT,
+      );
+    } else if (pass.text != confirmPass.text) {
+      Fluttertoast.showToast(
+        backgroundColor: Colors.red,
+        textColor: Colors.white,
+        msg: 'Passwords did not match',
         toastLength: Toast.LENGTH_SHORT,
       );
     } else {
@@ -69,6 +83,7 @@ class _RegisterState extends State<Register> {
   }
 
   bool isPasswordVisible = false;
+  bool isConfirmPasswordVisible = false; // Add a new boolean variable
 
   @override
   Widget build(BuildContext context) {
@@ -239,6 +254,29 @@ class _RegisterState extends State<Register> {
                       },
                       child: Icon(
                         isPasswordVisible
+                            ? Icons.visibility
+                            : Icons.visibility_off,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: TextField(
+                  controller: confirmPass,
+                  obscureText: !isConfirmPasswordVisible, // Use the new variable
+                  decoration: InputDecoration(
+                    labelText: 'Confirm Password',
+                    suffixIcon: GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          isConfirmPasswordVisible =
+                          !isConfirmPasswordVisible;
+                        });
+                      },
+                      child: Icon(
+                        isConfirmPasswordVisible
                             ? Icons.visibility
                             : Icons.visibility_off,
                       ),
