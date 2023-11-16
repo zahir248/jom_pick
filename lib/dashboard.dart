@@ -125,9 +125,20 @@ class _DashBoardState extends State<DashBoard> {
                                   : "N/A",
                               style: TextStyle(fontSize: 14),
                             ),
+                            SizedBox(width: 46), // Adjust the width for spacing
+                            Icon(Icons.access_time), // Add the clock icon before the time
+                            SizedBox(width: 4), // Adjust the width for spacing
+                            Text(
+                              // Format the time using the intl package
+                              itemData[index].registerDate != null
+                                  ? DateFormat('h:mm a').format(itemData[index].registerDate!)
+                                  : "N/A",
+                              style: TextStyle(fontSize: 14),
+                            ),
                           ],
                         ),
                       ),
+
                       Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
