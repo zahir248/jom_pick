@@ -8,6 +8,7 @@ import 'package:shared_preferences/shared_preferences.dart'; // Import SharedPre
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:intl/intl.dart'; // Import the intl package
+import 'item_detail.dart';
 
 class DashBoard extends StatefulWidget {
   const DashBoard({Key? key}) : super(key: key);
@@ -71,6 +72,7 @@ class _DashBoardState extends State<DashBoard> {
             itemBuilder: (context, index) {
               return Card(
                 margin: EdgeInsets.all(8.0),
+                elevation: 4.0, // Set the elevation (shadow) here
                 child: Padding(
                   padding: EdgeInsets.only(bottom: 15.0),
                   child: Column(
@@ -82,7 +84,7 @@ class _DashBoardState extends State<DashBoard> {
                           height: 90,
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
-                            color: Colors.blue, // Change the color to blue or any other color you prefer
+                            color: Colors.blueGrey,
                           ),
                         ),
                         title: Column(
@@ -91,17 +93,17 @@ class _DashBoardState extends State<DashBoard> {
                             Text(
                               itemData[index].itemName,
                               style: TextStyle(
-                                fontSize: 18, // Adjust the font size as needed for itemName
-                                fontWeight: FontWeight.bold, // Make itemName bold
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
                               ),
                             ),
-                            SizedBox(height: 10), // Adjust the height for the desired space
+                            SizedBox(height: 10),
                           ],
                         ),
                         subtitle: Text(
                           itemData[index].location,
                           style: TextStyle(
-                            fontSize: 14, // Adjust the font size as needed for location
+                            fontSize: 14,
                           ),
                         ),
                       ),
@@ -116,20 +118,18 @@ class _DashBoardState extends State<DashBoard> {
                         leading: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            Icon(Icons.calendar_today), // Add the calendar icon
-                            SizedBox(width: 8), // Adjust the width for spacing
+                            Icon(Icons.calendar_today),
+                            SizedBox(width: 8),
                             Text(
-                              // Format the date using the intl package
                               itemData[index].registerDate != null
                                   ? DateFormat('EEEE, dd MMMM yyyy').format(itemData[index].registerDate!)
                                   : "N/A",
                               style: TextStyle(fontSize: 14),
                             ),
-                            SizedBox(width: 46), // Adjust the width for spacing
-                            Icon(Icons.access_time), // Add the clock icon before the time
-                            SizedBox(width: 4), // Adjust the width for spacing
+                            SizedBox(width: 46),
+                            Icon(Icons.access_time),
+                            SizedBox(width: 4),
                             Text(
-                              // Format the time using the intl package
                               itemData[index].registerDate != null
                                   ? DateFormat('h:mm a').format(itemData[index].registerDate!)
                                   : "N/A",
@@ -138,13 +138,12 @@ class _DashBoardState extends State<DashBoard> {
                           ],
                         ),
                       ),
-
                       Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
                           ElevatedButton(
                             onPressed: () {
-                              //_detailsUser(index);
+                              _detailsItem(itemData[index].itemId);
                             },
                             style: ElevatedButton.styleFrom(
                               fixedSize: Size(340, 45),
@@ -163,6 +162,17 @@ class _DashBoardState extends State<DashBoard> {
             },
           ),
         ),
+      ),
+    );
+  }
+
+
+  void _detailsItem(int itemId) {
+    // Navigate to the item detail page and pass the item_id
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => ItemDetailPage(itemId: itemId),
       ),
     );
   }
@@ -213,28 +223,38 @@ class _DashBoardState extends State<DashBoard> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('JomPick'),
-        automaticallyImplyLeading: false, // Remove the back button
-        actions: <Widget>[
-          IconButton(
-            icon: Icon(Icons.settings),
-            onPressed: () {
-              handleSetting(); // Logout when the button is pressed
-            },
-          ),
-        ],
-      ),
       body: Column(
         children: <Widget>[
           Padding(
-            padding: const EdgeInsets.all(20.0),
+            padding: const EdgeInsets.only(left: 16.0, right: 16.0, top: 50.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                Text(
+                  'JomPick',
+                  style: TextStyle(
+                    fontSize: 30.0,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                IconButton(
+                  icon: Icon(Icons.settings),
+                  onPressed: () {
+                    handleSetting(); // Logout when the button is pressed
+                  },
+                ),
+              ],
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
             child: TextField(
               decoration: InputDecoration(
                 hintText: 'Search',
                 prefixIcon: Icon(Icons.search),
                 filled: true,
-                fillColor: Colors.white10, // Set the background color to grey
+                fillColor: Colors.white24, // Set the background color to grey
+                contentPadding: EdgeInsets.symmetric(vertical: 15.0, horizontal: 20.0), // Adjust the padding as needed
                 border: OutlineInputBorder( // Use OutlineInputBorder for border
                   borderSide: BorderSide(color: Colors.white12), // Set the border color to grey
                   borderRadius: BorderRadius.circular(10.0), // Adjust the border radius as needed
