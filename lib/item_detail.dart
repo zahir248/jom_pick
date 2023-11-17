@@ -4,11 +4,13 @@ class ItemDetailPage extends StatefulWidget {
   final int itemId;
   final String itemName;
   final String trackingNumber;
+  final String itemType;
 
   ItemDetailPage({
     required this.itemId,
     required this.itemName,
     required this.trackingNumber,
+    required this.itemType,
   });
 
   @override
@@ -55,6 +57,8 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
                 buildDetailItem("Name", widget.itemName),
                 SizedBox(height: 20), // Increased space
                 buildDetailItem("Tracking Number", widget.trackingNumber),
+                SizedBox(height: 20), // Increased space
+                buildDetailItem("Type", widget.itemType),
                 SizedBox(height: 30), // Increased space
                 // Display the image using Image.memory
               ],

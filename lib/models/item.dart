@@ -4,6 +4,7 @@ class Item {
   final String location;
   final DateTime registerDate;
   final String trackingNumber;
+  final String itemType; // Add a property for item type
 
   Item({
     required this.itemId,
@@ -11,6 +12,7 @@ class Item {
     required this.location,
     required this.registerDate,
     required this.trackingNumber,
+    required this.itemType, // Initialize the property in the constructor
   });
 
   // Factory method to create an Item instance from a Map
@@ -21,6 +23,7 @@ class Item {
       location: json['location'] ?? '',
       registerDate: DateTime.parse(json['registerDate'] ?? ''),
       trackingNumber: json['trackingNumber'] ?? '',
+      itemType: json['itemType'] ?? '', // Retrieve item type from the JSON
     );
   }
 }

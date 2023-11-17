@@ -41,7 +41,7 @@ class _DashBoardState extends State<DashBoard> {
     if (userId != null) {
       final response = await http.get(Uri.parse('http://10.200.90.242/item.php?user_id=$userId'));
 
-      //print('Raw JSON response: ${response.body}');
+      print('Raw JSON response: ${response.body}');
 
       if (response.statusCode == 200) {
 
@@ -151,6 +151,7 @@ class _DashBoardState extends State<DashBoard> {
                                 filteredItemData[index].itemId,
                                 filteredItemData[index].itemName,
                                 filteredItemData[index].trackingNumber,
+                                filteredItemData[index].itemType,
                               );
                             },
                             style: ElevatedButton.styleFrom(
@@ -174,12 +175,12 @@ class _DashBoardState extends State<DashBoard> {
     );
   }
 
-  void _detailsItem(int itemId, String itemName, String trackingNumber) {
+  void _detailsItem(int itemId, String itemName, String trackingNumber, String itemType) {
     // Navigate to the item detail page and pass the item_id
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => ItemDetailPage(itemId: itemId,itemName: itemName, trackingNumber : trackingNumber),
+        builder: (context) => ItemDetailPage(itemId: itemId,itemName: itemName, trackingNumber : trackingNumber, itemType : itemType ),
       ),
     );
   }
