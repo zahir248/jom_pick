@@ -22,6 +22,9 @@ class _DashBoardState extends State<DashBoard> {
   int? userId;
 
   List<Item> itemData = []; // List to store fetched data
+  List<Item> filteredItemData = []; // List to store filtered data
+
+  TextEditingController searchController = TextEditingController();
 
   @override
   void initState() {
@@ -46,6 +49,8 @@ class _DashBoardState extends State<DashBoard> {
 
         setState(() {
           itemData = (jsonData as List).map((item) => Item.fromJson(item)).toList();
+          filteredItemData = List.from(itemData); // Initialize filteredItemData
+
         });
       } else {
         throw Exception('Failed to load user data. Status code: ${response.statusCode}');
@@ -57,7 +62,7 @@ class _DashBoardState extends State<DashBoard> {
 
   Widget _buildListView() {
     return Expanded(
-      child: itemData.isEmpty
+      child: filteredItemData.isEmpty
           ? Center(
         child: Text(
           'No data available',
@@ -67,7 +72,7 @@ class _DashBoardState extends State<DashBoard> {
           : Center(
         child: Scrollbar(
           child: ListView.builder(
-            itemCount: itemData.length,
+            itemCount: filteredItemData.length,
             itemBuilder: (context, index) {
               return Card(
                 margin: EdgeInsets.all(8.0),
@@ -90,7 +95,7 @@ class _DashBoardState extends State<DashBoard> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              itemData[index].itemName,
+                              filteredItemData[index].itemName, // Use filteredItemData instead of itemData
                               style: TextStyle(
                                 fontSize: 18,
                                 fontWeight: FontWeight.bold,
@@ -100,7 +105,7 @@ class _DashBoardState extends State<DashBoard> {
                           ],
                         ),
                         subtitle: Text(
-                          itemData[index].location,
+                          filteredItemData[index].location,
                           style: TextStyle(
                             fontSize: 14,
                           ),
@@ -120,8 +125,8 @@ class _DashBoardState extends State<DashBoard> {
                             Icon(Icons.calendar_today),
                             SizedBox(width: 8),
                             Text(
-                              itemData[index].registerDate != null
-                                  ? DateFormat('EEEE, dd MMMM yyyy').format(itemData[index].registerDate!)
+                              filteredItemData[index].registerDate != null
+                                  ? DateFormat('EEEE, dd MMMM yyyy').format(filteredItemData[index].registerDate!)
                                   : "N/A",
                               style: TextStyle(fontSize: 14),
                             ),
@@ -129,8 +134,8 @@ class _DashBoardState extends State<DashBoard> {
                             Icon(Icons.access_time),
                             SizedBox(width: 4),
                             Text(
-                              itemData[index].registerDate != null
-                                  ? DateFormat('h:mm a').format(itemData[index].registerDate!)
+                              filteredItemData[index].registerDate != null
+                                  ? DateFormat('h:mm a').format(filteredItemData[index].registerDate!)
                                   : "N/A",
                               style: TextStyle(fontSize: 14),
                             ),
@@ -142,7 +147,11 @@ class _DashBoardState extends State<DashBoard> {
                         children: <Widget>[
                           ElevatedButton(
                             onPressed: () {
-                              _detailsItem(itemData[index].itemId,itemData[index].itemName, itemData[index].trackingNumber);
+                              _detailsItem(
+                                filteredItemData[index].itemId,
+                                filteredItemData[index].itemName,
+                                filteredItemData[index].trackingNumber,
+                              );
                             },
                             style: ElevatedButton.styleFrom(
                               fixedSize: Size(340, 45),
@@ -174,7 +183,6 @@ class _DashBoardState extends State<DashBoard> {
       ),
     );
   }
-
 
   void handleSetting() async {
 
@@ -218,6 +226,22 @@ class _DashBoardState extends State<DashBoard> {
     }
   }
 
+  // Update the filterItems method to filter itemData only when the search bar has a value
+  void filterItems(String query) {
+    if (query.isNotEmpty) {
+      setState(() {
+        filteredItemData = itemData
+            .where((item) => item.itemName.toLowerCase().contains(query.toLowerCase()))
+            .toList();
+      });
+    } else {
+      setState(() {
+        filteredItemData = List.from(itemData);
+      });
+    }
+  }
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -247,6 +271,8 @@ class _DashBoardState extends State<DashBoard> {
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: TextField(
+              controller: searchController,
+              onChanged: filterItems,
               decoration: InputDecoration(
                 hintText: 'Search',
                 prefixIcon: Icon(Icons.search),
