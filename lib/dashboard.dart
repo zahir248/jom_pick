@@ -36,10 +36,9 @@ class _DashBoardState extends State<DashBoard> {
     userId = prefs.getInt('user_id');
 
     if (userId != null) {
-      final response = await http.get(Uri.parse('http://10.200.90.242/item.php?user_id=$userId'));
+      final response = await http.get(Uri.parse('http://10.131.76.187/item.php?user_id=$userId'));
 
-      print('Raw JSON response: ${response.body}');
-
+      //print('Raw JSON response: ${response.body}');
 
       if (response.statusCode == 200) {
 
@@ -143,7 +142,7 @@ class _DashBoardState extends State<DashBoard> {
                         children: <Widget>[
                           ElevatedButton(
                             onPressed: () {
-                              _detailsItem(itemData[index].itemId);
+                              _detailsItem(itemData[index].itemId,itemData[index].itemName, itemData[index].trackingNumber);
                             },
                             style: ElevatedButton.styleFrom(
                               fixedSize: Size(340, 45),
@@ -166,13 +165,12 @@ class _DashBoardState extends State<DashBoard> {
     );
   }
 
-
-  void _detailsItem(int itemId) {
+  void _detailsItem(int itemId, String itemName, String trackingNumber) {
     // Navigate to the item detail page and pass the item_id
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => ItemDetailPage(itemId: itemId),
+        builder: (context) => ItemDetailPage(itemId: itemId,itemName: itemName, trackingNumber : trackingNumber),
       ),
     );
   }

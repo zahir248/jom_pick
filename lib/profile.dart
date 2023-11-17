@@ -121,7 +121,7 @@ class _ProfileState extends State<Profile> {
     try {
       // Assuming you have an API endpoint for updating the user profile
       final response = await http.post(
-        Uri.http('10.200.90.242', '/update.php', {'q': '{http}'}),
+        Uri.http('10.131.76.187', '/update.php', {'q': '{http}'}),
         body: {
           'user_id': userId.toString(),
           'fullName': fullName,
@@ -273,7 +273,7 @@ class _ProfileState extends State<Profile> {
             SizedBox(height: 30), // Adjust the height as needed
             CircleAvatar(
               radius: 70, // Adjust the radius as needed
-              backgroundColor: Colors.blue, // Set the background color to blue
+              backgroundColor: Colors.blueGrey, // Set the background color to blue
             ),
             SizedBox(height: 15), // Adjust the height as needed
             Text(

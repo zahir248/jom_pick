@@ -47,7 +47,7 @@ class _RegisterState extends State<Register> {
         toastLength: Toast.LENGTH_SHORT,
       );
     } else {
-      var url = Uri.http("10.200.90.242", '/register.php', {'q': '{http}'});
+      var url = Uri.http("10.131.76.187", '/register.php', {'q': '{http}'});
       var response = await http.post(url, body: {
         "username": user.text.toString(),
         "password": pass.text.toString(),
