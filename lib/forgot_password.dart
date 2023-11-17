@@ -20,7 +20,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
   Future<void> updatePassword() async {
     try {
       final response = await http.post(
-        Uri.http('10.131.76.187', '/forgotPassword.php', {'q': '{http}'}),
+        Uri.http('10.200.90.242', '/forgotPassword.php', {'q': '{http}'}),
         body: {
           'username': usernameController.text,
           'emailAddress': emailController.text,

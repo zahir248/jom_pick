@@ -36,7 +36,7 @@ class _DashBoardState extends State<DashBoard> {
     userId = prefs.getInt('user_id');
 
     if (userId != null) {
-      final response = await http.get(Uri.parse('http://10.131.76.187/item.php?user_id=$userId'));
+      final response = await http.get(Uri.parse('http://10.200.90.242/item.php?user_id=$userId'));
 
       //print('Raw JSON response: ${response.body}');
 
