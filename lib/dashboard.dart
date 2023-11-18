@@ -11,7 +11,6 @@ import 'package:intl/intl.dart'; // Import the intl package
 import 'item_detail.dart';
 import 'dart:typed_data';
 
-
 class DashBoard extends StatefulWidget {
   const DashBoard({Key? key}) : super(key: key);
 
@@ -34,7 +33,6 @@ class _DashBoardState extends State<DashBoard> {
     fetchItemData(); // Fetch user data when the widget is created
   }
 
-  // Fetch user data based on the user ID stored in SharedPreferences
   // Fetch user data based on the user ID stored in SharedPreferences
   Future<void> fetchItemData() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -155,6 +153,8 @@ class _DashBoardState extends State<DashBoard> {
                                 filteredItemData[index].trackingNumber,
                                 filteredItemData[index].itemType,
                                 filteredItemData[index].imageData,
+                                filteredItemData[index].status,
+                                filteredItemData[index].confirmationDate,
                               );
                             },
                             style: ElevatedButton.styleFrom(
@@ -178,7 +178,7 @@ class _DashBoardState extends State<DashBoard> {
     );
   }
 
-  void _detailsItem(int itemId, String itemName, String trackingNumber, String itemType, Uint8List imageData) {
+  void _detailsItem(int itemId, String itemName, String trackingNumber, String itemType, Uint8List imageData, String status, DateTime confirmationDate) {
     // Navigate to the item detail page and pass the item_id
     Navigator.push(
       context,
@@ -189,6 +189,8 @@ class _DashBoardState extends State<DashBoard> {
             trackingNumber : trackingNumber,
             itemType : itemType,
             imageData: imageData,
+            status: status,
+            confirmationDate: confirmationDate,
         ),
       ),
     );
@@ -250,7 +252,6 @@ class _DashBoardState extends State<DashBoard> {
       });
     }
   }
-
 
   @override
   Widget build(BuildContext context) {

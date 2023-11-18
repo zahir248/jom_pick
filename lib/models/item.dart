@@ -9,6 +9,8 @@ class Item {
   final String trackingNumber;
   final String itemType;
   final Uint8List imageData; // Use Uint8List for binary image data
+  final String status;
+  final DateTime confirmationDate;
 
   Item({
     required this.itemId,
@@ -16,9 +18,10 @@ class Item {
     required this.location,
     required this.registerDate,
     required this.trackingNumber,
-    required this.itemType, // Initialize the property in the constructor
+    required this.itemType, //
     required this.imageData,
-
+    required this.status,
+    required this.confirmationDate,
   });
 
   factory Item.fromJson(Map<String, dynamic> json) {
@@ -32,6 +35,8 @@ class Item {
       trackingNumber: json['trackingNumber'] ?? '',
       itemType: json['itemType'] ?? '',
       imageData: decodedImageData,
+      status: json['status'] ?? '',
+      confirmationDate: DateTime.parse(json['confirmationDate'] ?? ''),
     );
   }
 }
