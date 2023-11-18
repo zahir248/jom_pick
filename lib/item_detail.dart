@@ -1,16 +1,20 @@
 import 'package:flutter/material.dart';
+import 'dart:typed_data';
 
 class ItemDetailPage extends StatefulWidget {
   final int itemId;
   final String itemName;
   final String trackingNumber;
   final String itemType;
+  final Uint8List imageData;
 
   ItemDetailPage({
     required this.itemId,
     required this.itemName,
     required this.trackingNumber,
     required this.itemType,
+    required this.imageData,
+
   });
 
   @override
@@ -59,8 +63,21 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
                 buildDetailItem("Tracking Number", widget.trackingNumber),
                 SizedBox(height: 20), // Increased space
                 buildDetailItem("Type", widget.itemType),
-                SizedBox(height: 30), // Increased space
-                // Display the image using Image.memory
+                SizedBox(height: 20), // Increased space
+                buildDetailItem("Picture", ""), // Add an empty value for the image label
+                Center(
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(15.0), // Adjust the border radius as needed
+                    child: Container(
+                      width: 350, // Adjust the width as needed
+                      height: 200, // Adjust the height as needed
+                      child: Image.memory(
+                        widget.imageData,
+                        fit: BoxFit.cover, // Adjust the fit property as needed
+                      ),
+                    ),
+                  ),
+                ),
               ],
             ),
           ),

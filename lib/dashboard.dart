@@ -9,6 +9,8 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:intl/intl.dart'; // Import the intl package
 import 'item_detail.dart';
+import 'dart:typed_data';
+
 
 class DashBoard extends StatefulWidget {
   const DashBoard({Key? key}) : super(key: key);
@@ -152,6 +154,7 @@ class _DashBoardState extends State<DashBoard> {
                                 filteredItemData[index].itemName,
                                 filteredItemData[index].trackingNumber,
                                 filteredItemData[index].itemType,
+                                filteredItemData[index].imageData,
                               );
                             },
                             style: ElevatedButton.styleFrom(
@@ -175,12 +178,18 @@ class _DashBoardState extends State<DashBoard> {
     );
   }
 
-  void _detailsItem(int itemId, String itemName, String trackingNumber, String itemType) {
+  void _detailsItem(int itemId, String itemName, String trackingNumber, String itemType, Uint8List imageData) {
     // Navigate to the item detail page and pass the item_id
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => ItemDetailPage(itemId: itemId,itemName: itemName, trackingNumber : trackingNumber, itemType : itemType ),
+        builder: (context) => ItemDetailPage(
+            itemId: itemId,
+            itemName: itemName,
+            trackingNumber : trackingNumber,
+            itemType : itemType,
+            imageData: imageData,
+        ),
       ),
     );
   }
