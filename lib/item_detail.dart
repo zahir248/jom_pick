@@ -26,86 +26,127 @@ class ItemDetailPage extends StatefulWidget {
 }
 
 class _ItemDetailPageState extends State<ItemDetailPage> {
+  int _currentIndex = 0; // Index for BottomNavigationBar
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: SingleChildScrollView(
         child: Center(
-        child: Container(
-          width: double.infinity, // Expand the container to take the full width
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(16.0, 30, 16.0, 0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    IconButton(
-                      icon: Icon(Icons.arrow_back, color: Colors.black),
-                      onPressed: () {
-                        Navigator.pop(
-                            context); // Go back to the previous screen
-                      },
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(
-                          16.0, 50.0, 16.0, 10.0),
-                      child: Text(
-                        'Detail',
-                        style: TextStyle(
-                          fontSize: 30, // Adjust the font size as needed
-                          fontWeight: FontWeight.bold,
+          child: Container(
+            width: double.infinity,
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(16.0, 30, 16.0, 0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      IconButton(
+                        icon: Icon(Icons.arrow_back, color: Colors.black),
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(
+                            16.0, 50.0, 16.0, 10.0),
+                        child: Text(
+                          'Detail',
+                          style: TextStyle(
+                            fontSize: 30,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                      SizedBox(width: 50),
+                    ],
+                  ),
+                  /*SizedBox(height: 30),
+                  buildDetailItem("Item ID", widget.itemId.toString()),*/
+                  SizedBox(height: 20),
+                  buildDetailItem("Name", widget.itemName),
+                  SizedBox(height: 20),
+                  buildDetailItem("Tracking Number", widget.trackingNumber),
+                  SizedBox(height: 20),
+                  buildDetailItem("Type", widget.itemType),
+                  SizedBox(height: 20),
+                  buildDetailItem("Picture", ""),
+                  Center(
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(15.0),
+                      child: Container(
+                        width: 350,
+                        height: 200,
+                        child: Image.memory(
+                          widget.imageData,
+                          fit: BoxFit.cover,
                         ),
                       ),
                     ),
-                    SizedBox(width: 50), // Adjust the width as needed
-                  ],
-                ),
-                SizedBox(height: 30),
-                // Increased space
-                buildDetailItem("Item ID", widget.itemId.toString()),
-                SizedBox(height: 20),
-                // Increased space
-                buildDetailItem("Name", widget.itemName),
-                SizedBox(height: 20),
-                // Increased space
-                buildDetailItem("Tracking Number", widget.trackingNumber),
-                SizedBox(height: 20),
-                // Increased space
-                buildDetailItem("Type", widget.itemType),
-                SizedBox(height: 20),
-                // Increased space
-                buildDetailItem("Picture", ""),
-                // Add an empty value for the image label
-                Center(
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(15.0),
-                    // Adjust the border radius as needed
-                    child: Container(
-                      width: 350, // Adjust the width as needed
-                      height: 200, // Adjust the height as needed
-                      child: Image.memory(
-                        widget.imageData,
-                        fit: BoxFit.cover, // Adjust the fit property as needed
-                      ),
-                    ),
                   ),
-                ),
-                SizedBox(height: 20),
-                // Increased space
-                buildDetailItem("Status", widget.status),
-                SizedBox(height: 20),
-                // Increased space
-                buildDetailItem("Due Date", DateFormat('d MMMM yyyy').format(widget.confirmationDate)),
-                SizedBox(height: 100), // Additional space
-              ],
+                  SizedBox(height: 20),
+                  buildDetailItem("Status", widget.status),
+                  SizedBox(height: 20),
+                  buildDetailItem(
+                      "Due Date",
+                      DateFormat('d MMMM yyyy')
+                          .format(widget.confirmationDate)),
+                  SizedBox(height: 50),
+                ],
+              ),
             ),
           ),
         ),
       ),
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: _currentIndex,
+        items: [
+          buildBottomNavBarItem("Extend Due Date"),
+          buildBottomNavBarItem("Pick Now"),
+        ],
+        onTap: (index) {
+          // Handle button taps here
+          if (index == 0) {
+            // Logic for the first button (Edit)
+            // Add your code to handle the 'Edit' button tap
+          } else if (index == 1) {
+            // Logic for the second button (Delete)
+            // Add your code to handle the 'Delete' button tap
+          }
+          setState(() {
+            _currentIndex = index;
+          });
+        },
+        elevation: 8.0,
+        selectedItemColor: Colors.blue,
+        type: BottomNavigationBarType.fixed,
       ),
+    );
+  }
+
+  BottomNavigationBarItem buildBottomNavBarItem(String label) {
+    return BottomNavigationBarItem(
+      icon: Container(
+        width: 170,
+        height: 45,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(10),
+          color: Colors.blue,
+        ),
+        child: Center(
+          child: Text(
+            label,
+            style: TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+              fontSize: 14, // Adjust the font size here
+            ),
+          ),
+        ),
+      ),
+      label: '', // Empty label to hide default label
     );
   }
 
@@ -123,9 +164,9 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
             '$label:',
             style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),
-          SizedBox(height: 5), // Increased space between label and value
+          SizedBox(height: 5),
           Text(
-            formattedValue, // Use formattedValue here
+            formattedValue,
             style: TextStyle(fontSize: 18),
           ),
         ],
