@@ -40,6 +40,7 @@ class _DashBoardState extends State<DashBoard> {
     userId = prefs.getInt('user_id');
 
     if (userId != null) {
+
       try {
         final response = await http.get(
           Uri.parse('http://${MyApp.baseIpAddress}${MyApp.itemHomePath}?user_id=$userId'),

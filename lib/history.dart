@@ -1,5 +1,8 @@
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'dashboard.dart';
+import 'models/item.dart';
 import 'profile.dart';
 import 'penalty.dart';
 import '../models/item.dart';
@@ -9,7 +12,11 @@ import 'dart:convert';
 import 'package:intl/intl.dart'; // Import the intl package
 import 'item_detail_history.dart';
 import 'dart:typed_data';
+
 import 'main.dart';
+
+import 'item_detail.dart';
+
 
 class History extends StatefulWidget {
   const History({Key? key}) : super(key: key);
@@ -26,6 +33,7 @@ class _HistoryState extends State<History> {
   List<Item> filteredItemData = []; // List to store filtered data
 
   TextEditingController searchController = TextEditingController();
+  List<Item> itemData = [];
 
   @override
   void initState() {
@@ -34,6 +42,10 @@ class _HistoryState extends State<History> {
   }
 
   // Fetch user data based on the user ID stored in SharedPreferences
+    fetchItemData();
+  }
+
+
   Future<void> fetchItemData() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     userId = prefs.getInt('user_id');
@@ -86,6 +98,7 @@ class _HistoryState extends State<History> {
   Widget _buildListView() {
     return Expanded(
       child: filteredItemData.isEmpty
+      child: itemData.isEmpty
           ? Center(
         child: Text(
           'No data available',
@@ -96,6 +109,7 @@ class _HistoryState extends State<History> {
         child: Scrollbar(
           child: ListView.builder(
             itemCount: filteredItemData.length,
+            itemCount: itemData.length,
             itemBuilder: (context, index) {
               return Card(
                 margin: EdgeInsets.all(8.0),
@@ -116,6 +130,7 @@ class _HistoryState extends State<History> {
                               fit: BoxFit.cover,
                               image: AssetImage('assets/jompick.jpg'), // adjust the path accordingly
                             ),
+                            color: Colors.blueGrey,
                           ),
                         ),
                         title: Column(
@@ -123,6 +138,7 @@ class _HistoryState extends State<History> {
                           children: [
                             Text(
                               filteredItemData[index].itemName, // Use filteredItemData instead of itemData
+                              itemData[index].itemName,
                               style: TextStyle(
                                 fontSize: 18,
                                 fontWeight: FontWeight.bold,
@@ -133,6 +149,7 @@ class _HistoryState extends State<History> {
                         ),
                         subtitle: Text(
                           filteredItemData[index].location,
+                          itemData[index].location,
                           style: TextStyle(
                             fontSize: 14,
                           ),
@@ -184,6 +201,8 @@ class _HistoryState extends State<History> {
                             Text(
                               filteredItemData[index].registerDate != null
                                   ? DateFormat('EEEE, dd MMMM yyyy').format(filteredItemData[index].registerDate!)
+                              itemData[index].registerDate != null
+                                  ? DateFormat('EEEE, dd MMMM yyyy').format(itemData[index].registerDate!)
                                   : "N/A",
                               style: TextStyle(fontSize: 14),
                             ),
@@ -193,6 +212,8 @@ class _HistoryState extends State<History> {
                             Text(
                               filteredItemData[index].registerDate != null
                                   ? DateFormat('h:mm a').format(filteredItemData[index].registerDate!)
+                              itemData[index].registerDate != null
+                                  ? DateFormat('h:mm a').format(itemData[index].registerDate!)
                                   : "N/A",
                               style: TextStyle(fontSize: 14),
                             ),
@@ -213,6 +234,7 @@ class _HistoryState extends State<History> {
                                 filteredItemData[index].status,
                                 filteredItemData[index].confirmationDate,
                               );
+                              _detailsItem(itemData[index].itemId,itemData[index].itemName, itemData[index].trackingNumber);
                             },
                             style: ElevatedButton.styleFrom(
                               fixedSize: Size(340, 45),
@@ -236,6 +258,7 @@ class _HistoryState extends State<History> {
   }
 
   void _detailsItem(int itemId, String itemName, String trackingNumber, String itemType, Uint8List imageData, String status, DateTime confirmationDate) {
+  void _detailsItem(int itemId, String itemName, String trackingNumber) {
     // Navigate to the item detail page and pass the item_id
     Navigator.push(
       context,
@@ -249,6 +272,7 @@ class _HistoryState extends State<History> {
           status: status,
           confirmationDate: confirmationDate,
         ),
+        builder: (context) => ItemDetailPage(itemId: itemId,itemName: itemName, trackingNumber : trackingNumber),
       ),
     );
   }
@@ -311,11 +335,13 @@ class _HistoryState extends State<History> {
         children: <Widget>[
           Padding(
             padding: const EdgeInsets.only(left: 20.0, right: 16.0, top: 50.0),
+            padding: const EdgeInsets.only(left: 16.0, right: 16.0, top: 50.0),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
                 Text(
                   'History',
+                  'JomPick',
                   style: TextStyle(
                     fontSize: 30.0,
                     fontWeight: FontWeight.bold,
@@ -329,6 +355,7 @@ class _HistoryState extends State<History> {
             child: TextField(
               controller: searchController,
               onChanged: filterItems,
+
               decoration: InputDecoration(
                 hintText: 'Search',
                 prefixIcon: Icon(Icons.search),
@@ -371,6 +398,8 @@ class _HistoryState extends State<History> {
     );
   }
 }
+
+
 
 
 

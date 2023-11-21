@@ -34,7 +34,9 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
       await retrieveUserId();
 
       final response = await http.post(
+
         Uri.http(MyApp.baseIpAddress, MyApp.updatePasswordPath, {'q': '{http}'}),
+
         body: {
           'user_id': userId.toString(),
           'oldPassword': oldPasswordController.text,

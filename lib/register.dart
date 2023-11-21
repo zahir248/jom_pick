@@ -47,7 +47,9 @@ class _RegisterState extends State<Register> {
         toastLength: Toast.LENGTH_SHORT,
       );
     } else {
+
       var url = Uri.http(MyApp.baseIpAddress, MyApp.registerPath, {'q': '{http}'});
+
       var response = await http.post(url, body: {
         "username": user.text.toString(),
         "password": pass.text.toString(),

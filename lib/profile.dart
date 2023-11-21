@@ -131,10 +131,13 @@ class _ProfileState extends State<Profile> {
 
   Future<void> updateProfile() async {
     try {
+
       // Create a `http.MultipartRequest` to send a combination of text data and image
       var request = http.MultipartRequest(
         'POST',
+
         Uri.http(MyApp.baseIpAddress, MyApp.updateProfilePath, {'q': '{http}'}),
+
       );
 
       // Attach the image file if imagePath is not empty
