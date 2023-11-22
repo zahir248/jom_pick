@@ -50,7 +50,7 @@ class _MyHomePageState extends State<MyHomePage> {
       );
       return; // Exit the function to prevent further execution
     }
-    var url = Uri.http("10.200.90.242", '/login.php', {'q': '{http}'});
+    var url = Uri.http("10.200.69.41", '/login.php', {'q': '{http}'});
     var response = await http.post(url, body: {
       "username": user.text,
       "password": pass.text,
