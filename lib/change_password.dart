@@ -194,15 +194,13 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
               width: 300,
               child: ElevatedButton(
                 onPressed: checkAndSave,
-                style: ButtonStyle(
-                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                    RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10.0),
-                    ),
+                style: ElevatedButton.styleFrom(
+                  fixedSize: Size(340, 45),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(100),
                   ),
-                  backgroundColor: MaterialStateProperty.all(Colors.blue),
                 ),
-                child: Text('Update Password'),
+                child: Text('Update Password', style: TextStyle(fontSize: 16)),
               ),
             ),
           ],

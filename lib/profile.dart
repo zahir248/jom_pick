@@ -258,18 +258,19 @@ class _ProfileState extends State<Profile> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
-        child: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(top: 70.0), // Adjust the top padding value
-              child: Text(
-                'Profile',
-                style: TextStyle(
-                  fontSize: 30,
-                  fontWeight: FontWeight.bold,
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(top: 70.0), // Adjust the top padding value
+                child: Text(
+                  'Profile',
+                  style: TextStyle(
+                    fontSize: 30,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
-            ),
             SizedBox(height: 30), // Adjust the height as needed
             CircleAvatar(
               radius: 70, // Adjust the radius as needed
@@ -295,20 +296,19 @@ class _ProfileState extends State<Profile> {
                   onPressed: () {
                     updateProfile();
                   },
-                  style: ButtonStyle(
-                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                      RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10.0), // Adjust the value to control roundness
-                      ),
+                  style: ElevatedButton.styleFrom(
+                    fixedSize: Size(340, 45),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(100),
                     ),
-                    backgroundColor: MaterialStateProperty.all(Colors.blue), // Change the background color as needed
                   ),
                   child: Text('Update Profile',
-                    style: TextStyle(fontSize: 15), // Increase the font size here
+                    style: TextStyle(fontSize: 16), // Increase the font size here
                   ),
                 )
-            ),
-          ],
+              ),
+            ],
+          ),
         ),
       ),
 

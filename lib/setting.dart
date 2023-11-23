@@ -78,19 +78,17 @@ class _SettingState extends State<Setting> {
                     context,
                     MaterialPageRoute(builder: (context) => ChangePasswordPage()),
                   );                },
-                style: ButtonStyle(
-                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                    RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(9.0), // Adjust the value to control roundness
-                    ),
+                style: ElevatedButton.styleFrom(
+                  fixedSize: Size(340, 45),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(100),
                   ),
-                  backgroundColor: MaterialStateProperty.all(Colors.blue), // Change the background color as needed
                 ),
                 child: Padding(
                   padding: EdgeInsets.all(10.0), // Adjust the padding as needed
                   child: Text(
                     'Change Password',
-                    style: TextStyle(fontSize: 15), // Increase the font size here
+                    style: TextStyle(fontSize: 16), // Increase the font size here
                   ),
                 ),
               ),
@@ -105,19 +103,17 @@ class _SettingState extends State<Setting> {
                     context,
                     MaterialPageRoute(builder: (context) => UserManual()),
                   );},
-                style: ButtonStyle(
-                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                    RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(9.0), // Adjust the value to control roundness
-                    ),
+                style: ElevatedButton.styleFrom(
+                  fixedSize: Size(340, 45),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(100),
                   ),
-                  backgroundColor: MaterialStateProperty.all(Colors.blue), // Change the background color as needed
                 ),
                 child: Padding(
                   padding: EdgeInsets.all(10.0), // Adjust the padding as needed
                   child: Text(
                     'User Manual',
-                    style: TextStyle(fontSize: 15), // Increase the font size here
+                    style: TextStyle(fontSize: 16), // Increase the font size here
                   ),
                 ),
               ),
@@ -132,7 +128,7 @@ class _SettingState extends State<Setting> {
                 style: ButtonStyle(
                   shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                     RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(9.0), // Adjust the value to control roundness
+                      borderRadius: BorderRadius.circular(100), // Adjust the value to control roundness
                     ),
                   ),
                   backgroundColor: MaterialStateProperty.all(Colors.white),
@@ -142,7 +138,7 @@ class _SettingState extends State<Setting> {
                   padding: EdgeInsets.all(10.0), // Adjust the padding as needed
                   child: Text(
                     'Logout',
-                    style: TextStyle(fontSize: 15, color: Colors.red), // Increase the font size here
+                    style: TextStyle(fontSize: 16, color: Colors.red), // Increase the font size here
                   ),
                 ),
               ),

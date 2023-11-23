@@ -289,9 +289,12 @@ class _RegisterState extends State<Register> {
                   register();
                 },
                 style: ElevatedButton.styleFrom(
-                  fixedSize: Size(300, 50), // Adjust the width and height as needed
+                  fixedSize: Size(340, 45),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(100),
+                  ),
                 ),
-                child: Text('Register', style: TextStyle(fontSize: 18)),
+                child: Text('Register', style: TextStyle(fontSize: 16)),
               ),
               const SizedBox(height: 50),
             ],

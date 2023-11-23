@@ -205,9 +205,12 @@ class _MyHomePageState extends State<MyHomePage> {
                   login();
                 },
                 style: ElevatedButton.styleFrom(
-                  fixedSize: Size(300, 50), // Adjust the width and height as needed
+                  fixedSize: Size(340, 45),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(100),
+                  ),
                 ),
-                child: Text('Login', style: TextStyle(fontSize: 18)), // Adjust the font size as needed
+                child: Text('Login', style: TextStyle(fontSize: 16)), // Adjust the font size as needed
               ),
               TextButton(
                 onPressed: () {
@@ -219,6 +222,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 child: Text(
                   'Forgot password',
                   style: TextStyle(
+                    fontSize: 16, // You can adjust the font size as needed
                     decoration: TextDecoration.underline, // Add underline to make it look like a link
                   ),
                 ),
