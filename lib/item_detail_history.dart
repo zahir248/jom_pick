@@ -103,30 +103,6 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
     );
   }
 
-  BottomNavigationBarItem buildBottomNavBarItem(String label) {
-    return BottomNavigationBarItem(
-      icon: Container(
-        width: 170,
-        height: 45,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(10),
-          color: Colors.blue,
-        ),
-        child: Center(
-          child: Text(
-            label,
-            style: TextStyle(
-              color: Colors.white,
-              fontWeight: FontWeight.bold,
-              fontSize: 14, // Adjust the font size here
-            ),
-          ),
-        ),
-      ),
-      label: '', // Empty label to hide default label
-    );
-  }
-
   Widget buildDetailItem(String label, dynamic value) {
     String formattedValue = value is DateTime
         ? DateFormat('yyyy-MM-dd').format(value)
