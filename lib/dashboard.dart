@@ -83,6 +83,7 @@ class _DashBoardState extends State<DashBoard> {
                     mainAxisSize: MainAxisSize.min,
                     children: <Widget>[
                       ListTile(
+                        contentPadding: EdgeInsets.all(0), // Remove default ListTile padding
                         leading: Container(
                           width: 90,
                           height: 90,
@@ -95,7 +96,7 @@ class _DashBoardState extends State<DashBoard> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              filteredItemData[index].itemName, // Use filteredItemData instead of itemData
+                              filteredItemData[index].itemName,
                               style: TextStyle(
                                 fontSize: 18,
                                 fontWeight: FontWeight.bold,
@@ -110,6 +111,37 @@ class _DashBoardState extends State<DashBoard> {
                             fontSize: 14,
                           ),
                         ),
+                        trailing: Container(
+                          width: 105,
+                          height: 25,
+                          decoration: BoxDecoration(
+                            color: filteredItemData[index].status == 'Picked'
+                                ? Colors.green
+                                : Colors.red,
+                          ),
+                          alignment: Alignment.center,
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(
+                                filteredItemData[index].status == 'Picked'
+                                    ? Icons.check_circle
+                                    : Icons.error,
+                                color: Colors.white,
+                                size: 16,
+                              ),
+                              SizedBox(width: 4),
+                              Text(
+                                filteredItemData[index].status ?? '', // Use the confirmation status here
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 12,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+
                       ),
                       Divider(
                         height: 20.0,
