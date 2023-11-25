@@ -38,7 +38,7 @@ class _HistoryState extends State<History> {
     userId = prefs.getInt('user_id');
 
     if (userId != null) {
-      final response = await http.get(Uri.parse('http://10.200.69.41/itemHistory.php?user_id=$userId'));
+      final response = await http.get(Uri.parse('http://192.168.0.113/itemHistory.php?user_id=$userId'));
 
       print('Raw JSON response: ${response.body}');
 
@@ -48,8 +48,8 @@ class _HistoryState extends State<History> {
 
         setState(() {
           itemData = (jsonData as List).map((item) => Item.fromJson(item)).toList();
+          itemData.sort((a, b) => b.registerDate!.compareTo(a.registerDate!)); // Reverse order based on registerDate
           filteredItemData = List.from(itemData); // Initialize filteredItemData
-
         });
       } else {
         throw Exception('Failed to load user data. Status code: ${response.statusCode}');
@@ -82,6 +82,7 @@ class _HistoryState extends State<History> {
                     mainAxisSize: MainAxisSize.min,
                     children: <Widget>[
                       ListTile(
+                        contentPadding: EdgeInsets.all(0), // Remove default ListTile padding
                         leading: Container(
                           width: 90,
                           height: 90,
@@ -107,6 +108,36 @@ class _HistoryState extends State<History> {
                           filteredItemData[index].location,
                           style: TextStyle(
                             fontSize: 14,
+                          ),
+                        ),
+                        trailing: Container(
+                          width: 90,
+                          height: 25,
+                          decoration: BoxDecoration(
+                            color: filteredItemData[index].status == 'Picked'
+                                ? Colors.green
+                                : Colors.red,
+                          ),
+                          alignment: Alignment.center,
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(
+                                filteredItemData[index].status == 'Picked'
+                                    ? Icons.check_circle
+                                    : Icons.error,
+                                color: Colors.white,
+                                size: 16,
+                              ),
+                              SizedBox(width: 4),
+                              Text(
+                                filteredItemData[index].status ?? '', // Use the confirmation status here
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 12,
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                       ),

@@ -39,7 +39,7 @@ class _DashBoardState extends State<DashBoard> {
     userId = prefs.getInt('user_id');
 
     if (userId != null) {
-      final response = await http.get(Uri.parse('http://10.200.69.41/item.php?user_id=$userId'));
+      final response = await http.get(Uri.parse('http://192.168.0.113/item.php?user_id=$userId'));
 
       print('Raw JSON response: ${response.body}');
 
@@ -49,8 +49,8 @@ class _DashBoardState extends State<DashBoard> {
 
         setState(() {
           itemData = (jsonData as List).map((item) => Item.fromJson(item)).toList();
+          itemData.sort((a, b) => b.registerDate!.compareTo(a.registerDate!)); // Reverse order based on registerDate
           filteredItemData = List.from(itemData); // Initialize filteredItemData
-
         });
       } else {
         throw Exception('Failed to load user data. Status code: ${response.statusCode}');
@@ -112,27 +112,23 @@ class _DashBoardState extends State<DashBoard> {
                           ),
                         ),
                         trailing: Container(
-                          width: 105,
+                          width: 90,
                           height: 25,
                           decoration: BoxDecoration(
-                            color: filteredItemData[index].status == 'Picked'
-                                ? Colors.green
-                                : Colors.red,
+                            color: Colors.red,
                           ),
                           alignment: Alignment.center,
                           child: Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               Icon(
-                                filteredItemData[index].status == 'Picked'
-                                    ? Icons.check_circle
-                                    : Icons.error,
+                                Icons.error,
                                 color: Colors.white,
                                 size: 16,
                               ),
                               SizedBox(width: 4),
                               Text(
-                                filteredItemData[index].status ?? '', // Use the confirmation status here
+                                'Pending',
                                 style: TextStyle(
                                   color: Colors.white,
                                   fontSize: 12,
@@ -141,7 +137,6 @@ class _DashBoardState extends State<DashBoard> {
                             ],
                           ),
                         ),
-
                       ),
                       Divider(
                         height: 20.0,

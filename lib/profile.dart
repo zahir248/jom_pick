@@ -121,7 +121,7 @@ class _ProfileState extends State<Profile> {
     try {
       // Assuming you have an API endpoint for updating the user profile
       final response = await http.post(
-        Uri.http('10.200.69.41', '/update.php', {'q': '{http}'}),
+        Uri.http('192.168.0.113', '/update.php', {'q': '{http}'}),
         body: {
           'user_id': userId.toString(),
           'fullName': fullName,
