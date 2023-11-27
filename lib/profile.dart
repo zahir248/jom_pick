@@ -6,6 +6,8 @@ import 'penalty.dart';
 import 'history.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'dart:io';  // Import this for File
+import 'package:image_picker/image_picker.dart';
 
 class Profile extends StatefulWidget {
   const Profile({Key? key}) : super(key: key);
@@ -22,6 +24,7 @@ class _ProfileState extends State<Profile> {
   String phoneNumber = ''; // Variable to store the phone number
   String emailAddress = ''; // Variable to store the email address
   String username = ''; // Variable to store the email address
+  String imagePath = ''; // Variable to store the image path
 
   @override
   void initState() {
@@ -37,6 +40,7 @@ class _ProfileState extends State<Profile> {
     String? storedPhoneNumber = prefs.getString('phoneNumber');
     String? storedEmailAddress = prefs.getString('emailAddress');
     String? storedUsername = prefs.getString('username');
+    String? storedImagePath = prefs.getString('imagePath');
 
     if (storedIcNumber != null) {
       setState(() {
@@ -63,11 +67,18 @@ class _ProfileState extends State<Profile> {
         username = storedUsername;
       });
     }
+    if (storedImagePath != null) {
+      setState(() {
+        imagePath = storedImagePath;
+      });
+    }
   }
 
   Future<void> _showEditDialog(String label, String currentValue) async {
-    TextEditingController controller = TextEditingController(text: currentValue);
-    TextInputType keyboardType = TextInputType.text; // Default to a text keyboard
+    TextEditingController controller = TextEditingController(
+        text: currentValue);
+    TextInputType keyboardType = TextInputType
+        .text; // Default to a text keyboard
 
     // Set the keyboardType based on the label
     if (label == 'Phone Number' || label == 'IC Number') {
@@ -119,22 +130,34 @@ class _ProfileState extends State<Profile> {
 
   Future<void> updateProfile() async {
     try {
-      // Assuming you have an API endpoint for updating the user profile
-      final response = await http.post(
+      // Create a `http.MultipartRequest` to send a combination of text data and image
+      var request = http.MultipartRequest(
+        'POST',
         Uri.http('192.168.0.113', '/update.php', {'q': '{http}'}),
-        body: {
-          'user_id': userId.toString(),
-          'fullName': fullName,
-          'phoneNumber': phoneNumber,
-          'icNumber': icNumber,
-          'emailAddress': emailAddress,
-        },
       );
+
+      // Attach the image file if imagePath is not empty
+      if (imagePath.isNotEmpty) {
+        request.files.add(
+          await http.MultipartFile.fromPath('profile_image', imagePath),
+        );
+      }
+
+      // Attach other data to the request
+      request.fields['user_id'] = userId.toString();
+      request.fields['fullName'] = fullName;
+      request.fields['phoneNumber'] = phoneNumber;
+      request.fields['icNumber'] = icNumber;
+      request.fields['emailAddress'] = emailAddress;
+
+      // Send the request
+      var response = await request.send();
 
       if (response.statusCode == 200) {
         // Successfully updated the profile
         // Parse the JSON response
-        final Map<String, dynamic> responseData = json.decode(response.body);
+        final Map<String, dynamic> responseData =
+        json.decode(await response.stream.bytesToString());
 
         if (responseData['success']) {
           // Update was successful, show the toast and update state
@@ -176,6 +199,7 @@ class _ProfileState extends State<Profile> {
     prefs.setString('fullName', fullName);
     prefs.setString('phoneNumber', phoneNumber);
     prefs.setString('emailAddress', emailAddress);
+    prefs.setString('imagePath', imagePath); // Update imagePath in SharedPreferences
   }
 
   void _onItemTapped(int index) {
@@ -214,16 +238,70 @@ class _ProfileState extends State<Profile> {
     }
   }
 
+  Future<void> _pickImage() async {
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        return Container(
+          child: Wrap(
+            children: <Widget>[
+              ListTile(
+                leading: Icon(Icons.photo_library),
+                title: Text('Choose from Gallery'),
+                onTap: () {
+                  Navigator.pop(context);
+                  _getImage(ImageSource.gallery);
+                },
+              ),
+              ListTile(
+                leading: Icon(Icons.camera_alt),
+                title: Text('Take a Photo'),
+                onTap: () {
+                  Navigator.pop(context);
+                  _getImage(ImageSource.camera);
+                },
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> _getImage(ImageSource source) async {
+    final ImagePicker _picker = ImagePicker();
+    try {
+      final XFile? image = await _picker.pickImage(
+        source: source,
+        imageQuality: 50, // Adjust the quality (0 to 100)
+      );
+
+      if (image != null) {
+        setState(() {
+          imagePath = image.path;
+        });
+      }
+    } catch (e) {
+      print('Error picking image: $e');
+    }
+    // Force widget to rebuild
+    setState(() {});
+  }
+
+
+
   Widget buildProfileField(String label, String value) {
     return Align(
       alignment: Alignment.centerLeft,
       child: Container(
-        padding: EdgeInsets.only(left: 20, right: 20), // Add left and right padding
+        padding: EdgeInsets.only(left: 20, right: 20),
+        // Add left and right padding
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween, // Align items at the start and end
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              // Align items at the start and end
               children: [
                 Text(
                   label,
@@ -262,7 +340,7 @@ class _ProfileState extends State<Profile> {
           child: Column(
             children: [
               Padding(
-                padding: const EdgeInsets.only(top: 70.0), // Adjust the top padding value
+                padding: const EdgeInsets.only(top: 70.0),
                 child: Text(
                   'Profile',
                   style: TextStyle(
@@ -271,28 +349,37 @@ class _ProfileState extends State<Profile> {
                   ),
                 ),
               ),
-            SizedBox(height: 30), // Adjust the height as needed
-            CircleAvatar(
-              radius: 70, // Adjust the radius as needed
-              backgroundColor: Colors.blueGrey, // Set the background color to blue
-            ),
-            SizedBox(height: 15), // Adjust the height as needed
-            Text(
-              username, // Replace with the actual username variable
-              style: TextStyle(
-                fontSize: 25,
-                fontWeight: FontWeight.bold,
+              SizedBox(height: 30),
+              GestureDetector(
+                key: UniqueKey(),  // Add this line
+                onTap: () {
+                  _pickImage();
+                },
+                child: CircleAvatar(
+                  key: UniqueKey(),  // Add this line
+                  radius: 70,
+                  backgroundImage: imagePath.isNotEmpty && File(imagePath).lengthSync() > 0
+                      ? FileImage(File(imagePath)) as ImageProvider<Object>?
+                      : AssetImage('assets/default.jpg') as ImageProvider<Object>?,
+                ),
               ),
-            ),
-            SizedBox(height: 30), // Add space between the second and third buttons
-            buildProfileField('Full Name', fullName),
-            buildProfileField('Phone Number', phoneNumber),
-            buildProfileField('IC Number', icNumber),
-            buildProfileField('Email Address', emailAddress),
-            SizedBox(height: 20), // Add space between the second and third buttons
-            Container(
-                width: 300, // Set a fixed width for all the buttons, you can adjust this value
-                child:ElevatedButton(
+              SizedBox(height: 15),
+              Text(
+                username,
+                style: TextStyle(
+                  fontSize: 25,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              SizedBox(height: 30),
+              buildProfileField('Full Name', fullName),
+              buildProfileField('Phone Number', phoneNumber),
+              buildProfileField('IC Number', icNumber),
+              buildProfileField('Email Address', emailAddress),
+              SizedBox(height: 20),
+              Container(
+                width: 300,
+                child: ElevatedButton(
                   onPressed: () {
                     updateProfile();
                   },
@@ -302,16 +389,16 @@ class _ProfileState extends State<Profile> {
                       borderRadius: BorderRadius.circular(100),
                     ),
                   ),
-                  child: Text('Update Profile',
-                    style: TextStyle(fontSize: 16), // Increase the font size here
+                  child: Text(
+                    'Update Profile',
+                    style: TextStyle(fontSize: 16),
                   ),
-                )
+                ),
               ),
             ],
           ),
         ),
       ),
-
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
         items: const <BottomNavigationBarItem>[
@@ -338,8 +425,3 @@ class _ProfileState extends State<Profile> {
     );
   }
 }
-
-
-
-
-

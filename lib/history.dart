@@ -43,14 +43,31 @@ class _HistoryState extends State<History> {
       print('Raw JSON response: ${response.body}');
 
       if (response.statusCode == 200) {
+        final String responseBody = response.body.trim(); // Remove leading/trailing whitespaces
 
-        final List<dynamic> jsonData = json.decode(response.body);
+        if (responseBody.isNotEmpty) {
+          if (responseBody != '0 results') {
+            final List<dynamic> jsonData = json.decode(responseBody);
 
-        setState(() {
-          itemData = (jsonData as List).map((item) => Item.fromJson(item)).toList();
-          itemData.sort((a, b) => b.registerDate!.compareTo(a.registerDate!)); // Reverse order based on registerDate
-          filteredItemData = List.from(itemData); // Initialize filteredItemData
-        });
+            setState(() {
+              itemData = (jsonData as List).map((item) => Item.fromJson(item)).toList();
+              itemData.sort((a, b) => b.registerDate!.compareTo(a.registerDate!)); // Reverse order based on registerDate
+              filteredItemData = List.from(itemData); // Initialize filteredItemData
+            });
+          } else {
+            print('Server responded with "0 results". User has no item data.');
+            setState(() {
+              itemData = []; // Clear the itemData list
+              filteredItemData = []; // Clear the filteredItemData list
+            });
+          }
+        } else {
+          print('Empty response body');
+          setState(() {
+            itemData = []; // Clear the itemData list
+            filteredItemData = []; // Clear the filteredItemData list
+          });
+        }
       } else {
         throw Exception('Failed to load user data. Status code: ${response.statusCode}');
       }
@@ -88,7 +105,10 @@ class _HistoryState extends State<History> {
                           height: 90,
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
-                            color: Colors.blueGrey,
+                            image: DecorationImage(
+                              fit: BoxFit.cover,
+                              image: AssetImage('assets/jompick.jpg'), // adjust the path accordingly
+                            ),
                           ),
                         ),
                         title: Column(

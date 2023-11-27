@@ -44,14 +44,22 @@ class _DashBoardState extends State<DashBoard> {
       print('Raw JSON response: ${response.body}');
 
       if (response.statusCode == 200) {
+        try {
+          // Attempt to decode the response body as JSON
+          final List<dynamic> jsonData = json.decode(response.body);
 
-        final List<dynamic> jsonData = json.decode(response.body);
-
-        setState(() {
-          itemData = (jsonData as List).map((item) => Item.fromJson(item)).toList();
-          itemData.sort((a, b) => b.registerDate!.compareTo(a.registerDate!)); // Reverse order based on registerDate
-          filteredItemData = List.from(itemData); // Initialize filteredItemData
-        });
+          setState(() {
+            itemData = (jsonData as List).map((item) => Item.fromJson(item)).toList();
+            itemData.sort((a, b) => b.registerDate!.compareTo(a.registerDate!)); // Reverse order based on registerDate
+            filteredItemData = List.from(itemData); // Initialize filteredItemData
+          });
+        } catch (e) {
+          print('Server responded with "0 results". User has no item data.');
+          setState(() {
+            itemData = []; // Set itemData to an empty list
+            filteredItemData = []; // Set filteredItemData to an empty list
+          });
+        }
       } else {
         throw Exception('Failed to load user data. Status code: ${response.statusCode}');
       }
@@ -59,6 +67,7 @@ class _DashBoardState extends State<DashBoard> {
       print('User ID not found in SharedPreferences');
     }
   }
+
 
   Widget _buildListView() {
     return Expanded(
@@ -89,7 +98,10 @@ class _DashBoardState extends State<DashBoard> {
                           height: 90,
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
-                            color: Colors.blueGrey,
+                            image: DecorationImage(
+                              fit: BoxFit.cover,
+                              image: AssetImage('assets/jompick.jpg'), // adjust the path accordingly
+                            ),
                           ),
                         ),
                         title: Column(

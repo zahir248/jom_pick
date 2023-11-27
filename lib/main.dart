@@ -8,6 +8,8 @@ import 'package:flutter/gestures.dart'; // Add this import
 import 'splashscreen.dart'; // Import your splash screen
 import 'package:shared_preferences/shared_preferences.dart';
 import 'forgot_password.dart';
+import 'package:path_provider/path_provider.dart';  // Import this for getTemporaryDirectory()
+import 'dart:io';  // Import this for File
 
 void main() {
   runApp(const MyApp());
@@ -50,70 +52,102 @@ class _MyHomePageState extends State<MyHomePage> {
       );
       return; // Exit the function to prevent further execution
     }
+
     var url = Uri.http("192.168.0.113", '/login.php', {'q': '{http}'});
     var response = await http.post(url, body: {
       "username": user.text,
       "password": pass.text,
     });
-    var data = json.decode(response.body);
 
-    if (data["status"] == "Success") {
-      Fluttertoast.showToast(
-        msg: 'Login Successful',
-        backgroundColor: Colors.green,
-        textColor: Colors.white,
-        toastLength: Toast.LENGTH_SHORT,
-      );
+    if (response.statusCode == 200) {
+      // Check if the response body is not empty
+      if (response.body.isNotEmpty) {
+        var data = json.decode(response.body);
 
-      // Save user session data to SharedPreferences
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      prefs.setString('username', user.text);
-
-      if (data.containsKey('user_id')) {
-        int? userId = int.tryParse(data['user_id']);
-        if (userId != null) {
-          prefs.setInt('user_id', userId);
-
-          if (data.containsKey('icNumber')) {
-            String icNumber = data['icNumber'];
-            prefs.setString('icNumber', icNumber);
-          }
-
-          if (data.containsKey('fullName')) {
-            String fullName = data['fullName'];
-            prefs.setString('fullName', fullName);
-          }
-
-          if (data.containsKey('phoneNumber')) {
-            String phoneNumber = data['phoneNumber'];
-            prefs.setString('phoneNumber', phoneNumber);
-          }
-
-          if (data.containsKey('emailAddress')) {
-            String emailAddress = data['emailAddress'];
-            prefs.setString('emailAddress', emailAddress);
-          }
-
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => DashBoard(),
-            ),
+        if (data["status"] == "Success") {
+          Fluttertoast.showToast(
+            msg: 'Login Successful',
+            backgroundColor: Colors.green,
+            textColor: Colors.white,
+            toastLength: Toast.LENGTH_SHORT,
           );
+
+          // Save user session data to SharedPreferences
+          SharedPreferences prefs = await SharedPreferences.getInstance();
+          prefs.setString('username', user.text);
+
+          if (data.containsKey('user_id')) {
+            int? userId = int.tryParse(data['user_id']);
+            if (userId != null) {
+              prefs.setInt('user_id', userId);
+
+              if (data.containsKey('image')) {
+                // Save the image locally and store its path in SharedPreferences
+                String imageBase64 = data['image'];
+                List<int> imageBytes = base64.decode(imageBase64);
+                String imagePath = await _saveImageLocally(imageBytes, userId!);
+                prefs.setString('imagePath', imagePath);
+              }
+
+              if (data.containsKey('icNumber')) {
+                String icNumber = data['icNumber'];
+                prefs.setString('icNumber', icNumber);
+              }
+
+              if (data.containsKey('fullName')) {
+                String fullName = data['fullName'];
+                prefs.setString('fullName', fullName);
+              }
+
+              if (data.containsKey('phoneNumber')) {
+                String phoneNumber = data['phoneNumber'];
+                prefs.setString('phoneNumber', phoneNumber);
+              }
+
+              if (data.containsKey('emailAddress')) {
+                String emailAddress = data['emailAddress'];
+                prefs.setString('emailAddress', emailAddress);
+              }
+
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => DashBoard(),
+                ),
+              );
+            } else {
+              print('Failed to parse user_id as int');
+            }
+          } else {
+            print('user_id not found in response');
+          }
         } else {
-          print('Failed to parse user_id as int');
+          Fluttertoast.showToast(
+            backgroundColor: Colors.red,
+            textColor: Colors.white,
+            msg: 'Invalid Username or Password',
+            toastLength: Toast.LENGTH_SHORT,
+          );
         }
       } else {
-        print('user_id not found in response');
+        print('Empty response body');
+        // Handle the case of an empty response body
       }
     } else {
-      Fluttertoast.showToast(
-        backgroundColor: Colors.red,
-        textColor: Colors.white,
-        msg: 'Invalid Username or Password',
-        toastLength: Toast.LENGTH_SHORT,
-      );
+      print('HTTP request failed with status: ${response.statusCode}');
+      // Handle the case of a failed HTTP request
     }
+  }
+
+  Future<String> _saveImageLocally(List<int> imageBytes, int userId) async {
+    // Save the image in the app's cache directory with a filename based on the user's ID
+    String cacheDirPath = (await getTemporaryDirectory()).path;
+    String imagePath = '$cacheDirPath/profile_image_$userId.png';
+
+    // Write the image bytes to the file
+    await File(imagePath).writeAsBytes(imageBytes);
+
+    return imagePath;
   }
 
   bool isPasswordVisible = false;
@@ -127,9 +161,9 @@ class _MyHomePageState extends State<MyHomePage> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Image.asset(
-                'assets/jompick.jpg', // Replace with your image path
-                width: 300, // Adjust the width as needed
-                height: 300, // Adjust the height as needed
+                'assets/jompick.jpg',
+                width: 300,
+                height: 300,
               ),
               const SizedBox(height: 20),
               Text(
@@ -175,20 +209,19 @@ class _MyHomePageState extends State<MyHomePage> {
                 text: TextSpan(
                   text: "Don't have an account? ",
                   style: TextStyle(
-                    fontSize: 16, // You can adjust the font size as needed
+                    fontSize: 16,
                     color: Colors.black,
                   ),
                   children: <TextSpan>[
                     TextSpan(
                       text: 'Sign Up',
                       style: TextStyle(
-                        fontSize: 16, // You can adjust the font size as needed
+                        fontSize: 16,
                         color: Colors.blue,
-                        decoration: TextDecoration.underline, // Add underline to make it look like a link
+                        decoration: TextDecoration.underline,
                       ),
                       recognizer: TapGestureRecognizer()
                         ..onTap = () {
-                          // Add your navigation logic here when "Sign Up" is tapped
                           Navigator.push(
                             context,
                             MaterialPageRoute(builder: (context) => const Register()),
@@ -197,7 +230,6 @@ class _MyHomePageState extends State<MyHomePage> {
                     ),
                   ],
                 ),
-
               ),
               const SizedBox(height: 10),
               ElevatedButton(
@@ -210,7 +242,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     borderRadius: BorderRadius.circular(100),
                   ),
                 ),
-                child: Text('Login', style: TextStyle(fontSize: 16)), // Adjust the font size as needed
+                child: Text('Login', style: TextStyle(fontSize: 16)),
               ),
               TextButton(
                 onPressed: () {
@@ -222,8 +254,8 @@ class _MyHomePageState extends State<MyHomePage> {
                 child: Text(
                   'Forgot password',
                   style: TextStyle(
-                    fontSize: 16, // You can adjust the font size as needed
-                    decoration: TextDecoration.underline, // Add underline to make it look like a link
+                    fontSize: 16,
+                    decoration: TextDecoration.underline,
                   ),
                 ),
               ),
@@ -235,3 +267,4 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 }
+

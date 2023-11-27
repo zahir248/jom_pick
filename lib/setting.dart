@@ -5,6 +5,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'change_password.dart';
 import 'dashboard.dart';
 import 'user_manual.dart';
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 
 class Setting extends StatefulWidget {
   const Setting({Key? key}) : super(key: key);
@@ -24,6 +25,10 @@ class _SettingState extends State<Setting> {
     prefs.remove('phoneNumber');
     prefs.remove('emailAddress');
     prefs.remove('user_id');
+    prefs.remove('imagePath');
+
+    // Clear the cache
+    DefaultCacheManager().emptyCache();
 
     // Show a toast message to indicate successful logout
     Fluttertoast.showToast(
