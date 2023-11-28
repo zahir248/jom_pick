@@ -75,7 +75,6 @@ class _SettingState extends State<Setting> {
             ),
             SizedBox(height: 20), // Add space between the title and the first button
             Container(
-              width: 300, // Set a fixed width for all the buttons, you can adjust this value
               child: ElevatedButton(
                 onPressed: () {
                   // Navigate to Change Password Page
@@ -100,7 +99,6 @@ class _SettingState extends State<Setting> {
             ),
             SizedBox(height: 5), // Add space between the second and third buttons
             Container(
-              width: 300, // Set the same fixed width for all buttons
               child: ElevatedButton(
                 onPressed: () {
                 // Navigate to User Manual Page
@@ -125,7 +123,7 @@ class _SettingState extends State<Setting> {
             ),
             SizedBox(height: 20), // Add space between the third and fourth buttons
             Container(
-              width: 300, // Set the same fixed width for all buttons
+              width: 340, // Set the same fixed width for all buttons
               child: ElevatedButton(
                 onPressed: () {
                   handleLogout(); // Logout when the button is pressed

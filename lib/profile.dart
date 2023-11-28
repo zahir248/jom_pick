@@ -378,7 +378,6 @@ class _ProfileState extends State<Profile> {
               buildProfileField('Email Address', emailAddress),
               SizedBox(height: 20),
               Container(
-                width: 300,
                 child: ElevatedButton(
                   onPressed: () {
                     updateProfile();

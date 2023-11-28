@@ -191,7 +191,6 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
               ),
             ),
             Container(
-              width: 300,
               child: ElevatedButton(
                 onPressed: checkAndSave,
                 style: ElevatedButton.styleFrom(
