@@ -11,6 +11,7 @@ class Item {
   final Uint8List imageData; // Use Uint8List for binary image data
   final String status;
   final DateTime confirmationDate;
+  final String penaltyStatus;
 
   Item({
     required this.itemId,
@@ -22,6 +23,7 @@ class Item {
     required this.imageData,
     required this.status,
     required this.confirmationDate,
+    required this.penaltyStatus,
   });
 
   factory Item.fromJson(Map<String, dynamic> json) {
@@ -37,6 +39,7 @@ class Item {
       imageData: decodedImageData,
       status: json['status'] ?? '',
       confirmationDate: DateTime.parse(json['confirmationDate'] ?? ''),
+      penaltyStatus: json['penaltyStatus'] ?? '',
     );
   }
 }
