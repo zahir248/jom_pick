@@ -10,9 +10,11 @@ class Item {
   final String itemType;
   final String address;
   final Uint8List imageData; // Use Uint8List for binary image data
+  final Uint8List imageData; // Use Uint8List for binary image data
   final String status;
   final DateTime confirmationDate;
   final String penaltyStatus;
+  final String paymentStatus;
 
   Item({
     required this.itemId,
@@ -26,6 +28,7 @@ class Item {
     required this.status,
     required this.confirmationDate,
     required this.penaltyStatus,
+    required this.paymentStatus,
   });
 
   factory Item.fromJson(Map<String, dynamic> json) {
@@ -43,6 +46,7 @@ class Item {
       status: json['status'] ?? '',
       confirmationDate: DateTime.parse(json['confirmationDate'] ?? ''),
       penaltyStatus: json['penaltyStatus'] ?? '',
+      paymentStatus: json['paymentStatus'] ?? '',
     );
   }
 }

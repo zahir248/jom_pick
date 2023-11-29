@@ -9,6 +9,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:intl/intl.dart'; // Import the intl package
 import 'item_detail.dart';
+import 'notification.dart';
 import 'dart:typed_data';
 import 'main.dart';
 
@@ -198,7 +199,7 @@ class _DashBoardState extends State<DashBoard> {
                                 filteredItemData[index].itemName,
                                 filteredItemData[index].trackingNumber,
                                 filteredItemData[index].itemType,
-                                filteredItemData[index].imageData,
+                                //filteredItemData[index].imageData,
                                 filteredItemData[index].status,
                                 filteredItemData[index].confirmationDate,
                                 filteredItemData[index].address,
@@ -250,6 +251,7 @@ class _DashBoardState extends State<DashBoard> {
     Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Setting()));
   }
 
+
   void _onItemTapped(int index) {
     if (index == 3) {
       // If the "Profile" button is tapped (index 2), navigate to the profile page
@@ -263,7 +265,7 @@ class _DashBoardState extends State<DashBoard> {
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => Penalty(),
+          builder: (context) => userNotification(),
         ),
       );
     } else if (index == 1) {
@@ -285,6 +287,8 @@ class _DashBoardState extends State<DashBoard> {
       });
     }
   }
+
+
 
   // Update the filterItems method to filter itemData only when the search bar has a value
   void filterItems(String query) {

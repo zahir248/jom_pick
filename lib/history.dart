@@ -26,14 +26,13 @@ class History extends StatefulWidget {
 }
 
 class _HistoryState extends State<History> {
-  int _selectedIndex = 1; // Index of the selected tab
+  int _selectedIndex = 0; // Index of the selected tab
   int? userId;
 
   List<Item> itemData = []; // List to store fetched data
   List<Item> filteredItemData = []; // List to store filtered data
 
   TextEditingController searchController = TextEditingController();
-  List<Item> itemData = [];
 
   @override
   void initState() {
@@ -42,10 +41,6 @@ class _HistoryState extends State<History> {
   }
 
   // Fetch user data based on the user ID stored in SharedPreferences
-    fetchItemData();
-  }
-
-
   Future<void> fetchItemData() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     userId = prefs.getInt('user_id');
@@ -98,7 +93,6 @@ class _HistoryState extends State<History> {
   Widget _buildListView() {
     return Expanded(
       child: filteredItemData.isEmpty
-      child: itemData.isEmpty
           ? Center(
         child: Text(
           'No data available',
@@ -109,7 +103,6 @@ class _HistoryState extends State<History> {
         child: Scrollbar(
           child: ListView.builder(
             itemCount: filteredItemData.length,
-            itemCount: itemData.length,
             itemBuilder: (context, index) {
               return Card(
                 margin: EdgeInsets.all(8.0),
@@ -143,13 +136,23 @@ class _HistoryState extends State<History> {
                                 fontSize: 18,
                                 fontWeight: FontWeight.bold,
                               ),
+                            Row(
+                              children: [
+                                Text(
+                                  filteredItemData[index].itemName, // Use filteredItemData instead of itemData
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                SizedBox(width: 8), // Adjust the spacing between item name and status
+                              ],
                             ),
                             SizedBox(height: 10),
                           ],
                         ),
                         subtitle: Text(
                           filteredItemData[index].location,
-                          itemData[index].location,
                           style: TextStyle(
                             fontSize: 14,
                           ),
@@ -185,6 +188,34 @@ class _HistoryState extends State<History> {
                           ),
                         ),
                       ),
+                  trailing: Container(
+                    width: 90,
+                    height: 25,
+                    decoration: BoxDecoration(
+                      color: getStatusColor(filteredItemData[index].status),
+                    ),
+                    alignment: Alignment.center,
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(
+                          Icons.error,
+                          color: Colors.white,
+                          size: 16,
+                        ),
+                        SizedBox(width: 4),
+                        Text(
+                          filteredItemData[index].status,
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 12,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+
                       Divider(
                         height: 20.0,
                         thickness: 1.0,
@@ -235,6 +266,10 @@ class _HistoryState extends State<History> {
                                 filteredItemData[index].confirmationDate,
                               );
                               _detailsItem(itemData[index].itemId,itemData[index].itemName, itemData[index].trackingNumber);
+                                //filteredItemData[index].imageData,
+                                filteredItemData[index].status,
+                                filteredItemData[index].confirmationDate,
+                              );
                             },
                             style: ElevatedButton.styleFrom(
                               fixedSize: Size(340, 45),
@@ -259,6 +294,7 @@ class _HistoryState extends State<History> {
 
   void _detailsItem(int itemId, String itemName, String trackingNumber, String itemType, Uint8List imageData, String status, DateTime confirmationDate) {
   void _detailsItem(int itemId, String itemName, String trackingNumber) {
+  void _detailsItem(int itemId, String itemName, String trackingNumber, String itemType, /*Uint8List imageData,*/ String status, DateTime confirmationDate) {
     // Navigate to the item detail page and pass the item_id
     Navigator.push(
       context,
@@ -273,6 +309,8 @@ class _HistoryState extends State<History> {
           confirmationDate: confirmationDate,
         ),
         builder: (context) => ItemDetailPage(itemId: itemId,itemName: itemName, trackingNumber : trackingNumber),
+          //imageData: imageData,
+        ),
       ),
     );
   }
@@ -328,6 +366,16 @@ class _HistoryState extends State<History> {
     }
   }
 
+  MaterialColor getStatusColor(String status){
+    if(status == 'Picked'){
+      return Colors.green;
+    }else if(status == 'Disposed'){
+      return Colors.red;
+    }else{
+      return Colors.grey;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -355,6 +403,7 @@ class _HistoryState extends State<History> {
             child: TextField(
               controller: searchController,
               onChanged: filterItems,
+
 
               decoration: InputDecoration(
                 hintText: 'Search',
@@ -398,7 +447,6 @@ class _HistoryState extends State<History> {
     );
   }
 }
-
 
 
 

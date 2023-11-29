@@ -5,6 +5,9 @@ import 'package:http/http.dart' as http;
 import 'package:fluttertoast/fluttertoast.dart';
 import 'pickup_detail.dart';
 import 'main.dart';
+import 'pickup_confirmation.dart';
+import '../models/confirmation_model.dart';
+
 
 class ItemDetailPage extends StatefulWidget {
   final int itemId;
@@ -12,7 +15,7 @@ class ItemDetailPage extends StatefulWidget {
   final String trackingNumber;
   final String itemType;
   final String status;
-  final Uint8List imageData;
+  //final Uint8List imageData;
   final DateTime confirmationDate;
   final String address;
 
@@ -21,7 +24,7 @@ class ItemDetailPage extends StatefulWidget {
     required this.itemName,
     required this.trackingNumber,
     required this.itemType,
-    required this.imageData,
+    //required this.imageData,
     required this.status,
     required this.confirmationDate,
     required this.address,
@@ -33,7 +36,14 @@ class ItemDetailPage extends StatefulWidget {
 
 class _ItemDetailPageState extends State<ItemDetailPage> {
   int _currentIndex = 0; // Index for BottomNavigationBar
+
   bool hasExtendedPickupDate = false; // Flag to track whether pick-up date has been extended
+
+  int? userId;
+  int? itemId;
+
+  List<Confirmation> confirmationData= [];  // List to store fetch confirmation data
+  List<Confirmation> filteredConfirmationData = [];
 
   @override
   Widget build(BuildContext context) {
@@ -88,10 +98,10 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
                       child: Container(
                         width: 350,
                         height: 200,
-                        child: Image.memory(
-                          widget.imageData,
-                          fit: BoxFit.cover,
-                        ),
+                        // child: Image.memory(
+                        //   widget.imageData,
+                        //   fit: BoxFit.cover,
+                        // ),
                       ),
                     ),
                   ),
@@ -103,6 +113,73 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
                       DateFormat('d MMMM yyyy')
                           .format(widget.confirmationDate)),
                   SizedBox(height: 50),
+                  Container(
+                    height: 95,
+                    padding: EdgeInsets.all(16),
+                    child: Align(
+                      alignment: Alignment.bottomCenter,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          ElevatedButton(onPressed: (){
+
+                          },
+                              style: ElevatedButton.styleFrom(
+                                fixedSize: Size(200, 50),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(100),
+                                ),
+                                elevation: 9,
+                                padding: EdgeInsets.symmetric(
+                                    vertical: 10, horizontal: 30),
+                              ),
+                              child: Text('Extend',
+                                style: TextStyle(
+                                    fontSize: 16, fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                          ),
+                          SizedBox(width: 40),
+                          Column(
+                            children: <Widget>[
+                              //ListView.builder(
+                                // itemCount: filteredConfirmationData.length,
+                                // itemBuilder: (BuildContext context, int index){
+                                  //Confirmation item = filteredConfirmationData[index];
+                                  ElevatedButton(
+                                    onPressed: (){
+                                      _pickupConfirmation( context
+                                        // filteredConfirmationData[index].confirmationId,
+                                        // filteredConfirmationData[index].status,
+                                        // filteredConfirmationData[index].confirmationDate as Duration,
+                                        // filteredConfirmationData[index].currentLocation,
+                                        // filteredConfirmationData[index].pickUpDuration as DateTime,
+                                        // filteredConfirmationData[index].pickUpLocation,
+                                        // context,
+                                      );
+                                    },
+                                    style: ElevatedButton.styleFrom(
+                                      fixedSize: Size(200, 50),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(100),
+                                      ),
+                                      elevation: 9,
+                                      padding: EdgeInsets.symmetric(
+                                          vertical: 10, horizontal: 30),
+                                    ),
+                                    child: Text('Pick Up',
+                                      style: TextStyle(
+                                        fontSize: 16, fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ),
+                                //},),
+                            ],
+                          )
+                        ],
+                      ),
+                    ),
+                  )
                 ],
               ),
             ),
@@ -306,6 +383,55 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
       label: '', // Empty label to hide default label
     );
   }
+      // bottomNavigationBar: BottomNavigationBar(
+      //   currentIndex: _currentIndex,
+      //   items: [
+      //     buildBottomNavBarItem("Extend Due Date"),
+      //     buildBottomNavBarItem("Pick Now"),
+      //   ],
+      //   onTap: (index) {
+      //     // Handle button taps here
+      //     if (index == 0) {
+      //       // Logic for the first button (Edit)
+      //       // Add your code to handle the 'Edit' button tap
+      //     } else if (index == 1) {
+      //       // Logic for the second button (Delete)
+      //       // Add your code to handle the 'Delete' button tap
+      //     }
+      //     setState(() {
+      //       _currentIndex = index;
+      //     });
+      //   },
+      //   elevation: 8.0,
+      //   selectedItemColor: Colors.blue,
+      //   type: BottomNavigationBarType.fixed,
+      // ),
+    );
+  }
+
+  // BottomNavigationBarItem buildBottomNavBarItem(String label) {
+  //   return BottomNavigationBarItem(
+  //     icon: Container(
+  //       width: 170,
+  //       height: 45,
+  //       decoration: BoxDecoration(
+  //         borderRadius: BorderRadius.circular(10),
+  //         color: Colors.blue,
+  //       ),
+  //       child: Center(
+  //         child: Text(
+  //           label,
+  //           style: TextStyle(
+  //             color: Colors.white,
+  //             fontWeight: FontWeight.bold,
+  //             fontSize: 14, // Adjust the font size here
+  //           ),
+  //         ),
+  //       ),
+  //     ),
+  //     label: '', // Empty label to hide default label
+  //   );
+  // }
 
   Widget buildDetailItem(String label, dynamic value) {
     String formattedValue = value is DateTime
@@ -331,3 +457,39 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
     );
   }
 }
+
+void _pickupConfirmation(context){
+
+  Navigator.push(
+    context,
+    MaterialPageRoute(
+      builder: (context)=> pickupConfirmation(),
+    ),
+  );
+}
+
+// void _pickupConfirmation(
+//     int confirmationId,
+//     String status,
+//     Duration pickUpDuration,
+//     String currentLocation,
+//     DateTime confirmationDate,
+//     String pickUpLocation,
+//     BuildContext context){
+//
+//   Navigator.push(
+//       context,
+//       MaterialPageRoute(
+//           builder: (context)=> pickupConfirmation(
+//             confirmationId: confirmationId,
+//             status: status,
+//             pickUpDuration: pickUpDuration,
+//             currentLocatin: currentLocation,
+//             confirmationDate: confirmationDate,
+//             pickUpLocation: pickUpLocation,
+//           ),
+//       ),
+//   );
+// }
+
+

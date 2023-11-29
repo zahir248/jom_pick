@@ -1,4 +1,11 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:jom_pick/item_detail.dart';
+import 'package:jom_pick/penalty_details.dart';
+import 'package:jom_pick/setting.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'dashboard.dart';
 import 'profile.dart';
 import 'history.dart';
@@ -10,6 +17,9 @@ import 'package:intl/intl.dart'; // Import the intl package
 import 'dart:typed_data';
 import 'item_detail_history.dart';
 import 'main.dart';
+import 'models/item.dart';
+import 'models/penalty_details_model.dart';
+
 
 class Penalty extends StatefulWidget {
   const Penalty({Key? key}) : super(key: key);
@@ -19,6 +29,7 @@ class Penalty extends StatefulWidget {
 }
 
 class _PenaltyState extends State<Penalty> {
+  int? userId;  // Check if userId have value or null
   int _selectedIndex = 2; // Index of the selected tab
   int? userId;
 
@@ -73,6 +84,27 @@ class _PenaltyState extends State<Penalty> {
     }
   }
 
+
+
+  void _detailsItem(int itemId, String itemName, String trackingNumber, String itemType, Uint8List imageData, String status, DateTime confirmationDate) {
+    // Navigate to the item detail page and pass the item_id
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => ItemDetailPage(
+          itemId: itemId,
+          itemName: itemName,
+          trackingNumber : trackingNumber,
+          itemType : itemType,
+          imageData: imageData,
+          status: status,
+          confirmationDate: confirmationDate,
+        ),
+      ),
+    );
+  }
+
+
   Widget _buildListView() {
     return Expanded(
       child: filteredItemData.isEmpty
@@ -87,6 +119,7 @@ class _PenaltyState extends State<Penalty> {
           child: ListView.builder(
             itemCount: filteredItemData.length,
             itemBuilder: (context, index) {
+              print("Payment Status adaaaaa: ${filteredItemData[index].paymentStatus}");
               return Card(
                 margin: EdgeInsets.all(8.0),
                 elevation: 4.0, // Set the elevation (shadow) here
@@ -96,27 +129,45 @@ class _PenaltyState extends State<Penalty> {
                     mainAxisSize: MainAxisSize.min,
                     children: <Widget>[
                       ListTile(
-                        contentPadding: EdgeInsets.all(0), // Remove default ListTile padding
                         leading: Container(
                           width: 90,
                           height: 90,
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
-                            image: DecorationImage(
-                              fit: BoxFit.cover,
-                              image: AssetImage('assets/jompick.jpg'), // adjust the path accordingly
-                            ),
+                            color: Colors.blueGrey,
                           ),
                         ),
                         title: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(
-                              filteredItemData[index].itemName,
-                              style: TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                              ),
+                            Row(
+                              children: [
+                                Text(
+                                  filteredItemData[index].itemName, // Use filteredItemData instead of itemData
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                SizedBox(width: 8), // Adjust the spacing between item name and status
+                                // Container(
+                                //   padding: EdgeInsets.all(10),
+                                //   decoration: BoxDecoration(
+                                //     // Turn the container color according to status
+                                //     color: getStatusColor(filteredItemData[index].paymentStatus), // Set the color based on the status
+                                //     borderRadius: BorderRadius.circular(8),
+                                //   ),
+                                //   child: Text(
+                                //     // Print payment status
+                                //     filteredItemData[index].paymentStatus,
+                                //     style: TextStyle(
+                                //       fontSize: 14,
+                                //       color: Colors.white,
+                                //       fontWeight: FontWeight.bold,
+                                //     ),
+                                //   ),
+                                // ),
+                              ],
                             ),
                             SizedBox(height: 10),
                           ],
@@ -127,37 +178,34 @@ class _PenaltyState extends State<Penalty> {
                             fontSize: 14,
                           ),
                         ),
-                        trailing: Container(
-                          width: 90,
-                          height: 25,
-                          decoration: BoxDecoration(
-                            color: filteredItemData[index].penaltyStatus == 'Paid'
-                                ? Colors.green
-                                : Colors.red,
-                          ),
-                          alignment: Alignment.center,
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Icon(
-                                filteredItemData[index].penaltyStatus == 'Paid'
-                                    ? Icons.check_circle
-                                    : Icons.error,
-                                color: Colors.white,
-                                size: 16,
-                              ),
-                              SizedBox(width: 4),
-                              Text(
-                                filteredItemData[index].penaltyStatus ?? '', // Use the confirmation status here
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 12,
-                                ),
-                              ),
-                            ],
+                  trailing: Container(
+                    width: 90,
+                    height: 25,
+                    decoration: BoxDecoration(
+                      color: getStatusColor(filteredItemData[index].paymentStatus),
+                    ),
+                    alignment: Alignment.center,
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(
+                          Icons.error,
+                          color: Colors.white,
+                          size: 16,
+                        ),
+                        SizedBox(width: 4),
+                        Text(
+                          filteredItemData[index].paymentStatus,
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 12,
                           ),
                         ),
-                      ),
+                      ],
+                    ),
+                  ),
+                ),
+
                       Divider(
                         height: 20.0,
                         thickness: 1.0,
@@ -194,14 +242,16 @@ class _PenaltyState extends State<Penalty> {
                         children: <Widget>[
                           ElevatedButton(
                             onPressed: () {
-                              _detailsItem(
-                                filteredItemData[index].itemId,
-                                filteredItemData[index].itemName,
-                                filteredItemData[index].trackingNumber,
-                                filteredItemData[index].itemType,
-                                filteredItemData[index].imageData,
-                                filteredItemData[index].status,
-                                filteredItemData[index].confirmationDate,
+                              _detailsPenaltyItem(
+                                  filteredItemData[index].itemId,
+                                  filteredItemData[index].itemName,
+                                  filteredItemData[index].itemType,
+                                  filteredItemData[index].trackingNumber,
+                                  filteredItemData[index].dueDate,
+                                  filteredItemData[index].dueDateStatus,
+                                  filteredItemData[index].paymentStatus,
+                                  filteredItemData[index].paymentAmount,
+                                  filteredItemData[index].pickUpLocation
                               );
                             },
                             style: ElevatedButton.styleFrom(
@@ -225,22 +275,10 @@ class _PenaltyState extends State<Penalty> {
     );
   }
 
-  void _detailsItem(int itemId, String itemName, String trackingNumber, String itemType, Uint8List imageData, String status, DateTime confirmationDate) {
-    // Navigate to the item detail page and pass the item_id
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => ItemDetailPage(
-          itemId: itemId,
-          itemName: itemName,
-          trackingNumber : trackingNumber,
-          itemType : itemType,
-          imageData: imageData,
-          status: status,
-          confirmationDate: confirmationDate,
-        ),
-      ),
-    );
+  void handleSetting() async {
+
+    // Navigate to the login page (Assuming your login page is named Setting)
+    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Setting()));
   }
 
   void _onItemTapped(int index) {
@@ -292,6 +330,47 @@ class _PenaltyState extends State<Penalty> {
         filteredItemData = List.from(itemData);
       });
     }
+  }
+
+  MaterialColor getStatusColor(String status){
+    if(status == 'paid'){
+      return Colors.green;
+    }else if(status == 'unpaid'){
+      return Colors.red;
+    }else{
+      return Colors.grey;
+    }
+  }
+
+  void _detailsPenaltyItem(
+      int itemId,
+      String itemName,
+      String itemType,
+      String trackingNumber,
+      String dueDate,
+      String dueDateStatus,
+      /*Uint8List imageData,*/
+      String paymentStatus,
+      String paymentAmount,
+      String pickUpLocation){
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context)=> penaltyDetailPage(
+      itemId: itemId,
+      itemName: itemName,
+      itemType: itemType,
+      trackingNumber : trackingNumber,
+      dueDate : dueDate,
+      //imageData: imageData,
+      dueDateStatus: dueDateStatus,
+      paymentStatus: paymentStatus,
+      paymentAmount: paymentAmount,
+      pickUpLocation: pickUpLocation,
+      ),
+    ),
+    );
   }
 
   @override
@@ -361,3 +440,7 @@ class _PenaltyState extends State<Penalty> {
     );
   }
 }
+}
+
+
+
