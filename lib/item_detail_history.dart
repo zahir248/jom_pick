@@ -90,7 +90,7 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
                   buildDetailItem("Status", widget.status),
                   SizedBox(height: 20),
                   buildDetailItem(
-                      "Due Date",
+                      "Pick-up Date",
                       DateFormat('d MMMM yyyy')
                           .format(widget.confirmationDate)),
                   SizedBox(height: 50),

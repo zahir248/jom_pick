@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'dart:typed_data';
 import 'package:intl/intl.dart';
+import 'package:http/http.dart' as http;
+import 'package:fluttertoast/fluttertoast.dart';
 
 class ItemDetailPage extends StatefulWidget {
   final int itemId;
@@ -27,6 +29,7 @@ class ItemDetailPage extends StatefulWidget {
 
 class _ItemDetailPageState extends State<ItemDetailPage> {
   int _currentIndex = 0; // Index for BottomNavigationBar
+  bool hasExtendedPickupDate = false; // Flag to track whether pick-up date has been extended
 
   @override
   Widget build(BuildContext context) {
@@ -90,7 +93,7 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
                   buildDetailItem("Status", widget.status),
                   SizedBox(height: 20),
                   buildDetailItem(
-                      "Due Date",
+                      "Pick-up Date",
                       DateFormat('d MMMM yyyy')
                           .format(widget.confirmationDate)),
                   SizedBox(height: 50),
@@ -103,14 +106,13 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _currentIndex,
         items: [
-          buildBottomNavBarItem("Extend Due Date"),
+          buildBottomNavBarItem("Extend Pick-up Date"),
           buildBottomNavBarItem("Pick Now"),
         ],
         onTap: (index) {
           // Handle button taps here
           if (index == 0) {
-            // Logic for the first button (Edit)
-            // Add your code to handle the 'Edit' button tap
+            _showExtendDueDateForm();
           } else if (index == 1) {
             // Logic for the second button (Delete)
             // Add your code to handle the 'Delete' button tap
@@ -125,6 +127,142 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
       ),
     );
   }
+
+  void _showExtendDueDateForm() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        DateTime newPickupDate = widget.confirmationDate.add(Duration(days: 3));
+
+        return Dialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16.0),
+          ),
+          child: Container(
+            padding: EdgeInsets.all(16.0),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Align(
+                  alignment: Alignment.topLeft,
+                  child: IconButton(
+                    icon: Icon(Icons.cancel),
+                    onPressed: () {
+                      if (mounted) {
+                        Navigator.pop(context);
+                      }
+                    },
+                  ),
+                ),
+                Text(
+                  'Extend Pick-up Date',
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                SizedBox(height: 16),
+                Text(
+                  '*Pick-up deadline will be extended to 3 days from the current date. Beyond this, a RM5 fee applies. If not collected within 7 days after the date, the item may be disposed of by management.',
+                  style: TextStyle(
+                    fontSize: 16,
+                  ),
+                ),
+                SizedBox(height: 25),
+                Text(
+                  'New Pick-Up Date: ${DateFormat('d MMMM yyyy').format(newPickupDate)}',
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                SizedBox(height: 16),
+                Container(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    onPressed: () async {
+                      if (mounted && !hasExtendedPickupDate) {
+                        // Send a request to the server to update the pick-up date
+                        final updateStatus = await updateConfirmationDateOnServer(widget.itemId, newPickupDate);
+
+                        if (updateStatus == "Update successful") {
+                          // Set the flag to true after extending the pick-up date
+                          setState(() {
+                            hasExtendedPickupDate = true;
+                          });
+
+                          // Show toast after successful update
+                          Fluttertoast.showToast(
+                            msg: "Pick-up date extended successfully",
+                            toastLength: Toast.LENGTH_SHORT,
+                            gravity: ToastGravity.BOTTOM,
+                            timeInSecForIosWeb: 1,
+                            backgroundColor: Colors.green,
+                            textColor: Colors.white,
+                            fontSize: 16.0,
+                          );
+
+                          Navigator.pop(context);
+                        } else {
+                          // Display a message based on the server response
+                          Fluttertoast.showToast(
+                            msg: updateStatus,
+                            toastLength: Toast.LENGTH_SHORT,
+                            gravity: ToastGravity.BOTTOM,
+                            timeInSecForIosWeb: 1,
+                            backgroundColor: Colors.red,
+                            textColor: Colors.white,
+                            fontSize: 16.0,
+                          );
+                        }
+                      } else {
+                        // Display a message if the user attempts to extend again
+                        Fluttertoast.showToast(
+                          msg: "You have already extended the pick-up date before",
+                          toastLength: Toast.LENGTH_SHORT,
+                          gravity: ToastGravity.BOTTOM,
+                          timeInSecForIosWeb: 1,
+                          backgroundColor: Colors.red,
+                          textColor: Colors.white,
+                          fontSize: 16.0,
+                        );
+                      }
+                    },
+                    style: ElevatedButton.styleFrom(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(100),
+                      ),
+                    ),
+                    child: Text('Confirm'),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Future<String> updateConfirmationDateOnServer(int itemId, DateTime newPickupDate) async {
+    final url = Uri(
+      scheme: 'http',
+      host: '192.168.0.113',
+      path: '/updateConfirmationDate.php',
+    );
+
+    // Send a POST request to the server
+    final response = await http.post(
+      url,
+      body: {
+        'itemId': itemId.toString(),
+        'newPickupDate': newPickupDate.toIso8601String(),
+      },
+    );
+
+    return response.body;
+  }
+
 
   BottomNavigationBarItem buildBottomNavBarItem(String label) {
     return BottomNavigationBarItem(
