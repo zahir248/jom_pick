@@ -33,7 +33,7 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
       await retrieveUserId();
 
       final response = await http.post(
-        Uri.http('192.168.0.113', '/updatePassword.php', {'q': '{http}'}),
+        Uri.http('192.168.0.113', '/jompick/updatePassword.php', {'q': '{http}'}),
         body: {
           'user_id': userId.toString(),
           'oldPassword': oldPasswordController.text,

@@ -53,7 +53,7 @@ class _MyHomePageState extends State<MyHomePage> {
       return; // Exit the function to prevent further execution
     }
 
-    var url = Uri.http("192.168.0.113", '/login.php', {'q': '{http}'});
+    var url = Uri.http("192.168.0.113", '/jompick/login.php', {'q': '{http}'});
     var response = await http.post(url, body: {
       "username": user.text,
       "password": pass.text,

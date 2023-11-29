@@ -133,7 +133,7 @@ class _ProfileState extends State<Profile> {
       // Create a `http.MultipartRequest` to send a combination of text data and image
       var request = http.MultipartRequest(
         'POST',
-        Uri.http('192.168.0.113', '/updateProfile.php', {'q': '{http}'}),
+        Uri.http('192.168.0.113', '/jompick/updateProfile.php', {'q': '{http}'}),
       );
 
       // Attach the image file if imagePath is not empty

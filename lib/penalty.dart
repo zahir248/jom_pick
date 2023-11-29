@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'dashboard.dart';
-import 'setting.dart';
 import 'profile.dart';
 import 'history.dart';
 import '../models/item.dart';
@@ -39,7 +38,7 @@ class _PenaltyState extends State<Penalty> {
     userId = prefs.getInt('user_id');
 
     if (userId != null) {
-      final response = await http.get(Uri.parse('http://192.168.0.113/itemPenalty.php?user_id=$userId'));
+      final response = await http.get(Uri.parse('http://192.168.0.113/jompick/itemPenalty.php?user_id=$userId'));
 
       print('Raw JSON response: ${response.body}');
 
@@ -238,12 +237,6 @@ class _PenaltyState extends State<Penalty> {
     );
   }
 
-  void handleSetting() async {
-
-    // Navigate to the login page (Assuming your login page is named Setting)
-    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Setting()));
-  }
-
   void _onItemTapped(int index) {
     if (index == 3) {
       // If the "Profile" button is tapped (index 2), navigate to the profile page
@@ -311,12 +304,6 @@ class _PenaltyState extends State<Penalty> {
                     fontSize: 30.0,
                     fontWeight: FontWeight.bold,
                   ),
-                ),
-                IconButton(
-                  icon: Icon(Icons.settings),
-                  onPressed: () {
-                    handleSetting(); // Logout when the button is pressed
-                  },
                 ),
               ],
             ),

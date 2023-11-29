@@ -248,7 +248,7 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
     final url = Uri(
       scheme: 'http',
       host: '192.168.0.113',
-      path: '/updateConfirmationDate.php',
+      path: '/jompick/updateConfirmationDate.php',
     );
 
     // Send a POST request to the server
