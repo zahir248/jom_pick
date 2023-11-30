@@ -8,6 +8,7 @@ class Item {
   final DateTime registerDate;
   final String trackingNumber;
   final String itemType;
+  final String address;
   final Uint8List imageData; // Use Uint8List for binary image data
   final String status;
   final DateTime confirmationDate;
@@ -19,7 +20,8 @@ class Item {
     required this.location,
     required this.registerDate,
     required this.trackingNumber,
-    required this.itemType, //
+    required this.itemType,
+    required this.address,
     required this.imageData,
     required this.status,
     required this.confirmationDate,
@@ -36,6 +38,7 @@ class Item {
       registerDate: DateTime.parse(json['registerDate'] ?? ''),
       trackingNumber: json['trackingNumber'] ?? '',
       itemType: json['itemType'] ?? '',
+      address: json['address'] ?? '',
       imageData: decodedImageData,
       status: json['status'] ?? '',
       confirmationDate: DateTime.parse(json['confirmationDate'] ?? ''),

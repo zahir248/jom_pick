@@ -12,6 +12,7 @@ class ItemDetailPage extends StatefulWidget {
   final String status;
   final Uint8List imageData;
   final DateTime confirmationDate;
+  final String address;
 
   ItemDetailPage({
     required this.itemId,
@@ -21,6 +22,7 @@ class ItemDetailPage extends StatefulWidget {
     required this.imageData,
     required this.status,
     required this.confirmationDate,
+    required this.address,
   });
 
   @override
@@ -74,6 +76,8 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
                   buildDetailItem("Tracking Number", widget.trackingNumber),
                   SizedBox(height: 20),
                   buildDetailItem("Type", widget.itemType),
+                  SizedBox(height: 20),
+                  buildDetailItem("Pick-up Location", widget.address),
                   SizedBox(height: 20),
                   buildDetailItem("Picture", ""),
                   Center(
