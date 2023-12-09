@@ -9,6 +9,7 @@ import 'dart:convert';
 import 'package:intl/intl.dart'; // Import the intl package
 import 'item_detail_history.dart';
 import 'dart:typed_data';
+import 'main.dart';
 
 class History extends StatefulWidget {
   const History({Key? key}) : super(key: key);
@@ -38,38 +39,44 @@ class _HistoryState extends State<History> {
     userId = prefs.getInt('user_id');
 
     if (userId != null) {
-      final response = await http.get(Uri.parse('http://192.168.0.113/jompick/itemHistory.php?user_id=$userId'));
+      try {
+        final response = await http.get(
+          Uri.parse('http://${MyApp.baseIpAddress}${MyApp.itemHistoryPath}?user_id=$userId'),
+        );
 
-      print('Raw JSON response: ${response.body}');
+        print('Raw JSON response: ${response.body}');
 
-      if (response.statusCode == 200) {
-        final String responseBody = response.body.trim(); // Remove leading/trailing whitespaces
+        if (response.statusCode == 200) {
+          final String responseBody = response.body.trim();
 
-        if (responseBody.isNotEmpty) {
-          if (responseBody != '0 results') {
-            final List<dynamic> jsonData = json.decode(responseBody);
+          if (responseBody.isNotEmpty) {
+            if (responseBody != '0 results') {
+              final List<dynamic> jsonData = json.decode(responseBody);
 
-            setState(() {
-              itemData = (jsonData as List).map((item) => Item.fromJson(item)).toList();
-              itemData.sort((a, b) => b.registerDate!.compareTo(a.registerDate!)); // Reverse order based on registerDate
-              filteredItemData = List.from(itemData); // Initialize filteredItemData
-            });
+              setState(() {
+                itemData = (jsonData as List).map((item) => Item.fromJson(item)).toList();
+                itemData.sort((a, b) => b.registerDate!.compareTo(a.registerDate!));
+                filteredItemData = List.from(itemData);
+              });
+            } else {
+              print('Server responded with "0 results". User has no item data.');
+              setState(() {
+                itemData = [];
+                filteredItemData = [];
+              });
+            }
           } else {
-            print('Server responded with "0 results". User has no item data.');
+            print('Empty response body');
             setState(() {
-              itemData = []; // Clear the itemData list
-              filteredItemData = []; // Clear the filteredItemData list
+              itemData = [];
+              filteredItemData = [];
             });
           }
         } else {
-          print('Empty response body');
-          setState(() {
-            itemData = []; // Clear the itemData list
-            filteredItemData = []; // Clear the filteredItemData list
-          });
+          throw Exception('Failed to load user data. Status code: ${response.statusCode}');
         }
-      } else {
-        throw Exception('Failed to load user data. Status code: ${response.statusCode}');
+      } catch (e) {
+        print('Error fetching item data: $e');
       }
     } else {
       print('User ID not found in SharedPreferences');

@@ -10,6 +10,7 @@ import 'dart:convert';
 import 'package:intl/intl.dart'; // Import the intl package
 import 'item_detail.dart';
 import 'dart:typed_data';
+import 'main.dart';
 
 class DashBoard extends StatefulWidget {
   const DashBoard({Key? key}) : super(key: key);
@@ -39,29 +40,34 @@ class _DashBoardState extends State<DashBoard> {
     userId = prefs.getInt('user_id');
 
     if (userId != null) {
-      final response = await http.get(Uri.parse('http://192.168.0.113/jompick/itemHome.php?user_id=$userId'));
+      try {
+        final response = await http.get(
+          Uri.parse('http://${MyApp.baseIpAddress}${MyApp.itemHomePath}?user_id=$userId'),
+        );
 
-      print('Raw JSON response: ${response.body}');
+        print('Raw JSON response: ${response.body}');
 
-      if (response.statusCode == 200) {
-        try {
-          // Attempt to decode the response body as JSON
-          final List<dynamic> jsonData = json.decode(response.body);
+        if (response.statusCode == 200) {
+          try {
+            final List<dynamic> jsonData = json.decode(response.body);
 
-          setState(() {
-            itemData = (jsonData as List).map((item) => Item.fromJson(item)).toList();
-            itemData.sort((a, b) => b.registerDate!.compareTo(a.registerDate!)); // Reverse order based on registerDate
-            filteredItemData = List.from(itemData); // Initialize filteredItemData
-          });
-        } catch (e) {
-          print('Server responded with "0 results". User has no item data.');
-          setState(() {
-            itemData = []; // Set itemData to an empty list
-            filteredItemData = []; // Set filteredItemData to an empty list
-          });
+            setState(() {
+              itemData = (jsonData as List).map((item) => Item.fromJson(item)).toList();
+              itemData.sort((a, b) => b.registerDate!.compareTo(a.registerDate!));
+              filteredItemData = List.from(itemData);
+            });
+          } catch (e) {
+            print('Server responded with "0 results". User has no item data.');
+            setState(() {
+              itemData = [];
+              filteredItemData = [];
+            });
+          }
+        } else {
+          throw Exception('Failed to load user data. Status code: ${response.statusCode}');
         }
-      } else {
-        throw Exception('Failed to load user data. Status code: ${response.statusCode}');
+      } catch (e) {
+        print('Error fetching item data: $e');
       }
     } else {
       print('User ID not found in SharedPreferences');

@@ -34,7 +34,7 @@ class _SplashScreenState extends State<SplashScreen> {
           children: [
             // Display your logo image here
             Image.asset(
-              'assets/jompick.jpg',  // Replace with the path to your logo image
+              'assets/jompick2.png',  // Replace with the path to your logo image
               width: 350,  // Adjust the width as needed
               height: 350,  // Adjust the height as needed
             ),

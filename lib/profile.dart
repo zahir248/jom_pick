@@ -8,6 +8,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'dart:io';  // Import this for File
 import 'package:image_picker/image_picker.dart';
+import 'main.dart';
 
 class Profile extends StatefulWidget {
   const Profile({Key? key}) : super(key: key);
@@ -133,7 +134,7 @@ class _ProfileState extends State<Profile> {
       // Create a `http.MultipartRequest` to send a combination of text data and image
       var request = http.MultipartRequest(
         'POST',
-        Uri.http('192.168.0.113', '/jompick/updateProfile.php', {'q': '{http}'}),
+        Uri.http(MyApp.baseIpAddress, MyApp.updateProfilePath, {'q': '{http}'}),
       );
 
       // Attach the image file if imagePath is not empty

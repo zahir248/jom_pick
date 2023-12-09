@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'main.dart';
 
 class ForgotPasswordPage extends StatefulWidget {
   @override
@@ -20,7 +21,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
   Future<void> updatePassword() async {
     try {
       final response = await http.post(
-        Uri.http('192.168.0.113', '/jompick/forgotPassword.php', {'q': '{http}'}),
+        Uri.http(MyApp.baseIpAddress, MyApp.updateForgotPasswordPath, {'q': '{http}'}),
         body: {
           'username': usernameController.text,
           'emailAddress': emailController.text,

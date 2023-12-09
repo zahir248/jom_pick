@@ -4,19 +4,37 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:jom_pick/register.dart';
 import 'package:http/http.dart' as http;
 import 'DashBoard.dart';
-import 'package:flutter/gestures.dart'; // Add this import
-import 'splashscreen.dart'; // Import your splash screen
+import 'package:flutter/gestures.dart';
+import 'splashscreen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'forgot_password.dart';
-import 'package:path_provider/path_provider.dart';  // Import this for getTemporaryDirectory()
-import 'dart:io';  // Import this for File
+import 'package:path_provider/path_provider.dart';
+import 'dart:io';
+import 'package:geolocator/geolocator.dart';
 
 void main() {
   runApp(const MyApp());
+  GeolocatorPlatform.instance;
 }
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
+
+  static final String baseIpAddress = "10.200.124.64";
+
+  static final String loginPath = "/jompick/login.php";
+  static final String registerPath = "/jompick/register.php";
+  static final String updateProfilePath = "/jompick/updateProfile.php";
+  static final String updateConfirmationDurationLocationPath = "/jompick/updateConfirmationDurationLocation.php";
+  static final String updateConfirmationStatusPath = "/jompick/updateConfirmationStatus.php";
+  static final String updatePickupDatePath = "/jompick/updateConfirmationPickupDate.php";
+  static final String itemPenaltyPath = "/jompick/itemPenalty.php";
+  static final String updateConfirmationDatePath = "/jompick/updateConfirmationDate.php";
+  static final String itemHistoryPath = "/jompick/itemHistory.php";
+  static final String updateForgotPasswordPath = "/jompick/forgotPassword.php";
+  static final String itemHomePath = "/jompick/itemHome.php";
+  static final String updatePasswordPath = "/jompick/updatePassword.php";
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -53,7 +71,7 @@ class _MyHomePageState extends State<MyHomePage> {
       return; // Exit the function to prevent further execution
     }
 
-    var url = Uri.http("192.168.0.113", '/jompick/login.php', {'q': '{http}'});
+    var url = Uri.http(MyApp.baseIpAddress, MyApp.loginPath, {'q': '{http}'});
     var response = await http.post(url, body: {
       "username": user.text,
       "password": pass.text,
@@ -161,7 +179,7 @@ class _MyHomePageState extends State<MyHomePage> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Image.asset(
-                'assets/jompick.jpg',
+                'assets/jompick2.png',
                 width: 300,
                 height: 300,
               ),

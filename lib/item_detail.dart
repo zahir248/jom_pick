@@ -3,6 +3,8 @@ import 'dart:typed_data';
 import 'package:intl/intl.dart';
 import 'package:http/http.dart' as http;
 import 'package:fluttertoast/fluttertoast.dart';
+import 'pickup_detail.dart';
+import 'main.dart';
 
 class ItemDetailPage extends StatefulWidget {
   final int itemId;
@@ -58,7 +60,7 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
                         padding: const EdgeInsets.fromLTRB(
                             16.0, 50.0, 16.0, 10.0),
                         child: Text(
-                          'Detail',
+                          'Item Detail',
                           style: TextStyle(
                             fontSize: 30,
                             fontWeight: FontWeight.bold,
@@ -97,7 +99,7 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
                   buildDetailItem("Status", widget.status),
                   SizedBox(height: 20),
                   buildDetailItem(
-                      "Pick-up Date",
+                      "Pick-up Due Date",
                       DateFormat('d MMMM yyyy')
                           .format(widget.confirmationDate)),
                   SizedBox(height: 50),
@@ -110,16 +112,24 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _currentIndex,
         items: [
-          buildBottomNavBarItem("Extend Pick-up Date"),
-          buildBottomNavBarItem("Pick Now"),
+          buildBottomNavBarItem("Extend Pick-up Due Date"),
+          buildBottomNavBarItem("Pick-up Detail"),
         ],
-        onTap: (index) {
+        onTap: (index) async {
           // Handle button taps here
           if (index == 0) {
             _showExtendDueDateForm();
           } else if (index == 1) {
-            // Logic for the second button (Delete)
-            // Add your code to handle the 'Delete' button tap
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => PickupDetailPage(
+                    address: widget.address,
+                    itemId: widget.itemId,
+                    confirmationDate: widget.confirmationDate, // Pass the confirmationDate to PickupDetailPage
+                ),
+              ),
+            );
           }
           setState(() {
             _currentIndex = index;
@@ -249,29 +259,34 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
   }
 
   Future<String> updateConfirmationDateOnServer(int itemId, DateTime newPickupDate) async {
-    final url = Uri(
-      scheme: 'http',
-      host: '192.168.0.113',
-      path: '/jompick/updateConfirmationDate.php',
-    );
+    try {
+      final url = Uri(
+        scheme: 'http',
+        host: MyApp.baseIpAddress,
+        path: MyApp.updateConfirmationDatePath,
+      );
 
-    // Send a POST request to the server
-    final response = await http.post(
-      url,
-      body: {
-        'itemId': itemId.toString(),
-        'newPickupDate': newPickupDate.toIso8601String(),
-      },
-    );
+      // Send a POST request to the server
+      final response = await http.post(
+        url,
+        body: {
+          'itemId': itemId.toString(),
+          'newPickupDate': newPickupDate.toIso8601String(),
+        },
+      );
 
-    return response.body;
+      return response.body;
+    } catch (e) {
+      print('Error updating confirmation date: $e');
+      return ''; // Return an empty string or handle the error as needed
+    }
   }
 
 
   BottomNavigationBarItem buildBottomNavBarItem(String label) {
     return BottomNavigationBarItem(
       icon: Container(
-        width: 170,
+        width: 180,
         height: 45,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10),

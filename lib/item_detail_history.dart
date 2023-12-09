@@ -53,7 +53,7 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
                         padding: const EdgeInsets.fromLTRB(
                             16.0, 50.0, 16.0, 10.0),
                         child: Text(
-                          'Detail',
+                          'Item Detail',
                           style: TextStyle(
                             fontSize: 30,
                             fontWeight: FontWeight.bold,

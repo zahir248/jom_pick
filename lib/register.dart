@@ -47,7 +47,7 @@ class _RegisterState extends State<Register> {
         toastLength: Toast.LENGTH_SHORT,
       );
     } else {
-      var url = Uri.http("192.168.0.113", '/jompick/register.php', {'q': '{http}'});
+      var url = Uri.http(MyApp.baseIpAddress, MyApp.registerPath, {'q': '{http}'});
       var response = await http.post(url, body: {
         "username": user.text.toString(),
         "password": pass.text.toString(),
