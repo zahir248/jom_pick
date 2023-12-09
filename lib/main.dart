@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:jom_pick/HomeScreen.dart';
 import 'package:jom_pick/register.dart';
 import 'package:http/http.dart' as http;
 import 'DashBoard.dart';
@@ -131,7 +132,7 @@ class _MyHomePageState extends State<MyHomePage> {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => DashBoard(),
+                  builder: (context) => HomeScreen(),
                 ),
               );
             } else {

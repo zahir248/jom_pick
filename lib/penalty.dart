@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:jom_pick/HomeScreen.dart';
 import 'package:jom_pick/item_detail.dart';
 import 'package:jom_pick/penalty_details.dart';
 import 'package:jom_pick/setting.dart';
@@ -17,6 +18,7 @@ import 'package:intl/intl.dart'; // Import the intl package
 import 'dart:typed_data';
 import 'item_detail_history.dart';
 import 'main.dart';
+
 import 'models/item.dart';
 import 'models/penalty_details_model.dart';
 
@@ -31,20 +33,27 @@ class Penalty extends StatefulWidget {
 class _PenaltyState extends State<Penalty> {
   int? userId;  // Check if userId have value or null
   int _selectedIndex = 2; // Index of the selected tab
-  int? userId;
 
-  List<Item> itemData = []; // List to store fetched data
-  List<Item> filteredItemData = []; // List to store filtered data
+
+  List<PenaltyDetails> itemData = [];
+  List<PenaltyDetails> filteredItemData = [];
+
+  final List<String> categories = [
+    'paid',
+    'unpaid'
+  ];
+
+  List<String> selectedCategories =[];
 
   TextEditingController searchController = TextEditingController();
 
+  // Ensure that data fetching process start as soon as the widget is created
   @override
-  void initState() {
+  void initState(){
     super.initState();
-    fetchItemData(); // Fetch user data when the widget is created
+    fetchItemData();
   }
 
-  // Fetch user data based on the user ID stored in SharedPreferences
   Future<void> fetchItemData() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     userId = prefs.getInt('user_id');
@@ -105,9 +114,41 @@ class _PenaltyState extends State<Penalty> {
   }
 
 
+
   Widget _buildListView() {
+
+    final filterCategory = filteredItemData.where((PenaltyDetails) {
+      return selectedCategories.isEmpty ||
+          selectedCategories.contains(PenaltyDetails.paymentStatus);
+    }).toList();
+
+    //Create filter button
+    // Container(
+    //   padding: const EdgeInsets.all(8.0),
+    //   margin: const EdgeInsets.all(8.0),
+    //   child: Row(
+    //     children: categories.map(
+    //           (paymentStatus) => Padding(
+    //         padding: const EdgeInsets.all(8.0),
+    //         child: FilterChip(
+    //             selected: selectedCategories.contains(paymentStatus),
+    //             label: Text(paymentStatus),
+    //             onSelected: (selected){
+    //               setState(() {
+    //                 if(selected){
+    //                   selectedCategories.add(paymentStatus);
+    //                 }else{
+    //                   selectedCategories.remove(paymentStatus);
+    //                 }
+    //               });
+    //             }),
+    //       ),
+    //     ).toList(),
+    //   ),
+    // );
+
     return Expanded(
-      child: filteredItemData.isEmpty
+      child: filterCategory.isEmpty
           ? Center(
         child: Text(
           'No data available',
@@ -117,9 +158,13 @@ class _PenaltyState extends State<Penalty> {
           : Center(
         child: Scrollbar(
           child: ListView.builder(
-            itemCount: filteredItemData.length,
+            //itemCount: filteredItemData.length,
+            itemCount: filterCategory.length,
             itemBuilder: (context, index) {
-              print("Payment Status adaaaaa: ${filteredItemData[index].paymentStatus}");
+              //final category = filterCategory[index];
+
+             //print("Payment Status adaaaaa: ${filteredItemData[index].paymentStatus}");
+
               return Card(
                 margin: EdgeInsets.all(8.0),
                 elevation: 4.0, // Set the elevation (shadow) here
@@ -142,69 +187,57 @@ class _PenaltyState extends State<Penalty> {
                           children: [
                             Row(
                               children: [
-                                Text(
-                                  filteredItemData[index].itemName, // Use filteredItemData instead of itemData
-                                  style: TextStyle(
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.bold,
+                                Flexible(
+                                  child: Text(
+                                    filterCategory[index].itemName, // Use filteredItemData instead of itemData
+                                    // Avoid text from exceed the status container
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold,
+                                    ),
                                   ),
                                 ),
                                 SizedBox(width: 8), // Adjust the spacing between item name and status
-                                // Container(
-                                //   padding: EdgeInsets.all(10),
-                                //   decoration: BoxDecoration(
-                                //     // Turn the container color according to status
-                                //     color: getStatusColor(filteredItemData[index].paymentStatus), // Set the color based on the status
-                                //     borderRadius: BorderRadius.circular(8),
-                                //   ),
-                                //   child: Text(
-                                //     // Print payment status
-                                //     filteredItemData[index].paymentStatus,
-                                //     style: TextStyle(
-                                //       fontSize: 14,
-                                //       color: Colors.white,
-                                //       fontWeight: FontWeight.bold,
-                                //     ),
-                                //   ),
-                                // ),
                               ],
                             ),
                             SizedBox(height: 10),
                           ],
                         ),
                         subtitle: Text(
-                          filteredItemData[index].location,
+                          filterCategory[index].location,
                           style: TextStyle(
                             fontSize: 14,
                           ),
                         ),
-                  trailing: Container(
-                    width: 90,
-                    height: 25,
-                    decoration: BoxDecoration(
-                      color: getStatusColor(filteredItemData[index].paymentStatus),
-                    ),
-                    alignment: Alignment.center,
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(
-                          Icons.error,
-                          color: Colors.white,
-                          size: 16,
-                        ),
-                        SizedBox(width: 4),
-                        Text(
-                          filteredItemData[index].paymentStatus,
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 12,
+                        trailing: Container(
+                          width: 90,
+                          height: 25,
+                          decoration: BoxDecoration(
+                            color: getStatusColor(filterCategory[index].paymentStatus),
+                          ),
+                          alignment: Alignment.center,
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(
+                                Icons.error,
+                                color: Colors.white,
+                                size: 16,
+                              ),
+                              SizedBox(width: 4),
+                              Text(
+                                filterCategory[index].paymentStatus,
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 12,
+                                ),
+                              ),
+                            ],
                           ),
                         ),
-                      ],
-                    ),
-                  ),
-                ),
+                      ),
 
                       Divider(
                         height: 20.0,
@@ -220,8 +253,8 @@ class _PenaltyState extends State<Penalty> {
                             Icon(Icons.calendar_today),
                             SizedBox(width: 8),
                             Text(
-                              filteredItemData[index].registerDate != null
-                                  ? DateFormat('EEEE, dd MMMM yyyy').format(filteredItemData[index].registerDate!)
+                              filterCategory[index].registerDate != null
+                                  ? DateFormat('EEEE, dd MMMM yyyy').format(filterCategory[index].registerDate!)
                                   : "N/A",
                               style: TextStyle(fontSize: 14),
                             ),
@@ -229,8 +262,8 @@ class _PenaltyState extends State<Penalty> {
                             Icon(Icons.access_time),
                             SizedBox(width: 4),
                             Text(
-                              filteredItemData[index].registerDate != null
-                                  ? DateFormat('h:mm a').format(filteredItemData[index].registerDate!)
+                              filterCategory[index].registerDate != null
+                                  ? DateFormat('h:mm a').format(filterCategory[index].registerDate!)
                                   : "N/A",
                               style: TextStyle(fontSize: 14),
                             ),
@@ -308,7 +341,7 @@ class _PenaltyState extends State<Penalty> {
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => DashBoard(),
+          builder: (context) => HomeScreen(),
         ),
       );
       setState(() {
@@ -342,6 +375,7 @@ class _PenaltyState extends State<Penalty> {
     }
   }
 
+
   void _detailsPenaltyItem(
       int itemId,
       String itemName,
@@ -358,28 +392,32 @@ class _PenaltyState extends State<Penalty> {
       context,
       MaterialPageRoute(
         builder: (context)=> penaltyDetailPage(
-      itemId: itemId,
-      itemName: itemName,
-      itemType: itemType,
-      trackingNumber : trackingNumber,
-      dueDate : dueDate,
-      //imageData: imageData,
-      dueDateStatus: dueDateStatus,
-      paymentStatus: paymentStatus,
-      paymentAmount: paymentAmount,
-      pickUpLocation: pickUpLocation,
+          itemId: itemId,
+          itemName: itemName,
+          itemType: itemType,
+          trackingNumber : trackingNumber,
+          dueDate : dueDate,
+          //imageData: imageData,
+          dueDateStatus: dueDateStatus,
+          paymentStatus: paymentStatus,
+          paymentAmount: paymentAmount,
+          pickUpLocation: pickUpLocation,
+        ),
       ),
-    ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
+    // final filterCategory = filteredItemData.where((categories) {
+    //   return selectedCategories.isEmpty || selectedCategories.contains(categories.itemType);
+    // }).toList();
     return Scaffold(
       body: Column(
         children: <Widget>[
           Padding(
-            padding: const EdgeInsets.only(left: 20.0, right: 16.0, top: 50.0),
+
+            padding: const EdgeInsets.only(left: 16.0, right: 16.0, top: 50.0),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
@@ -411,7 +449,33 @@ class _PenaltyState extends State<Penalty> {
               ),
             ),
           ),
-          _buildListView(), // Use the custom ListView
+              // Create filter button to filter the item category
+              Container(
+                padding: const EdgeInsets.all(1.0),
+                margin: const EdgeInsets.all(1.0),
+                child: Row(
+                  children: categories.map(
+                          (paymentStatus) => Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: FilterChip(
+                              selected: selectedCategories.contains(paymentStatus),
+                                label: Text(paymentStatus),
+                                onSelected: (selected){
+                                setState(() {
+                                  if(selected){
+                                    selectedCategories.add(paymentStatus);
+                                  }else{
+                                    selectedCategories.remove(paymentStatus);
+                                  }
+                                });
+                              }),
+                          ),
+                  ).toList(),
+                ),
+              ),
+
+          _buildListView(),
+          // Use the custom ListView
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(
@@ -439,7 +503,6 @@ class _PenaltyState extends State<Penalty> {
       ),
     );
   }
-}
 }
 
 

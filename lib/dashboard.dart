@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:jom_pick/HomeScreen.dart';
 import 'setting.dart';
 import 'profile.dart';
 import 'penalty.dart';
@@ -199,7 +200,7 @@ class _DashBoardState extends State<DashBoard> {
                                 filteredItemData[index].itemName,
                                 filteredItemData[index].trackingNumber,
                                 filteredItemData[index].itemType,
-                                //filteredItemData[index].imageData,
+                                filteredItemData[index].imageData,
                                 filteredItemData[index].status,
                                 filteredItemData[index].confirmationDate,
                                 filteredItemData[index].address,
@@ -252,41 +253,41 @@ class _DashBoardState extends State<DashBoard> {
   }
 
 
-  void _onItemTapped(int index) {
-    if (index == 3) {
-      // If the "Profile" button is tapped (index 2), navigate to the profile page
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => Profile(),
-        ),
-      );
-    } else if (index == 2) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => userNotification(),
-        ),
-      );
-    } else if (index == 1) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => History(),
-        ),
-      );
-    } else {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => DashBoard(),
-        ),
-      );
-      setState(() {
-        _selectedIndex = index;
-      });
-    }
-  }
+  // void _onItemTapped(int index) {
+  //   if (index == 3) {
+  //     // If the "Profile" button is tapped (index 2), navigate to the profile page
+  //     Navigator.push(
+  //       context,
+  //       MaterialPageRoute(
+  //         builder: (context) => HomeScreen(),
+  //       ),
+  //     );
+  //   } else if (index == 2) {
+  //     Navigator.push(
+  //       context,
+  //       MaterialPageRoute(
+  //         builder: (context) => userNotification(),
+  //       ),
+  //     );
+  //   } else if (index == 1) {
+  //     Navigator.push(
+  //       context,
+  //       MaterialPageRoute(
+  //         builder: (context) => History(),
+  //       ),
+  //     );
+  //   } else {
+  //     Navigator.push(
+  //       context,
+  //       MaterialPageRoute(
+  //         builder: (context) => DashBoard(),
+  //       ),
+  //     );
+  //     setState(() {
+  //       _selectedIndex = index;
+  //     });
+  //   }
+  // }
 
 
 
@@ -315,8 +316,14 @@ class _DashBoardState extends State<DashBoard> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
+                IconButton(
+                  icon: Icon(Icons.arrow_back_ios, color: Colors.black),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                ),
                 Text(
-                  'JomPick',
+                  'Item Activities',
                   style: TextStyle(
                     fontSize: 30.0,
                     fontWeight: FontWeight.bold,
@@ -352,29 +359,29 @@ class _DashBoardState extends State<DashBoard> {
           _buildListView(), // Use the custom ListView
         ],
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        type: BottomNavigationBarType.fixed,
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.history),
-            label: 'History',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.error),
-            label: 'Penalty',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: 'Profile',
-          ),
-        ],
-        currentIndex: _selectedIndex,
-        onTap: _onItemTapped,
-      ),
+      // bottomNavigationBar: BottomNavigationBar(
+      //   type: BottomNavigationBarType.fixed,
+      //   items: const <BottomNavigationBarItem>[
+      //     BottomNavigationBarItem(
+      //       icon: Icon(Icons.home),
+      //       label: 'Home',
+      //     ),
+      //     BottomNavigationBarItem(
+      //       icon: Icon(Icons.history),
+      //       label: 'History',
+      //     ),
+      //     BottomNavigationBarItem(
+      //       icon: Icon(Icons.error),
+      //       label: 'Penalty',
+      //     ),
+      //     BottomNavigationBarItem(
+      //       icon: Icon(Icons.person),
+      //       label: 'Profile',
+      //     ),
+      //   ],
+      //   currentIndex: _selectedIndex,
+      //   onTap: _onItemTapped,
+      // ),
     );
   }
 }

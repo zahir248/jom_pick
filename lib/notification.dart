@@ -64,6 +64,29 @@ class _notificationState extends State<userNotification> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    IconButton(
+                      icon: Icon(Icons.arrow_back, color: Colors.black),
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(
+                          16.0, 50.0, 16.0, 10.0),
+                      child: Text(
+                        'Detail',
+                        style: TextStyle(
+                          fontSize: 30,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                    SizedBox(width: 50),
+                  ],
+                ),
                 Text(
                   'Notification',
                   style: TextStyle(

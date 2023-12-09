@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:typed_data';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'dashboard.dart';
@@ -15,7 +16,10 @@ import 'dart:typed_data';
 
 import 'main.dart';
 
-import 'item_detail.dart';
+
+import 'package:jom_pick/HomeScreen.dart';
+
+
 
 
 class History extends StatefulWidget {
@@ -26,11 +30,17 @@ class History extends StatefulWidget {
 }
 
 class _HistoryState extends State<History> {
-  int _selectedIndex = 0; // Index of the selected tab
+  int _selectedIndex = 1; // Index of the selected tab
   int? userId;
 
   List<Item> itemData = []; // List to store fetched data
   List<Item> filteredItemData = []; // List to store filtered data
+
+  final List<String> categories = [
+    'Picked',
+    'Disposed'
+  ];
+  final List<String> selectedCategories = [];
 
   TextEditingController searchController = TextEditingController();
 
@@ -91,6 +101,35 @@ class _HistoryState extends State<History> {
   }
 
   Widget _buildListView() {
+
+    final filterCategory = filteredItemData.where((Item){
+      return selectedCategories.isEmpty ||
+            selectedCategories.contains(Item.status);
+    }).toList();
+
+    Container(
+      padding: const EdgeInsets.all(8.0),
+      margin: const EdgeInsets.all(8.0),
+      child: Row(
+        children: categories.map(
+                (status) => Padding(
+                    padding: const EdgeInsets.all(8.0),
+                child: FilterChip(
+                  selected: selectedCategories.contains(status),
+                  label: Text(status),
+                  onSelected: (selected){
+                    setState(() {
+                      if(selected){
+                        selectedCategories.add(status);
+                      }else{
+                        selectedCategories.remove(status);
+                      }
+                    });
+                  }),
+                )
+        ).toList(),
+      ),
+    );
     return Expanded(
       child: filteredItemData.isEmpty
           ? Center(
@@ -102,8 +141,10 @@ class _HistoryState extends State<History> {
           : Center(
         child: Scrollbar(
           child: ListView.builder(
-            itemCount: filteredItemData.length,
+            //itemCount: filteredItemData.length,
+            itemCount: filterCategory.length,
             itemBuilder: (context, index) {
+              //final category = filterCategory[index];
               return Card(
                 margin: EdgeInsets.all(8.0),
                 elevation: 4.0, // Set the elevation (shadow) here
@@ -113,36 +154,30 @@ class _HistoryState extends State<History> {
                     mainAxisSize: MainAxisSize.min,
                     children: <Widget>[
                       ListTile(
-                        contentPadding: EdgeInsets.all(0), // Remove default ListTile padding
                         leading: Container(
                           width: 90,
                           height: 90,
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
-                            image: DecorationImage(
-                              fit: BoxFit.cover,
-                              image: AssetImage('assets/jompick.jpg'), // adjust the path accordingly
-                            ),
                             color: Colors.blueGrey,
                           ),
                         ),
                         title: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(
-                              filteredItemData[index].itemName, // Use filteredItemData instead of itemData
-                              itemData[index].itemName,
-                              style: TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                              ),
                             Row(
                               children: [
-                                Text(
-                                  filteredItemData[index].itemName, // Use filteredItemData instead of itemData
-                                  style: TextStyle(
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.bold,
+                                // Make the overflow text two lines
+                                Flexible(
+                                  child: Text(
+                                    filterCategory[index].itemName,
+                                    // Avoid the text overflow from the status container
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,// Use filteredItemData instead of itemData
+                                    style: TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold,
+                                    ),
                                   ),
                                 ),
                                 SizedBox(width: 8), // Adjust the spacing between item name and status
@@ -152,7 +187,7 @@ class _HistoryState extends State<History> {
                           ],
                         ),
                         subtitle: Text(
-                          filteredItemData[index].location,
+                          filterCategory[index].location,
                           style: TextStyle(
                             fontSize: 14,
                           ),
@@ -161,24 +196,20 @@ class _HistoryState extends State<History> {
                           width: 90,
                           height: 25,
                           decoration: BoxDecoration(
-                            color: filteredItemData[index].status == 'Picked'
-                                ? Colors.green
-                                : Colors.red,
+                            color: getStatusColor(filterCategory[index].status),
                           ),
                           alignment: Alignment.center,
                           child: Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               Icon(
-                                filteredItemData[index].status == 'Picked'
-                                    ? Icons.check_circle
-                                    : Icons.error,
+                                Icons.error,
                                 color: Colors.white,
                                 size: 16,
                               ),
                               SizedBox(width: 4),
                               Text(
-                                filteredItemData[index].status ?? '', // Use the confirmation status here
+                                filterCategory[index].status,
                                 style: TextStyle(
                                   color: Colors.white,
                                   fontSize: 12,
@@ -188,33 +219,6 @@ class _HistoryState extends State<History> {
                           ),
                         ),
                       ),
-                  trailing: Container(
-                    width: 90,
-                    height: 25,
-                    decoration: BoxDecoration(
-                      color: getStatusColor(filteredItemData[index].status),
-                    ),
-                    alignment: Alignment.center,
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(
-                          Icons.error,
-                          color: Colors.white,
-                          size: 16,
-                        ),
-                        SizedBox(width: 4),
-                        Text(
-                          filteredItemData[index].status,
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 12,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
 
                       Divider(
                         height: 20.0,
@@ -230,10 +234,8 @@ class _HistoryState extends State<History> {
                             Icon(Icons.calendar_today),
                             SizedBox(width: 8),
                             Text(
-                              filteredItemData[index].registerDate != null
-                                  ? DateFormat('EEEE, dd MMMM yyyy').format(filteredItemData[index].registerDate!)
-                              itemData[index].registerDate != null
-                                  ? DateFormat('EEEE, dd MMMM yyyy').format(itemData[index].registerDate!)
+                              filterCategory[index].registerDate != null
+                                  ? DateFormat('EEEE, dd MMMM yyyy').format(filterCategory[index].registerDate!)
                                   : "N/A",
                               style: TextStyle(fontSize: 14),
                             ),
@@ -241,10 +243,8 @@ class _HistoryState extends State<History> {
                             Icon(Icons.access_time),
                             SizedBox(width: 4),
                             Text(
-                              filteredItemData[index].registerDate != null
-                                  ? DateFormat('h:mm a').format(filteredItemData[index].registerDate!)
-                              itemData[index].registerDate != null
-                                  ? DateFormat('h:mm a').format(itemData[index].registerDate!)
+                              filterCategory[index].registerDate != null
+                                  ? DateFormat('h:mm a').format(filterCategory[index].registerDate!)
                                   : "N/A",
                               style: TextStyle(fontSize: 14),
                             ),
@@ -262,11 +262,6 @@ class _HistoryState extends State<History> {
                                 filteredItemData[index].trackingNumber,
                                 filteredItemData[index].itemType,
                                 filteredItemData[index].imageData,
-                                filteredItemData[index].status,
-                                filteredItemData[index].confirmationDate,
-                              );
-                              _detailsItem(itemData[index].itemId,itemData[index].itemName, itemData[index].trackingNumber);
-                                //filteredItemData[index].imageData,
                                 filteredItemData[index].status,
                                 filteredItemData[index].confirmationDate,
                               );
@@ -292,14 +287,19 @@ class _HistoryState extends State<History> {
     );
   }
 
-  void _detailsItem(int itemId, String itemName, String trackingNumber, String itemType, Uint8List imageData, String status, DateTime confirmationDate) {
-  void _detailsItem(int itemId, String itemName, String trackingNumber) {
-  void _detailsItem(int itemId, String itemName, String trackingNumber, String itemType, /*Uint8List imageData,*/ String status, DateTime confirmationDate) {
+  void _detailsItem(
+      int itemId,
+      String itemName,
+      String trackingNumber,
+      String itemType,
+      Uint8List imageData,
+      String status,
+      DateTime confirmationDate) {
     // Navigate to the item detail page and pass the item_id
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => ItemDetailPage(
+        builder: (context) => ItemDetailPageHistory(
           itemId: itemId,
           itemName: itemName,
           trackingNumber : trackingNumber,
@@ -307,9 +307,6 @@ class _HistoryState extends State<History> {
           imageData: imageData,
           status: status,
           confirmationDate: confirmationDate,
-        ),
-        builder: (context) => ItemDetailPage(itemId: itemId,itemName: itemName, trackingNumber : trackingNumber),
-          //imageData: imageData,
         ),
       ),
     );
@@ -342,7 +339,7 @@ class _HistoryState extends State<History> {
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => DashBoard(),
+          builder: (context) => HomeScreen(),
         ),
       );
       setState(() {
@@ -382,14 +379,12 @@ class _HistoryState extends State<History> {
       body: Column(
         children: <Widget>[
           Padding(
-            padding: const EdgeInsets.only(left: 20.0, right: 16.0, top: 50.0),
             padding: const EdgeInsets.only(left: 16.0, right: 16.0, top: 50.0),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
                 Text(
                   'History',
-                  'JomPick',
                   style: TextStyle(
                     fontSize: 30.0,
                     fontWeight: FontWeight.bold,
@@ -403,8 +398,6 @@ class _HistoryState extends State<History> {
             child: TextField(
               controller: searchController,
               onChanged: filterItems,
-
-
               decoration: InputDecoration(
                 hintText: 'Search',
                 prefixIcon: Icon(Icons.search),
@@ -416,6 +409,30 @@ class _HistoryState extends State<History> {
                   borderRadius: BorderRadius.circular(10.0), // Adjust the border radius as needed
                 ),
               ),
+            ),
+          ),
+
+          Container(
+            padding: const EdgeInsets.all(1.0),
+            margin: const EdgeInsets.all(1.0),
+            child: Row(
+              children: categories.map(
+                      (status) => Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: FilterChip(
+                        selected: selectedCategories.contains(status),
+                        label: Text(status),
+                        onSelected: (selected){
+                          setState(() {
+                            if(selected){
+                              selectedCategories.add(status);
+                            }else{
+                              selectedCategories.remove(status);
+                            }
+                          });
+                        }),
+                  )
+              ).toList(),
             ),
           ),
           _buildListView(), // Use the custom ListView

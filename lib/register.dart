@@ -104,7 +104,7 @@ class _RegisterState extends State<Register> {
                   child: Container(
                     alignment: Alignment.centerLeft,
                     child: IconButton(
-                      icon: Icon(Icons.arrow_back, color: Colors.black),
+                      icon: Icon(Icons.arrow_back_ios, color: Colors.black),
                       onPressed: () {
                         Navigator.pop(context);
                       },
@@ -125,17 +125,17 @@ class _RegisterState extends State<Register> {
                 Padding(
                   padding: const EdgeInsets.fromLTRB(16.0, 20.0, 16.0, 16.0), // Adjust the bottom padding
                   child: TextFormField(
-                    controller: fullName,
-                    decoration: InputDecoration(
-                      labelText: 'Full Name',
-                    ),
-                    validator: (value){
-                      if(value!.isEmpty || !RegExp(r'^[a-z A-Z]+$').hasMatch(value!) || RegExp(r'^[0-9]+$').hasMatch(value!)){
-                        return 'Invalid format for name';
-                      }else{
-                        return null;
+                      controller: fullName,
+                      decoration: InputDecoration(
+                        labelText: 'Full Name',
+                      ),
+                      validator: (value){
+                        if(value!.isEmpty || !RegExp(r'^[a-z A-Z]+$').hasMatch(value!) || RegExp(r'^[0-9]+$').hasMatch(value!)){
+                          return 'Invalid format for name';
+                        }else{
+                          return null;
+                        }
                       }
-                    }
                   ),
                 ),
                 Padding(
@@ -208,12 +208,12 @@ class _RegisterState extends State<Register> {
                 Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: TextFormField(
-                    controller: matriculationNumber,
-                    decoration: InputDecoration(
-                      labelText: 'Matric Number',
-                    ),
+                      controller: matriculationNumber,
+                      decoration: InputDecoration(
+                        labelText: 'Matric Number',
+                      ),
                       validator: (value){
-                        if(value!.isEmpty || !RegExp(r'^[a-z A-Z]+$').hasMatch(value!) || !RegExp(r'^[0-9]+$').hasMatch(value!)){
+                        if(value!.isEmpty || RegExp(r'^[a-z A-Z]+$').hasMatch(value!) || RegExp(r'^[0-9]+$').hasMatch(value!)){
                           return 'Invalid format for matric number';
                         }else{
                           return null;
@@ -224,13 +224,13 @@ class _RegisterState extends State<Register> {
                 Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: TextFormField(
-                    keyboardType: TextInputType.number,
-                    controller: icNumber,
-                    decoration: InputDecoration(
-                      labelText: 'IC Number',
-                    ),
+                      keyboardType: TextInputType.number,
+                      controller: icNumber,
+                      decoration: InputDecoration(
+                        labelText: 'IC Number',
+                      ),
                       validator: (value){
-                        if(value!.isEmpty || RegExp(r'^[a-z A-Z]+$').hasMatch(value!) || !RegExp(r'^[0-9]+$').hasMatch(value!) || value.length<13){
+                        if(value!.isEmpty || RegExp(r'^[a-z A-Z]+$').hasMatch(value!) || !RegExp(r'^[0-9]+$').hasMatch(value!) || value.length>12){
                           return 'IC Number must contains 12 digit wihout "-"';
                         }else{
                           return null;
@@ -256,11 +256,11 @@ class _RegisterState extends State<Register> {
                 Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: TextFormField(
-                    keyboardType: TextInputType.number,
-                    controller: phoneNumber,
-                    decoration: InputDecoration(
-                      labelText: 'Phone Number',
-                    ),
+                      keyboardType: TextInputType.number,
+                      controller: phoneNumber,
+                      decoration: InputDecoration(
+                        labelText: 'Phone Number',
+                      ),
                       validator: (value){
                         if(value!.isEmpty || RegExp(r'^[a-z A-Z]+$').hasMatch(value!) || !RegExp(r'^[0-9]+$').hasMatch(value!) ||value.length>11 || value.length<10){
                           return 'Invalid phone number';
@@ -273,10 +273,10 @@ class _RegisterState extends State<Register> {
                 Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: TextFormField(
-                    controller: user,
-                    decoration: InputDecoration(
-                      labelText: 'Username',
-                    ),
+                      controller: user,
+                      decoration: InputDecoration(
+                        labelText: 'Username',
+                      ),
                       validator: (value){
                         if(value!.isEmpty || !RegExp(r'^[a-zA-Z0-9]+$').hasMatch(value) || value.length<8){
                           return 'Username must contains at lower case, upper case, number and at least 8 character';
@@ -289,23 +289,23 @@ class _RegisterState extends State<Register> {
                 Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: TextFormField(
-                    controller: pass,
-                    obscureText: !isPasswordVisible,
-                    decoration: InputDecoration(
-                      labelText: 'Password',
-                      suffixIcon: GestureDetector(
-                        onTap: () {
-                          setState(() {
-                            isPasswordVisible = !isPasswordVisible;
-                          });
-                        },
-                        child: Icon(
-                          isPasswordVisible
-                              ? Icons.visibility
-                              : Icons.visibility_off,
+                      controller: pass,
+                      obscureText: !isPasswordVisible,
+                      decoration: InputDecoration(
+                        labelText: 'Password',
+                        suffixIcon: GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              isPasswordVisible = !isPasswordVisible;
+                            });
+                          },
+                          child: Icon(
+                            isPasswordVisible
+                                ? Icons.visibility
+                                : Icons.visibility_off,
+                          ),
                         ),
                       ),
-                    ),
                       validator: (value){
                         if(value!.isEmpty || !RegExp(r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_-]).+$').hasMatch(value) || value.length<8){
                           return 'Password must contains at lower case, upper case, number, special character and at least 8 character';
@@ -350,21 +350,6 @@ class _RegisterState extends State<Register> {
                   ),
                   child: Text('Register', style: TextStyle(fontSize: 18)),
                 ),
-              ),
-              ElevatedButton(
-                onPressed: () {
-                  register();
-                },
-                style: ElevatedButton.styleFrom(
-                  fixedSize: Size(340, 45),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(100),
-                  ),
-                ),
-                child: Text('Register', style: TextStyle(fontSize: 16)),
-              ),
-              const SizedBox(height: 50),
-            ],
                 const SizedBox(height: 50),
               ],
             ),

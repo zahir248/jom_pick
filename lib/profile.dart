@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:jom_pick/HomeScreen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'dashboard.dart';
@@ -131,12 +132,12 @@ class _ProfileState extends State<Profile> {
 
   Future<void> updateProfile() async {
     try {
-
       // Create a `http.MultipartRequest` to send a combination of text data and image
       var request = http.MultipartRequest(
         'POST',
 
         Uri.http(MyApp.baseIpAddress, MyApp.updateProfilePath, {'q': '{http}'}),
+
 
       );
 
@@ -233,7 +234,7 @@ class _ProfileState extends State<Profile> {
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => DashBoard(),
+          builder: (context) => HomeScreen(),
         ),
       );
       setState(() {

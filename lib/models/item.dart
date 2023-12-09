@@ -10,7 +10,7 @@ class Item {
   final String itemType;
   final String address;
   final Uint8List imageData; // Use Uint8List for binary image data
-  final Uint8List imageData; // Use Uint8List for binary image data
+
   final String status;
   final DateTime confirmationDate;
   final String penaltyStatus;
@@ -24,6 +24,7 @@ class Item {
     required this.trackingNumber,
     required this.itemType,
     required this.address,
+
     required this.imageData,
     required this.status,
     required this.confirmationDate,

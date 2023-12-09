@@ -51,6 +51,8 @@ dependencies:
   cupertino_icons: ^1.0.2
   http: ^0.13.4 #to interact with api
   fluttertoast: ^8.0.9 #to display toast message
+  flutter_polyline_points: ^1.0.0
+
 
 dev_dependencies:
   flutter_test:
@@ -78,7 +80,14 @@ flutter:
   assets:
     - assets/jompick.jpg
     - assets/default.jpg
+
     - assets/jompick2.png
+
+    - assets/Jom-Pick-logo.jpg
+    - assets/parcel_and_document.jpg
+    - assets/map.jpg
+    - assets/jompick_homepage.jpg
+
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
