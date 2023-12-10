@@ -9,6 +9,7 @@ import 'package:jom_pick/setting.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import 'PickUpLocationMap.dart';
+import 'main.dart';
 import 'models/notification_model.dart';
 
 
@@ -42,7 +43,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
     if (userId != null) {
 
-      final response = await http.get(Uri.parse('http://192.168.0.119/notification.php?user_id=$userId'));
+      final response = await http.get(Uri.parse('http://${MyApp.baseIpAddress}${MyApp.notification}?user_id=$userId'));
       print('Raw JSON response: ${response.body}');
 
       if (response.statusCode == 200) {
@@ -62,31 +63,6 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
-  // Future<void> fetchUserData() async {
-  //   //   SharedPreferences prefs = await SharedPreferences.getInstance();
-  //   //   userId = prefs.getInt('user_id');
-  //   //
-  //   //   if (userId != null) {
-  //   //
-  //   //     final response = await http.get(Uri.parse('http://192.168.0.119/notification.php?user_id=$userId'));
-  //   //     print('Raw JSON response: ${response.body}');
-  //   //
-  //   //     if (response.statusCode == 200) {
-  //   //
-  //   //       final List<dynamic> jsonData = json.decode(response.body);
-  //   //
-  //   //       setState(() {
-  //   //         itemData = (jsonData as List).map((item) => SendNotification.fromJson(item)).toList();
-  //   //         filteredItemData = List.from(itemData); // Initialize filteredItemData
-  //   //
-  //   //       });
-  //   //     } else {
-  //   //       throw Exception('Failed to load user data. Status code: ${response.statusCode}');
-  //   //     }
-  //   //   } else {
-  //   //     print('User ID not found in SharedPreferences');
-  //   //   }
-  //   // }
 
   @override
   Widget build(BuildContext context) {
@@ -159,6 +135,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                   child: Text(
                                     'Welcome To JomPick',
                                     style: TextStyle(
+                                      fontFamily: 'Monoton',
                                         color: Colors.black87,
                                         fontSize: 26,
                                         fontWeight: FontWeight.bold),
@@ -228,8 +205,8 @@ class _HomeScreenState extends State<HomeScreen> {
                       child: ListView(
                         scrollDirection: Axis.horizontal,
                         children: <Widget>[
-                          promoCard1(context, 'assets/parcel_and_document.jpg'),
-                          promoCard2(context, 'assets/map.jpg'),
+                          promoCard1(context, 'assets/parcel_icon.jpg'),
+                          promoCard2(context, 'assets/map_icon2.jpg'),
                         ],
                       ),
                     ),
@@ -422,7 +399,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   'Item Activities', // Add your text here
                   style: TextStyle(
                     color: Colors.white,
-                    fontSize: screenWidth*0.04,
+                    fontSize: 16,
                     fontWeight: FontWeight.bold,
                   ),
                 ),

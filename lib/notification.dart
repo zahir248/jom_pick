@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:intl/intl.dart';
+import 'package:jom_pick/main.dart';
 
 import 'dashboard.dart';
 import 'package:flutter/material.dart';
@@ -33,7 +34,7 @@ class _notificationState extends State<userNotification> {
 
     if (userId != null) {
 
-      final response = await http.get(Uri.parse('http://192.168.0.119/notification.php?user_id=$userId'));
+      final response = await http.get(Uri.parse('http://${MyApp.baseIpAddress}${MyApp.notification}?user_id=$userId'));
       print('Raw JSON response: ${response.body}');
 
       if (response.statusCode == 200) {

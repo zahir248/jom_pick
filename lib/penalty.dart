@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:jom_pick/HomeScreen.dart';
@@ -7,20 +6,14 @@ import 'package:jom_pick/item_detail.dart';
 import 'package:jom_pick/penalty_details.dart';
 import 'package:jom_pick/setting.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'PickUpLocationMap.dart';
 import 'dashboard.dart';
-import 'profile.dart';
-import 'history.dart';
-import '../models/item.dart';
-import 'package:shared_preferences/shared_preferences.dart'; // Import SharedPreferences
-import 'package:http/http.dart' as http;
-import 'dart:convert';
-import 'package:intl/intl.dart'; // Import the intl package
-import 'dart:typed_data';
-import 'item_detail_history.dart';
-import 'main.dart';
-
 import 'models/item.dart';
 import 'models/penalty_details_model.dart';
+import 'profile.dart';
+import 'history.dart';
+import 'package:http/http.dart' as http;
+import 'main.dart';
 
 
 class Penalty extends StatefulWidget {
@@ -33,7 +26,6 @@ class Penalty extends StatefulWidget {
 class _PenaltyState extends State<Penalty> {
   int? userId;  // Check if userId have value or null
   int _selectedIndex = 2; // Index of the selected tab
-
 
   List<PenaltyDetails> itemData = [];
   List<PenaltyDetails> filteredItemData = [];
@@ -71,7 +63,7 @@ class _PenaltyState extends State<Penalty> {
             final List<dynamic> jsonData = json.decode(response.body);
 
             setState(() {
-              itemData = (jsonData as List).map((item) => Item.fromJson(item)).toList();
+              itemData = (jsonData as List).map((item) => PenaltyDetails.fromJson(item)).toList();
               itemData.sort((a, b) => b.registerDate!.compareTo(a.registerDate!));
               filteredItemData = List.from(itemData);
             });
@@ -93,28 +85,6 @@ class _PenaltyState extends State<Penalty> {
     }
   }
 
-
-
-  void _detailsItem(int itemId, String itemName, String trackingNumber, String itemType, Uint8List imageData, String status, DateTime confirmationDate) {
-    // Navigate to the item detail page and pass the item_id
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => ItemDetailPage(
-          itemId: itemId,
-          itemName: itemName,
-          trackingNumber : trackingNumber,
-          itemType : itemType,
-          imageData: imageData,
-          status: status,
-          confirmationDate: confirmationDate,
-        ),
-      ),
-    );
-  }
-
-
-
   Widget _buildListView() {
 
     final filterCategory = filteredItemData.where((PenaltyDetails) {
@@ -122,30 +92,6 @@ class _PenaltyState extends State<Penalty> {
           selectedCategories.contains(PenaltyDetails.paymentStatus);
     }).toList();
 
-    //Create filter button
-    // Container(
-    //   padding: const EdgeInsets.all(8.0),
-    //   margin: const EdgeInsets.all(8.0),
-    //   child: Row(
-    //     children: categories.map(
-    //           (paymentStatus) => Padding(
-    //         padding: const EdgeInsets.all(8.0),
-    //         child: FilterChip(
-    //             selected: selectedCategories.contains(paymentStatus),
-    //             label: Text(paymentStatus),
-    //             onSelected: (selected){
-    //               setState(() {
-    //                 if(selected){
-    //                   selectedCategories.add(paymentStatus);
-    //                 }else{
-    //                   selectedCategories.remove(paymentStatus);
-    //                 }
-    //               });
-    //             }),
-    //       ),
-    //     ).toList(),
-    //   ),
-    // );
 
     return Expanded(
       child: filterCategory.isEmpty
@@ -163,7 +109,7 @@ class _PenaltyState extends State<Penalty> {
             itemBuilder: (context, index) {
               //final category = filterCategory[index];
 
-             //print("Payment Status adaaaaa: ${filteredItemData[index].paymentStatus}");
+              //print("Payment Status adaaaaa: ${filteredItemData[index].paymentStatus}");
 
               return Card(
                 margin: EdgeInsets.all(8.0),
@@ -416,7 +362,6 @@ class _PenaltyState extends State<Penalty> {
       body: Column(
         children: <Widget>[
           Padding(
-
             padding: const EdgeInsets.only(left: 16.0, right: 16.0, top: 50.0),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -427,6 +372,12 @@ class _PenaltyState extends State<Penalty> {
                     fontSize: 30.0,
                     fontWeight: FontWeight.bold,
                   ),
+                ),
+                IconButton(
+                  icon: Icon(Icons.settings),
+                  onPressed: () {
+                    handleSetting(); // Logout when the button is pressed
+                  },
                 ),
               ],
             ),
@@ -449,30 +400,30 @@ class _PenaltyState extends State<Penalty> {
               ),
             ),
           ),
-              // Create filter button to filter the item category
-              Container(
-                padding: const EdgeInsets.all(1.0),
-                margin: const EdgeInsets.all(1.0),
-                child: Row(
-                  children: categories.map(
-                          (paymentStatus) => Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: FilterChip(
-                              selected: selectedCategories.contains(paymentStatus),
-                                label: Text(paymentStatus),
-                                onSelected: (selected){
-                                setState(() {
-                                  if(selected){
-                                    selectedCategories.add(paymentStatus);
-                                  }else{
-                                    selectedCategories.remove(paymentStatus);
-                                  }
-                                });
-                              }),
-                          ),
-                  ).toList(),
+          // Create filter button to filter the item category
+          Container(
+            padding: const EdgeInsets.all(1.0),
+            margin: const EdgeInsets.all(1.0),
+            child: Row(
+              children: categories.map(
+                    (paymentStatus) => Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: FilterChip(
+                      selected: selectedCategories.contains(paymentStatus),
+                      label: Text(paymentStatus),
+                      onSelected: (selected){
+                        setState(() {
+                          if(selected){
+                            selectedCategories.add(paymentStatus);
+                          }else{
+                            selectedCategories.remove(paymentStatus);
+                          }
+                        });
+                      }),
                 ),
-              ),
+              ).toList(),
+            ),
+          ),
 
           _buildListView(),
           // Use the custom ListView

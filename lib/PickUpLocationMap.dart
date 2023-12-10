@@ -7,9 +7,9 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:jom_pick/HomeScreen.dart';
 import 'PickUpLocationService.dart';
 
-void main() => runApp(MyApp());
+void main() => runApp(MyMap());
 
-class MyApp extends StatelessWidget {
+class MyMap extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(

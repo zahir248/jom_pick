@@ -135,10 +135,7 @@ class _ProfileState extends State<Profile> {
       // Create a `http.MultipartRequest` to send a combination of text data and image
       var request = http.MultipartRequest(
         'POST',
-
         Uri.http(MyApp.baseIpAddress, MyApp.updateProfilePath, {'q': '{http}'}),
-
-
       );
 
       // Attach the image file if imagePath is not empty
@@ -163,6 +160,9 @@ class _ProfileState extends State<Profile> {
         // Parse the JSON response
         final Map<String, dynamic> responseData =
         json.decode(await response.stream.bytesToString());
+
+        print('Response body: $responseData');
+
 
         if (responseData['success']) {
           // Update was successful, show the toast and update state

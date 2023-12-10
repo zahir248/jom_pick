@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:jom_pick/HomeScreen.dart';
+import 'HomeScreen.dart';
 import 'setting.dart';
 import 'profile.dart';
 import 'penalty.dart';
@@ -10,7 +10,6 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:intl/intl.dart'; // Import the intl package
 import 'item_detail.dart';
-import 'notification.dart';
 import 'dart:typed_data';
 import 'main.dart';
 
@@ -42,7 +41,6 @@ class _DashBoardState extends State<DashBoard> {
     userId = prefs.getInt('user_id');
 
     if (userId != null) {
-
       try {
         final response = await http.get(
           Uri.parse('http://${MyApp.baseIpAddress}${MyApp.itemHomePath}?user_id=$userId'),
@@ -233,14 +231,14 @@ class _DashBoardState extends State<DashBoard> {
       context,
       MaterialPageRoute(
         builder: (context) => ItemDetailPage(
-            itemId: itemId,
-            itemName: itemName,
-            trackingNumber : trackingNumber,
-            itemType : itemType,
-            imageData: imageData,
-            status: status,
-            confirmationDate: confirmationDate,
-            address: address,
+          itemId: itemId,
+          itemName: itemName,
+          trackingNumber : trackingNumber,
+          itemType : itemType,
+          imageData: imageData,
+          status: status,
+          confirmationDate: confirmationDate,
+          address: address,
         ),
       ),
     );
@@ -252,21 +250,20 @@ class _DashBoardState extends State<DashBoard> {
     Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Setting()));
   }
 
-
   // void _onItemTapped(int index) {
   //   if (index == 3) {
   //     // If the "Profile" button is tapped (index 2), navigate to the profile page
   //     Navigator.push(
   //       context,
   //       MaterialPageRoute(
-  //         builder: (context) => HomeScreen(),
+  //         builder: (context) => Profile(),
   //       ),
   //     );
   //   } else if (index == 2) {
   //     Navigator.push(
   //       context,
   //       MaterialPageRoute(
-  //         builder: (context) => userNotification(),
+  //         builder: (context) => Penalty(),
   //       ),
   //     );
   //   } else if (index == 1) {
@@ -288,8 +285,6 @@ class _DashBoardState extends State<DashBoard> {
   //     });
   //   }
   // }
-
-
 
   // Update the filterItems method to filter itemData only when the search bar has a value
   void filterItems(String query) {
@@ -317,13 +312,17 @@ class _DashBoardState extends State<DashBoard> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
                 IconButton(
-                  icon: Icon(Icons.arrow_back_ios, color: Colors.black),
+                  icon: Icon(Icons.arrow_back, color: Colors.black),
                   onPressed: () {
-                    Navigator.pop(context);
+                    // Navigate to the home page and replace the current page
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(builder: (context) => HomeScreen()),
+                    );
                   },
                 ),
                 Text(
-                  'Item Activities',
+                  'Pending Items',
                   style: TextStyle(
                     fontSize: 30.0,
                     fontWeight: FontWeight.bold,

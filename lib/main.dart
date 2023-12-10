@@ -21,7 +21,7 @@ void main() {
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
 
-  static final String baseIpAddress = "10.200.124.64";
+  static final String baseIpAddress = "192.168.0.119";
 
   static final String loginPath = "/jompick/login.php";
   static final String registerPath = "/jompick/register.php";
@@ -29,12 +29,13 @@ class MyApp extends StatelessWidget {
   static final String updateConfirmationDurationLocationPath = "/jompick/updateConfirmationDurationLocation.php";
   static final String updateConfirmationStatusPath = "/jompick/updateConfirmationStatus.php";
   static final String updatePickupDatePath = "/jompick/updateConfirmationPickupDate.php";
-  static final String itemPenaltyPath = "/jompick/itemPenalty.php";
+  static final String itemPenaltyPath = "/jompick/penalty.php";
   static final String updateConfirmationDatePath = "/jompick/updateConfirmationDate.php";
   static final String itemHistoryPath = "/jompick/itemHistory.php";
   static final String updateForgotPasswordPath = "/jompick/forgotPassword.php";
   static final String itemHomePath = "/jompick/itemHome.php";
   static final String updatePasswordPath = "/jompick/updatePassword.php";
+  static final String notification = "/jompick/notification.php";
 
   @override
   Widget build(BuildContext context) {
@@ -73,7 +74,6 @@ class _MyHomePageState extends State<MyHomePage> {
     }
 
     var url = Uri.http(MyApp.baseIpAddress, MyApp.loginPath, {'q': '{http}'});
-
     var response = await http.post(url, body: {
       "username": user.text,
       "password": pass.text,
@@ -287,4 +287,3 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 }
-
