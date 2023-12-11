@@ -482,7 +482,7 @@ class _PickupDetailPageState extends State<PickupDetailPage> {
                     ),
                     Padding(
                       padding: const EdgeInsets.fromLTRB(
-                          16.0, 70.0, 16.0, 50.0),
+                          5.0, 70.0, 75.0, 50.0),
                       child: Text(
                         'Pick-up Detail',
                         style: TextStyle(
@@ -491,11 +491,6 @@ class _PickupDetailPageState extends State<PickupDetailPage> {
                         ),
                       ),
                     ),
-                    IconButton(
-                      icon: Icon(Icons.refresh),
-                      onPressed: _refresh,
-                    ),
-                    //SizedBox(width: 50),
                   ],
                 ),
                 Row(
@@ -857,7 +852,11 @@ class _PickupDetailPageState extends State<PickupDetailPage> {
               ],
             ),
           ),
-        )
+        ),
+      floatingActionButton: FloatingActionButton(
+      onPressed: _refresh,
+      child: Icon(Icons.refresh),
+    ),
     );
   }
 }
