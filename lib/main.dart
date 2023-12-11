@@ -11,6 +11,7 @@ import 'forgot_password.dart';
 import 'package:path_provider/path_provider.dart';
 import 'dart:io';
 import 'package:geolocator/geolocator.dart';
+import 'admin.dart';
 
 void main() {
   runApp(const MyApp());
@@ -127,12 +128,26 @@ class _MyHomePageState extends State<MyHomePage> {
                 prefs.setString('emailAddress', emailAddress);
               }
 
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => DashBoard(),
-                ),
-              );
+              // Check for the role information and redirect accordingly
+              if (data.containsKey('rolename')) {
+                String rolename = data['rolename'];
+                if (rolename == 'admin' || rolename == 'staff') {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => AdminPage(username: user.text), // Pass the username here
+                    ),                  );
+                } else if (rolename == 'student' || rolename == 'public') {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => DashBoard()),
+                  );
+                } else {
+                  print('Unknown rolename: $rolename');
+                }
+              } else {
+                print('rolename not found in response');
+              }
             } else {
               print('Failed to parse user_id as int');
             }
