@@ -232,6 +232,7 @@ class _pickupLocation extends State<pickupLocation> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
           Padding(
             padding: const EdgeInsets.only(left: 16.0, right: 16.0, top: 50.0),
