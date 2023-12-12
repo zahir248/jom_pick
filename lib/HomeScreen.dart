@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:jom_pick/DashBoard.dart';
 import 'package:jom_pick/history.dart';
 import 'package:jom_pick/penalty.dart';
+import 'package:jom_pick/pickup_location.dart';
 import 'package:jom_pick/profile.dart';
 import 'package:jom_pick/setting.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -421,7 +422,7 @@ class _HomeScreenState extends State<HomeScreen> {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => PickupLocationMap(),
+            builder: (context) => pickupLocation(),
           ),
         );
       },

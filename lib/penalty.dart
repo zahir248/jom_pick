@@ -109,6 +109,9 @@ class _PenaltyState extends State<Penalty> {
             itemBuilder: (context, index) {
               //final category = filterCategory[index];
 
+              print('Filtered items count: ${filterCategory.length}');
+
+
               //print("Payment Status adaaaaa: ${filteredItemData[index].paymentStatus}");
 
               return Card(

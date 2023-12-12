@@ -1,38 +1,48 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
-//import 'package:flutter_google_maps/location_service.dart';
-//import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:jom_pick/HomeScreen.dart';
 import 'PickUpLocationService.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:geocoding/geocoding.dart';
+//import 'package:location/location.dart' as location;
 
-void main() => runApp(MyMap());
-
-class MyMap extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Google Maps Demo',
-      home: PickupLocationMap(),
-    );
-  }
-}
+// void main() => runApp(MyMap());
+//
+// class MyMap extends StatelessWidget {
+//   @override
+//   Widget build(BuildContext context) {
+//     return MaterialApp(
+//       title: 'Flutter Google Maps Demo',
+//       home: PickupLocationMap(),
+//     );
+//   }
+// }
 
 class PickupLocationMap extends StatefulWidget {
-  const PickupLocationMap({super.key});
+
+  final String destinationAddress;
+
+  //const PickupLocationMap({super.key, required this.destinationAddress});
+
+  const PickupLocationMap({Key? key, required this.destinationAddress})
+      : super(key: key);
 
   @override
   State<PickupLocationMap> createState() => PickupLocationMapState();
 }
 
 class PickupLocationMapState extends State<PickupLocationMap> {
+
   final Completer<GoogleMapController> _controller =
   Completer<GoogleMapController>();
 
   TextEditingController _originLocationController = TextEditingController();
   TextEditingController _destinationLocationController = TextEditingController();
 
+  // location.LocationData? _currentLocation;
+  // location.Location locationService = location.Location();
 
   Set<Marker> _markers = Set<Marker>();
   Set<Polygon> _polygons = Set<Polygon>();
@@ -50,8 +60,9 @@ class PickupLocationMapState extends State<PickupLocationMap> {
   @override
   void initState(){
     super.initState();
-    
     _setMarker(LatLng(37.42796133580664, -122.085749655962));
+    _destinationLocationController.text = widget.destinationAddress;
+    _getCurrentLocation();
   }
 
   // Set marker to searched location
@@ -93,6 +104,43 @@ class PickupLocationMapState extends State<PickupLocationMap> {
         ).toList(),
     ),
     );
+  }
+
+  // Future<void> _getCurrentLocation() async {
+  //     try{
+  //       final location.LocationData currentLocation = await locationService.getLocation();
+  //       setState(() {
+  //         _currentLocation = _currentLocation;
+  //         _originLocationController.text = "${_currentLocation!.latitude}, ${_currentLocation!.longitude}";
+  //         print("Current location: ${currentLocation.latitude}, ${currentLocation.longitude}");
+  //       });
+  //     }catch(e){
+  //       print('Error retrieve current location: $e');
+  //     }
+  // }
+
+  Future<void> _getCurrentLocation() async{
+    try{
+      LocationPermission permission = await Geolocator.requestPermission();
+
+      if(permission == LocationPermission.denied){
+        print('Location permission denied');
+        return;
+      }
+
+      Position position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.best,
+      );
+
+      _originLocationController.text = "${position.latitude}, ${position.longitude}";
+
+      _setMarker(LatLng(position.latitude, position.longitude));
+
+      print("Current location ${position.latitude}, ${position.longitude} ");
+
+    }catch(e){
+      print('Error retrieving current location : $e');
+    }
   }
 
   // Create marker

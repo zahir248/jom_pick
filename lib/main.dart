@@ -36,6 +36,7 @@ class MyApp extends StatelessWidget {
   static final String itemHomePath = "/jompick/itemHome.php";
   static final String updatePasswordPath = "/jompick/updatePassword.php";
   static final String notification = "/jompick/notification.php";
+  static final String pickupLocationPath = "/jompick/pickupLocation.php";
 
   @override
   Widget build(BuildContext context) {
