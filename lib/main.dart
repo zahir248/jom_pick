@@ -7,11 +7,11 @@ import 'DashBoard.dart';
 import 'package:flutter/gestures.dart';
 import 'splashscreen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'forgot_password.dart';
 import 'package:path_provider/path_provider.dart';
 import 'dart:io';
 import 'package:geolocator/geolocator.dart';
 import 'admin.dart';
+import 'security_questions.dart';
 
 void main() {
   runApp(const MyApp());
@@ -35,6 +35,7 @@ class MyApp extends StatelessWidget {
   static final String updateForgotPasswordPath = "/jompick/forgotPassword.php";
   static final String itemHomePath = "/jompick/itemHome.php";
   static final String updatePasswordPath = "/jompick/updatePassword.php";
+  static final String verifySecurityQuestions = "/jompick/verifySecurityQuestions.php";
 
   @override
   Widget build(BuildContext context) {
@@ -281,7 +282,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => ForgotPasswordPage()),
+                    MaterialPageRoute(builder: (context) => SecurityQuestions()),
                   );
                 },
                 child: Text(

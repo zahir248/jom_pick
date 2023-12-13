@@ -20,6 +20,8 @@ class _RegisterState extends State<Register> {
   TextEditingController phoneNumber = TextEditingController();
   TextEditingController matriculationNumber = TextEditingController();
   TextEditingController confirmPass = TextEditingController();
+  TextEditingController securityQuestion1 = TextEditingController();
+  TextEditingController securityQuestion2 = TextEditingController();
 
   String? _userType; // to store the selected user type
 
@@ -32,7 +34,9 @@ class _RegisterState extends State<Register> {
         fullName.text.isEmpty ||
         emailAddress.text.isEmpty ||
         icNumber.text.isEmpty ||
-        phoneNumber.text.isEmpty) {
+        phoneNumber.text.isEmpty ||
+        securityQuestion1.text.isEmpty ||
+        securityQuestion2.text.isEmpty) {
       Fluttertoast.showToast(
         backgroundColor: Colors.red,
         textColor: Colors.white,
@@ -56,7 +60,9 @@ class _RegisterState extends State<Register> {
         "icNumber": icNumber.text.toString(),
         "phoneNumber": phoneNumber.text.toString(),
         "matricNumber": matriculationNumber.text.toString(),
-        "userType": _userType.toString(), // Include userType in the request
+        "userType": _userType.toString(),
+        "securityQuestion1": securityQuestion1.text.toString(),
+        "securityQuestion2": securityQuestion2.text.toString(),
       });
       var data = json.decode(response.body);
       if (data == "Error") {
@@ -239,6 +245,59 @@ class _RegisterState extends State<Register> {
                   ),
                 ),
               ),
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Security Question 1',
+                      style: TextStyle(
+                        fontSize: 17,
+                        color: Colors.black87, // Specify the text color here
+                      ),
+                    ),
+                    const SizedBox(height: 15),
+                    Text(
+                      'What city were you born in?',
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: Colors.black54, // Specify the text color here
+                      ),
+                    ),
+                    TextField(
+                      controller: securityQuestion1,
+                    ),
+                  ],
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Security Question 2',
+                      style: TextStyle(
+                        fontSize: 17,
+                        color: Colors.black87, // Specify the text color here
+                      ),
+                    ),
+                    const SizedBox(height: 15),
+                    Text(
+                      'In what city or town did your parents meet?',
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: Colors.black54, // Specify the text color here
+                      ),
+                    ),
+                    TextField(
+                      controller: securityQuestion2,
+                    ),
+                  ],
+                ),
+              ),
+
               Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: TextField(
