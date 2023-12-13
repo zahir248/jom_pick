@@ -68,6 +68,7 @@ class _pickupLocation extends State<pickupLocation> {
 
           setState(() {
             itemData = (jsonData as List).map((item) => pickupLocationList.fromJson(item)).toList();
+            filteredItemData = List.from(itemData);
           });
         } catch (e) {
           print('Error parsing JSON: $e');
@@ -87,7 +88,7 @@ class _pickupLocation extends State<pickupLocation> {
 
   Widget _buildListView() {
     return Expanded(
-      child: itemData.isEmpty
+      child: filteredItemData.isEmpty
           ? Center(
         child: Text(
           'No data available',
@@ -97,7 +98,7 @@ class _pickupLocation extends State<pickupLocation> {
           : Center(
         child: Scrollbar(
           child: ListView.builder(
-            itemCount: itemData.length,
+            itemCount: filteredItemData.length,
             itemBuilder: (context, index) {
               return Card(
                 margin: EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 16.0),
@@ -120,7 +121,7 @@ class _pickupLocation extends State<pickupLocation> {
                             child: ClipRRect(
                               borderRadius: BorderRadius.circular(10.0),
                               child: Image.memory(
-                                itemData[index].imageData ?? Uint8List(0),
+                                filteredItemData[index].imageData ?? Uint8List(0),
                                 width: double.infinity,
                                 height: double.infinity,
                                 fit: BoxFit.cover,
@@ -131,7 +132,7 @@ class _pickupLocation extends State<pickupLocation> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                itemData[index].address,
+                                filteredItemData[index].address,
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
                                 style: TextStyle(
@@ -181,7 +182,7 @@ class _pickupLocation extends State<pickupLocation> {
                             onPressed: (){
                               Navigator.push( context, MaterialPageRoute(
                                 builder: (context) => PickupLocationMap(
-                                 destinationAddress: itemData[index].address,
+                                 destinationAddress: filteredItemData[index].address,
                                 ),
                               ),
                               );
@@ -214,43 +215,46 @@ class _pickupLocation extends State<pickupLocation> {
 
 
   // Update the filterItems method to filter itemData only when the search bar has a value
-  // void filterItems(String query) {
-  //   if (query.isNotEmpty) {
-  //     setState(() {
-  //       filteredItemData = itemData
-  //           .where((item) => item.itemName.toLowerCase().contains(query.toLowerCase()))
-  //           .toList();
-  //     });
-  //   } else {
-  //     setState(() {
-  //       filteredItemData = List.from(itemData);
-  //     });
-  //   }
-  // }
+  void filterItems(String query) {
+    if (query.isNotEmpty) {
+      setState(() {
+        filteredItemData = itemData
+            .where((item) => item.address.toLowerCase().contains(query.toLowerCase()))
+            .toList();
+      });
+    } else {
+      setState(() {
+        filteredItemData = List.from(itemData);
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
           Padding(
             padding: const EdgeInsets.only(left: 16.0, right: 16.0, top: 50.0),
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              //mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                IconButton(
-                  icon: Icon(Icons.arrow_back, color: Colors.black),
-                  onPressed: () {
-                    // Navigate to the home page and replace the current page
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(builder: (context) => HomeScreen()),
-                    );
-                  },
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: IconButton(
+                    icon: Icon(Icons.arrow_back, color: Colors.black),
+                    onPressed: () {
+                      // Navigate to the home page and replace the current page
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(builder: (context) => HomeScreen()),
+                      );
+                    },
+                  ),
                 ),
+                Spacer(),
                 Text(
-                  'Location',
+                  'Pickup Store',
                   style: TextStyle(
                     fontSize: 30.0,
                     fontWeight: FontWeight.bold,
@@ -263,7 +267,7 @@ class _pickupLocation extends State<pickupLocation> {
             padding: const EdgeInsets.all(8.0),
             child: TextField(
               controller: searchController,
-              //onChanged: filterItems,
+              onChanged: filterItems,
               decoration: InputDecoration(
                 hintText: 'Search',
                 prefixIcon: Icon(Icons.search),
@@ -280,6 +284,7 @@ class _pickupLocation extends State<pickupLocation> {
           _buildListView(), // Use the custom ListView
         ],
       ),
+
     );
   }
 }

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:jom_pick/HomeScreen.dart';
+import 'package:jom_pick/pickup_location.dart';
 import 'PickUpLocationService.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
@@ -39,8 +40,12 @@ class PickupLocationMapState extends State<PickupLocationMap> {
   final Completer<GoogleMapController> _controller =
   Completer<GoogleMapController>();
 
+  CameraPosition? _currentCameraPosition;
+
   TextEditingController _originLocationController = TextEditingController();
   TextEditingController _destinationLocationController = TextEditingController();
+
+  BitmapDescriptor _blueDotIcon = BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueBlue);
 
   // location.LocationData? _currentLocation;
   // location.Location locationService = location.Location();
@@ -62,18 +67,19 @@ class PickupLocationMapState extends State<PickupLocationMap> {
   void initState(){
     super.initState();
     //String defaultPlaceId = 'DEFAULT_PLACE_ID';
-    _setMarker(LatLng(37.42796133580664, -122.085749655962,), 'YOUR_ACTUAL_PLACE_ID');
+    //_setMarker(LatLng(37.42796133580664, -122.085749655962,), 'YOUR_ACTUAL_PLACE_ID');
     _destinationLocationController.text = widget.destinationAddress;
     _getCurrentLocation();
     _searchLocation();
   }
 
   // Set marker to searched location
-  void _setMarker(LatLng point, String placeId) async{
+  void _setOriginMarker(LatLng point, String placeId) async{
     setState(() {
       _markers.add(
           Marker(markerId: MarkerId('marker'),
           position: point,
+            icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueBlue),
             onTap: () {
             getPlaceDetails(placeId);
             }
@@ -82,19 +88,19 @@ class PickupLocationMapState extends State<PickupLocationMap> {
     });
   }
 
-  void _setPolygon(){
-    final String polygonIdVal = 'polygon_$_polygonIdCounter';   // Create polygon with different Id
-    _polygonIdCounter++;
-
-    _polygons.add(
-        Polygon(
-            polygonId: PolygonId(polygonIdVal),
-        points: polygonLatLngs,
-        strokeWidth: 2,
-        fillColor: Colors.transparent,
-        ),
-    );
-  }
+  // void _setPolygon(){
+  //   final String polygonIdVal = 'polygon_$_polygonIdCounter';   // Create polygon with different Id
+  //   _polygonIdCounter++;
+  //
+  //   _polygons.add(
+  //       Polygon(
+  //           polygonId: PolygonId(polygonIdVal),
+  //       points: polygonLatLngs,
+  //       strokeWidth: 2,
+  //       fillColor: Colors.transparent,
+  //       ),
+  //   );
+  // }
 
   void _setPolyline(List<PointLatLng> points){
     final String polylineIdVal = 'polygon_$_polylineIdCounter';   // Create polygon with different Id
@@ -112,19 +118,6 @@ class PickupLocationMapState extends State<PickupLocationMap> {
     );
   }
 
-  // Future<void> _getCurrentLocation() async {
-  //     try{
-  //       final location.LocationData currentLocation = await locationService.getLocation();
-  //       setState(() {
-  //         _currentLocation = _currentLocation;
-  //         _originLocationController.text = "${_currentLocation!.latitude}, ${_currentLocation!.longitude}";
-  //         print("Current location: ${currentLocation.latitude}, ${currentLocation.longitude}");
-  //       });
-  //     }catch(e){
-  //       print('Error retrieve current location: $e');
-  //     }
-  // }
-
   Future<void> _getCurrentLocation() async{
     try{
       LocationPermission permission = await Geolocator.requestPermission();
@@ -138,10 +131,16 @@ class PickupLocationMapState extends State<PickupLocationMap> {
         desiredAccuracy: LocationAccuracy.best,
       );
 
+      setState(() {
+        _currentCameraPosition = CameraPosition(
+          target: LatLng(position.latitude, position.longitude),
+          zoom: 12,
+        );
+      });
+
       _originLocationController.text = await _getPlaceName(position.latitude, position.longitude);
       //_originLocationController.text = "${position.latitude}, ${position.longitude}";
-
-      _setMarker(LatLng(position.latitude, position.longitude), 'YOUR_ACTUAL_PLACE_ID');
+     // _setMarker(LatLng(position.latitude, position.longitude), 'YOUR_ACTUAL_PLACE_ID');
 
       // Call for seachLocation method to directly navigate the map to the destinatin from origin
       await _searchLocation();
@@ -222,71 +221,75 @@ class PickupLocationMapState extends State<PickupLocationMap> {
     }
   }
 
-  // Create marker
-  static final Marker _kGooglePlexMarker =
-  Marker(markerId : MarkerId('_kGooglePlex'),
-    infoWindow: InfoWindow(title: 'Google Plex'), // View some info when user click on marker
-    icon:  BitmapDescriptor.defaultMarker,
-    position:  LatLng(37.42796133580664, -122.085749655962),
-  );
+  // // Create marker
+  // static final Marker _kGooglePlexMarker =
+  // Marker(markerId : MarkerId('_kGooglePlex'),
+  //   infoWindow: InfoWindow(title: 'Google Plex'), // View some info when user click on marker
+  //   icon:  BitmapDescriptor.defaultMarker,
+  //   position:  LatLng(37.42796133580664, -122.085749655962),
+  // );
 
-  static const CameraPosition _kLake = CameraPosition(
-      bearing: 192.8334901395799,
-      target: LatLng(37.43296265331129, -122.08832357078792),
-      tilt: 59.440717697143555,
-      zoom: 19.151926040649414);
+  // static const CameraPosition _kLake = CameraPosition(
+  //     bearing: 192.8334901395799,
+  //     target: LatLng(37.43296265331129, -122.08832357078792),
+  //     tilt: 59.440717697143555,
+  //     zoom: 19.151926040649414);
 
   Marker _destinationMarker = Marker(
       markerId: MarkerId('destination'),
   infoWindow: InfoWindow(title: 'Destination'),
-  icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueGreen),
+  icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
   position: LatLng(0.0,0.0),
   );
 
   // Create marker
-  static final Marker _kLakeMarker =
-  Marker(markerId : MarkerId('_kLakeMarket'),
-    infoWindow: InfoWindow(title: 'Lake'), // View some info when user click on marker
-    icon:  BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueBlue),
-    position:  LatLng(37.43296265331129, -122.08832357078792),
-  );
+  // static final Marker _kLakeMarker =
+  // Marker(markerId : MarkerId('_kLakeMarket'),
+  //   infoWindow: InfoWindow(title: 'Lake'), // View some info when user click on marker
+  //   icon:  BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueBlue),
+  //   position:  LatLng(37.43296265331129, -122.08832357078792),
+  // );
+  //
+  // static final Polyline _kPolyLine = Polyline(
+  //     polylineId: PolylineId('_kPolyLine'),
+  // points: [
+  //   LatLng(37.42796133580664, -122.085749655962),
+  //   LatLng(37.43296265331129, -122.08832357078792),
+  // ],
+  //   width: 5,
+  // );
 
-  static final Polyline _kPolyLine = Polyline(
-      polylineId: PolylineId('_kPolyLine'),
-  points: [
-    LatLng(37.42796133580664, -122.085749655962),
-    LatLng(37.43296265331129, -122.08832357078792),
-  ],
-    width: 5,
-  );
-
-  static final Polygon _kPolygon =
-  Polygon(polygonId: PolygonId('_kPolygon'),
-    points: [
-      LatLng(37.43296265331129, -122.08832357078792),
-      LatLng(37.42796133580664, -122.085749655962),
-      LatLng(37.418, -122.092),
-      LatLng(37.435, -122.092),
-    ],
-    strokeWidth: 5,
-    fillColor: Colors.transparent,
-  );
+  // static final Polygon _kPolygon =
+  // Polygon(polygonId: PolygonId('_kPolygon'),
+  //   points: [
+  //     LatLng(37.43296265331129, -122.08832357078792),
+  //     LatLng(37.42796133580664, -122.085749655962),
+  //     LatLng(37.418, -122.092),
+  //     LatLng(37.435, -122.092),
+  //   ],
+  //   strokeWidth: 5,
+  //   fillColor: Colors.transparent,
+  // );
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Pick Up Location'),
-      backgroundColor: Colors.blue[900],
-      actions: [
-        IconButton(
-            icon: Icon(Icons.arrow_back_ios, color: Colors.grey),
-            onPressed: (){
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context)=> HomeScreen()),
-              );
-            },
-        ),
-      ],),
+      appBar: AppBar(
+        title: Center(child: Text('Pick Up Location')),
+        backgroundColor: Colors.blue[900],
+        automaticallyImplyLeading: true,
+        // actions: [
+        //   IconButton(
+        //     icon: Icon(Icons.arrow_back, color: Colors.grey),
+        //     onPressed: () {
+        //       Navigator.push(
+        //         context,
+        //         MaterialPageRoute(builder: (context) => pickupLocation()),
+        //       );
+        //     },
+        //   ),
+        // ],
+      ),
       body: Column(
         children: [
           Row(
@@ -332,6 +335,16 @@ class PickupLocationMapState extends State<PickupLocationMap> {
               // ),
             ],
           ),
+          // Message below the search fields
+          SizedBox(height: 10),
+          Text(
+              'To get direction to your destination, click on the red marker and click on google maps \n icon that apear at your bottom right corner of your screen right after that.',
+            style: TextStyle(
+                fontSize: 16.0,
+            fontWeight: FontWeight.bold ,
+            color: Colors.red),
+          ),
+          SizedBox(height: 10),
           Expanded(
             child: GoogleMap(
               mapType: MapType.normal,
@@ -339,16 +352,17 @@ class PickupLocationMapState extends State<PickupLocationMap> {
                 ..._markers,
                 _destinationMarker,
               },
-              polygons: _polygons,
+              //polygons: _polygons,
               polylines: _polylines,
-              initialCameraPosition: _kGooglePlex,
+              // If currentCameraPosition is null, go back ti kGooglePlex
+              initialCameraPosition: _currentCameraPosition ?? _kGooglePlex,
               onMapCreated: (GoogleMapController controller) {
                 _controller.complete(controller);
               },
               onTap: (point) {
                 setState(() {
                   polygonLatLngs.add(point);
-                  _setPolygon();
+                  //_setPolygon();
                 });
               },
             ),
@@ -357,6 +371,7 @@ class PickupLocationMapState extends State<PickupLocationMap> {
       ),
     );
   }
+
 
 
   Future<void> _goToPlace(
@@ -386,7 +401,7 @@ class PickupLocationMapState extends State<PickupLocationMap> {
             ),
         25),
     );
-    _setMarker(LatLng(lat, lng), 'YOUR_ACTUAL_PLACE_ID');
+    _setOriginMarker(LatLng(lat, lng), 'YOUR_ACTUAL_PLACE_ID');
   }
 
 }
