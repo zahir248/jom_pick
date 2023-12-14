@@ -37,6 +37,8 @@ class MyApp extends StatelessWidget {
   static final String updatePasswordPath = "/jompick/updatePassword.php";
   static final String notification = "/jompick/notification.php";
   static final String pickupLocationPath = "/jompick/pickupLocation.php";
+  static final String user = "/jompick/userDetail.php";
+
 
   @override
   Widget build(BuildContext context) {

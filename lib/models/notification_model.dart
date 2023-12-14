@@ -10,6 +10,7 @@ class SendNotification {
   final String pickUpLocation;
   final String dueDate;
   final DateTime registerDate;
+  final String userName;
 
 
   SendNotification({
@@ -19,6 +20,7 @@ class SendNotification {
     required this.pickUpLocation,
     required this.dueDate,
     required this.registerDate,
+    required this.userName,
   });
 
   factory SendNotification.fromJson(Map<String, dynamic> json) {
@@ -29,6 +31,7 @@ class SendNotification {
       pickUpLocation: json['address'] ?? '',
       dueDate: json['dueDate'] ?? '',
       registerDate: DateTime.parse(json['registerDate'] ?? ''),
+      userName: json['userName'] ?? '',
     );
   }
 

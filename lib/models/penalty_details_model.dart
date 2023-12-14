@@ -1,3 +1,6 @@
+import 'dart:convert';
+import 'dart:typed_data';
+
 class PenaltyDetails{
     final int itemId;
     final String itemName;
@@ -12,6 +15,7 @@ class PenaltyDetails{
     final String dueDate;
     final String paymentStatus;
     final String paymentAmount;
+    final Uint8List imageData;
 
 
     PenaltyDetails({
@@ -28,10 +32,11 @@ class PenaltyDetails{
     required this.dueDate,
     required this.paymentStatus,
     required this.paymentAmount,
-
+        required this.imageData,
 });
 
 factory PenaltyDetails.fromJson(Map<String, dynamic> json){
+    Uint8List decodedImageData = base64Decode(json['image']);
   return PenaltyDetails(
       itemId: int.parse(json['item_id'] ?? '0'),
       itemName: json['name'] ?? '',
@@ -45,7 +50,8 @@ factory PenaltyDetails.fromJson(Map<String, dynamic> json){
       pickUpLocation: json['address'] ?? '',
       dueDate: json['dueDate'] ?? '',
       paymentStatus: json['paymentStatus'] ?? '',
-      paymentAmount: json['paymentAmount'] ??''
+      paymentAmount: json['paymentAmount'] ??'',
+      imageData: decodedImageData
         );
     }
 }

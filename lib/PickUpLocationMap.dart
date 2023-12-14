@@ -45,8 +45,6 @@ class PickupLocationMapState extends State<PickupLocationMap> {
   TextEditingController _originLocationController = TextEditingController();
   TextEditingController _destinationLocationController = TextEditingController();
 
-  BitmapDescriptor _blueDotIcon = BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueBlue);
-
   // location.LocationData? _currentLocation;
   // location.Location locationService = location.Location();
 
@@ -71,6 +69,7 @@ class PickupLocationMapState extends State<PickupLocationMap> {
     _destinationLocationController.text = widget.destinationAddress;
     _getCurrentLocation();
     _searchLocation();
+    _checkLocationService();
   }
 
   // Set marker to searched location
@@ -118,6 +117,14 @@ class PickupLocationMapState extends State<PickupLocationMap> {
     );
   }
 
+  Future<void> _checkLocationService() async {
+    bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      // Redirect the user to the location settings
+      await Geolocator.openLocationSettings();
+    }
+  }
+
   Future<void> _getCurrentLocation() async{
     try{
       LocationPermission permission = await Geolocator.requestPermission();
@@ -128,7 +135,7 @@ class PickupLocationMapState extends State<PickupLocationMap> {
       }
 
       Position position = await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.best,
+        desiredAccuracy: LocationAccuracy.high,
       );
 
       setState(() {

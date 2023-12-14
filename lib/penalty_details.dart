@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -13,7 +14,7 @@ class penaltyDetailPage extends StatefulWidget {
   final String trackingNumber;
   final String dueDate;
   final String dueDateStatus;
-  /*Uint8List imageData,*/
+  Uint8List imageData;
   final String paymentStatus;
   final String paymentAmount;
   final String pickUpLocation;
@@ -23,7 +24,7 @@ class penaltyDetailPage extends StatefulWidget {
     required this.itemName,
     required this.trackingNumber,
     required this.itemType,
-    //required this.imageData,
+    required this.imageData,
     required this.dueDate,
     required this.dueDateStatus,
     required this.paymentStatus,
@@ -89,10 +90,10 @@ class penaltyDetailPageState extends State<penaltyDetailPage> {
                       child: Container(
                         width: 350,
                         height: 200,
-                        // child: Image.memory(
-                        //   widget.imageData,
-                        //   fit: BoxFit.cover,
-                        // ),
+                        child: Image.memory(
+                          widget.imageData,
+                          fit: BoxFit.cover,
+                        ),
                       ),
                     ),
                   ),

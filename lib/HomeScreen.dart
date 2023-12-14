@@ -12,6 +12,7 @@ import 'package:http/http.dart' as http;
 import 'PickUpLocationMap.dart';
 import 'main.dart';
 import 'models/notification_model.dart';
+import 'models/user.dart';
 
 
 class HomeScreen extends StatefulWidget {
@@ -29,7 +30,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   List<SendNotification> itemData = [];
   List<SendNotification> filteredItemData =[];
-
+  List<User> userData = [];
 
   @override
   void initState() {
@@ -63,6 +64,34 @@ class _HomeScreenState extends State<HomeScreen> {
       print('User ID not found in SharedPreferences');
     }
   }
+
+
+  // Future<void> fetchUserData() async {
+  //   SharedPreferences prefs = await SharedPreferences.getInstance();
+  //   userId = prefs.getInt('user_id');
+  //
+  //   if (userId != null) {
+  //
+  //     final response = await http.get(Uri.parse('http://${MyApp.baseIpAddress}${MyApp.user}?user_id=$userId'));
+  //     print('Raw JSON response: ${response.body}');
+  //
+  //     if (response.statusCode == 200) {
+  //
+  //       final List<dynamic> jsonData = json.decode(response.body);
+  //
+  //       setState(() {
+  //         userData = (jsonData as List).map((item) => User.fromJson(item)).toList();
+  //         //filteredItemData = List.from(itemData); // Initialize filteredItemData
+  //
+  //       });
+  //     } else {
+  //       throw Exception('Failed to load user data. Status code: ${response.statusCode}');
+  //     }
+  //   } else {
+  //     print('User ID not found in SharedPreferences');
+  //   }
+  // }
+
 
 
   @override

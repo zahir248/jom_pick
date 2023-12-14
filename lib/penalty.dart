@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:jom_pick/HomeScreen.dart';
@@ -233,7 +234,8 @@ class _PenaltyState extends State<Penalty> {
                                   filteredItemData[index].dueDateStatus,
                                   filteredItemData[index].paymentStatus,
                                   filteredItemData[index].paymentAmount,
-                                  filteredItemData[index].pickUpLocation
+                                  filteredItemData[index].pickUpLocation,
+                                 filteredItemData[index].imageData
                               );
                             },
                             style: ElevatedButton.styleFrom(
@@ -332,10 +334,11 @@ class _PenaltyState extends State<Penalty> {
       String trackingNumber,
       String dueDate,
       String dueDateStatus,
-      /*Uint8List imageData,*/
       String paymentStatus,
       String paymentAmount,
-      String pickUpLocation){
+      String pickUpLocation,
+      Uint8List imageData
+      ){
 
     Navigator.push(
       context,
@@ -346,11 +349,11 @@ class _PenaltyState extends State<Penalty> {
           itemType: itemType,
           trackingNumber : trackingNumber,
           dueDate : dueDate,
-          //imageData: imageData,
           dueDateStatus: dueDateStatus,
           paymentStatus: paymentStatus,
           paymentAmount: paymentAmount,
           pickUpLocation: pickUpLocation,
+          imageData: imageData,
         ),
       ),
     );
