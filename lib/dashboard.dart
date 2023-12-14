@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
+import 'HomeScreen.dart';
 import 'setting.dart';
-import 'profile.dart';
-import 'penalty.dart';
-import 'history.dart';
 import '../models/item.dart';
 import 'package:shared_preferences/shared_preferences.dart'; // Import SharedPreferences
 import 'package:http/http.dart' as http;
@@ -230,14 +228,14 @@ class _DashBoardState extends State<DashBoard> {
       context,
       MaterialPageRoute(
         builder: (context) => ItemDetailPage(
-            itemId: itemId,
-            itemName: itemName,
-            trackingNumber : trackingNumber,
-            itemType : itemType,
-            imageData: imageData,
-            status: status,
-            confirmationDate: confirmationDate,
-            address: address,
+          itemId: itemId,
+          itemName: itemName,
+          trackingNumber : trackingNumber,
+          itemType : itemType,
+          imageData: imageData,
+          status: status,
+          confirmationDate: confirmationDate,
+          address: address,
         ),
       ),
     );
@@ -249,41 +247,6 @@ class _DashBoardState extends State<DashBoard> {
     Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Setting()));
   }
 
-  void _onItemTapped(int index) {
-    if (index == 3) {
-      // If the "Profile" button is tapped (index 2), navigate to the profile page
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => Profile(),
-        ),
-      );
-    } else if (index == 2) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => Penalty(),
-        ),
-      );
-    } else if (index == 1) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => History(),
-        ),
-      );
-    } else {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => DashBoard(),
-        ),
-      );
-      setState(() {
-        _selectedIndex = index;
-      });
-    }
-  }
 
   // Update the filterItems method to filter itemData only when the search bar has a value
   void filterItems(String query) {
@@ -310,8 +273,18 @@ class _DashBoardState extends State<DashBoard> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
+                IconButton(
+                  icon: Icon(Icons.arrow_back, color: Colors.black),
+                  onPressed: () {
+                    // Navigate to the home page and replace the current page
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(builder: (context) => HomeScreen()),
+                    );
+                  },
+                ),
                 Text(
-                  'JomPick',
+                  'Pending Items',
                   style: TextStyle(
                     fontSize: 30.0,
                     fontWeight: FontWeight.bold,
@@ -347,29 +320,7 @@ class _DashBoardState extends State<DashBoard> {
           _buildListView(), // Use the custom ListView
         ],
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        type: BottomNavigationBarType.fixed,
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.history),
-            label: 'History',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.error),
-            label: 'Penalty',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: 'Profile',
-          ),
-        ],
-        currentIndex: _selectedIndex,
-        onTap: _onItemTapped,
-      ),
+
     );
   }
 }

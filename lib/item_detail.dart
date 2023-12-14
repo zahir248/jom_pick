@@ -124,9 +124,9 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
               context,
               MaterialPageRoute(
                 builder: (context) => PickupDetailPage(
-                    address: widget.address,
-                    itemId: widget.itemId,
-                    confirmationDate: widget.confirmationDate, // Pass the confirmationDate to PickupDetailPage
+                  address: widget.address,
+                  itemId: widget.itemId,
+                  confirmationDate: widget.confirmationDate, // Pass the confirmationDate to PickupDetailPage
                 ),
               ),
             );

@@ -106,8 +106,10 @@ class _PickupDetailPageState extends State<PickupDetailPage> {
       }
 
       String apiKey =
-          'AIzaSyCOgQJS48nQl3KvLvINvVh-GedGP9INvEc'; // Replace with your actual API key
+          'AIzaSyBgod1ukFHd2DOAwVNedNvKWxCdQoQXvww'; // Replace with your actual API key
       String destination = widget.address;
+
+      print('adaaaaaa ${widget.address}');
 
       Map<String, String> durations = {};
 
@@ -116,7 +118,8 @@ class _PickupDetailPageState extends State<PickupDetailPage> {
           'https://maps.googleapis.com/maps/api/directions/json?'
           'origin=${currentPosition.latitude},${currentPosition.longitude}&'
           'destination=$destination&mode=driving&key=$apiKey';
-      durations['Driving'] = await _fetchDuration(drivingUrl);
+
+      print('Driving URL: $drivingUrl');
 
       // Fetch two-wheeler duration
       String twoWheelerUrl =
@@ -139,6 +142,12 @@ class _PickupDetailPageState extends State<PickupDetailPage> {
           'destination=$destination&mode=walking&key=$apiKey';
       durations['Walking'] = await _fetchDuration(walkingUrl);
 
+      // check existence of data
+      durations['Driving'] = await _fetchDuration(drivingUrl);
+      print('Two-wheeler URL: $twoWheelerUrl');
+      print('Transit URL: $transitUrl');
+      print('Walking URL: $walkingUrl');
+
       return durations;
     } catch (e) {
       print('Error getting durations: $e');
@@ -152,6 +161,7 @@ class _PickupDetailPageState extends State<PickupDetailPage> {
   }
 
   Future<String> _fetchDuration(String url) async {
+
     try {
       final response = await http.get(Uri.parse(url));
       if (response.statusCode == 200) {
@@ -171,6 +181,8 @@ class _PickupDetailPageState extends State<PickupDetailPage> {
         }
         throw 'Invalid response structure from the Google Directions API';
       } else {
+        print('Failed to fetch duration. Status code: ${response.statusCode}');
+        print('Response body: ${response.body}');
         throw 'Failed to fetch duration. Status code: ${response.statusCode}';
       }
     } catch (e) {
@@ -405,11 +417,15 @@ class _PickupDetailPageState extends State<PickupDetailPage> {
   }
 
   Future<void> _selectDate(BuildContext context) async {
+
+    DateTime currentDate = DateTime.now();
+    DateTime lastSelectableDate = widget.confirmationDate;
+
     DateTime? picked = await showDatePicker(
       context: context,
-      initialDate: DateTime.now(),
-      firstDate: DateTime.now(),
-      lastDate: widget.confirmationDate,
+      initialDate: currentDate,
+      firstDate: currentDate,
+      lastDate: lastSelectableDate.isAfter(currentDate) ? lastSelectableDate : DateTime(9999),
     );
 
     if (picked != null) {

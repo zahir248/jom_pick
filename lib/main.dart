@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:jom_pick/HomeScreen.dart';
 import 'package:jom_pick/register.dart';
 import 'package:http/http.dart' as http;
 import 'DashBoard.dart';
@@ -21,7 +22,7 @@ void main() {
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
 
-  static final String baseIpAddress = "10.200.124.64";
+  static final String baseIpAddress = "192.168.0.119";
 
   static final String loginPath = "/jompick/login.php";
   static final String registerPath = "/jompick/register.php";
@@ -29,13 +30,19 @@ class MyApp extends StatelessWidget {
   static final String updateConfirmationDurationLocationPath = "/jompick/updateConfirmationDurationLocation.php";
   static final String updateConfirmationStatusPath = "/jompick/updateConfirmationStatus.php";
   static final String updatePickupDatePath = "/jompick/updateConfirmationPickupDate.php";
-  static final String itemPenaltyPath = "/jompick/itemPenalty.php";
+  static final String itemPenaltyPath = "/jompick/penalty.php";
   static final String updateConfirmationDatePath = "/jompick/updateConfirmationDate.php";
   static final String itemHistoryPath = "/jompick/itemHistory.php";
   static final String updateForgotPasswordPath = "/jompick/forgotPassword.php";
   static final String itemHomePath = "/jompick/itemHome.php";
   static final String updatePasswordPath = "/jompick/updatePassword.php";
+
   static final String verifySecurityQuestions = "/jompick/verifySecurityQuestions.php";
+
+  static final String notification = "/jompick/notification.php";
+  static final String pickupLocationPath = "/jompick/pickupLocation.php";
+  static final String user = "/jompick/userDetail.php";
+
 
   @override
   Widget build(BuildContext context) {
@@ -73,7 +80,9 @@ class _MyHomePageState extends State<MyHomePage> {
       return; // Exit the function to prevent further execution
     }
 
+
     var url = Uri.http(MyApp.baseIpAddress, MyApp.loginPath, {'q': '{http}'});
+
     var response = await http.post(url, body: {
       "username": user.text,
       "password": pass.text,
@@ -129,6 +138,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 prefs.setString('emailAddress', emailAddress);
               }
 
+
               // Check for the role information and redirect accordingly
               if (data.containsKey('rolename')) {
                 String rolename = data['rolename'];
@@ -149,6 +159,14 @@ class _MyHomePageState extends State<MyHomePage> {
               } else {
                 print('rolename not found in response');
               }
+
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => HomeScreen(),
+                ),
+              );
+
             } else {
               print('Failed to parse user_id as int');
             }
@@ -301,4 +319,3 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 }
-

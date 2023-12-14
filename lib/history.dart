@@ -1,5 +1,9 @@
+import 'dart:convert';
+import 'dart:typed_data';
+import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'dashboard.dart';
+import 'models/item.dart';
 import 'profile.dart';
 import 'penalty.dart';
 import '../models/item.dart';
@@ -9,7 +13,12 @@ import 'dart:convert';
 import 'package:intl/intl.dart'; // Import the intl package
 import 'item_detail_history.dart';
 import 'dart:typed_data';
+
 import 'main.dart';
+
+
+import 'package:jom_pick/HomeScreen.dart';
+
 
 class History extends StatefulWidget {
   const History({Key? key}) : super(key: key);
@@ -24,6 +33,12 @@ class _HistoryState extends State<History> {
 
   List<Item> itemData = []; // List to store fetched data
   List<Item> filteredItemData = []; // List to store filtered data
+
+  final List<String> categories = [
+    'Picked',
+    'Disposed'
+  ];
+  final List<String> selectedCategories = [];
 
   TextEditingController searchController = TextEditingController();
 
@@ -84,6 +99,35 @@ class _HistoryState extends State<History> {
   }
 
   Widget _buildListView() {
+
+    final filterCategory = filteredItemData.where((Item){
+      return selectedCategories.isEmpty ||
+            selectedCategories.contains(Item.status);
+    }).toList();
+
+    Container(
+      padding: const EdgeInsets.all(8.0),
+      margin: const EdgeInsets.all(8.0),
+      child: Row(
+        children: categories.map(
+                (status) => Padding(
+                    padding: const EdgeInsets.all(8.0),
+                child: FilterChip(
+                  selected: selectedCategories.contains(status),
+                  label: Text(status),
+                  onSelected: (selected){
+                    setState(() {
+                      if(selected){
+                        selectedCategories.add(status);
+                      }else{
+                        selectedCategories.remove(status);
+                      }
+                    });
+                  }),
+                )
+        ).toList(),
+      ),
+    );
     return Expanded(
       child: filteredItemData.isEmpty
           ? Center(
@@ -95,8 +139,10 @@ class _HistoryState extends State<History> {
           : Center(
         child: Scrollbar(
           child: ListView.builder(
-            itemCount: filteredItemData.length,
+            //itemCount: filteredItemData.length,
+            itemCount: filterCategory.length,
             itemBuilder: (context, index) {
+              //final category = filterCategory[index];
               return Card(
                 margin: EdgeInsets.all(8.0),
                 elevation: 4.0, // Set the elevation (shadow) here
@@ -106,33 +152,40 @@ class _HistoryState extends State<History> {
                     mainAxisSize: MainAxisSize.min,
                     children: <Widget>[
                       ListTile(
-                        contentPadding: EdgeInsets.all(0), // Remove default ListTile padding
                         leading: Container(
                           width: 90,
                           height: 90,
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
-                            image: DecorationImage(
-                              fit: BoxFit.cover,
-                              image: AssetImage('assets/jompick.jpg'), // adjust the path accordingly
-                            ),
+                            color: Colors.blueGrey,
                           ),
                         ),
                         title: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(
-                              filteredItemData[index].itemName, // Use filteredItemData instead of itemData
-                              style: TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                              ),
+                            Row(
+                              children: [
+                                // Make the overflow text two lines
+                                Flexible(
+                                  child: Text(
+                                    filterCategory[index].itemName,
+                                    // Avoid the text overflow from the status container
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,// Use filteredItemData instead of itemData
+                                    style: TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(width: 8), // Adjust the spacing between item name and status
+                              ],
                             ),
                             SizedBox(height: 10),
                           ],
                         ),
                         subtitle: Text(
-                          filteredItemData[index].location,
+                          filterCategory[index].location,
                           style: TextStyle(
                             fontSize: 14,
                           ),
@@ -141,24 +194,20 @@ class _HistoryState extends State<History> {
                           width: 90,
                           height: 25,
                           decoration: BoxDecoration(
-                            color: filteredItemData[index].status == 'Picked'
-                                ? Colors.green
-                                : Colors.red,
+                            color: getStatusColor(filterCategory[index].status),
                           ),
                           alignment: Alignment.center,
                           child: Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               Icon(
-                                filteredItemData[index].status == 'Picked'
-                                    ? Icons.check_circle
-                                    : Icons.error,
+                                Icons.error,
                                 color: Colors.white,
                                 size: 16,
                               ),
                               SizedBox(width: 4),
                               Text(
-                                filteredItemData[index].status ?? '', // Use the confirmation status here
+                                filterCategory[index].status,
                                 style: TextStyle(
                                   color: Colors.white,
                                   fontSize: 12,
@@ -168,6 +217,7 @@ class _HistoryState extends State<History> {
                           ),
                         ),
                       ),
+
                       Divider(
                         height: 20.0,
                         thickness: 1.0,
@@ -182,8 +232,8 @@ class _HistoryState extends State<History> {
                             Icon(Icons.calendar_today),
                             SizedBox(width: 8),
                             Text(
-                              filteredItemData[index].registerDate != null
-                                  ? DateFormat('EEEE, dd MMMM yyyy').format(filteredItemData[index].registerDate!)
+                              filterCategory[index].registerDate != null
+                                  ? DateFormat('EEEE, dd MMMM yyyy').format(filterCategory[index].registerDate!)
                                   : "N/A",
                               style: TextStyle(fontSize: 14),
                             ),
@@ -191,8 +241,8 @@ class _HistoryState extends State<History> {
                             Icon(Icons.access_time),
                             SizedBox(width: 4),
                             Text(
-                              filteredItemData[index].registerDate != null
-                                  ? DateFormat('h:mm a').format(filteredItemData[index].registerDate!)
+                              filterCategory[index].registerDate != null
+                                  ? DateFormat('h:mm a').format(filterCategory[index].registerDate!)
                                   : "N/A",
                               style: TextStyle(fontSize: 14),
                             ),
@@ -235,12 +285,19 @@ class _HistoryState extends State<History> {
     );
   }
 
-  void _detailsItem(int itemId, String itemName, String trackingNumber, String itemType, Uint8List imageData, String status, DateTime confirmationDate) {
+  void _detailsItem(
+      int itemId,
+      String itemName,
+      String trackingNumber,
+      String itemType,
+      Uint8List imageData,
+      String status,
+      DateTime confirmationDate) {
     // Navigate to the item detail page and pass the item_id
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => ItemDetailPage(
+        builder: (context) => ItemDetailPageHistory(
           itemId: itemId,
           itemName: itemName,
           trackingNumber : trackingNumber,
@@ -280,7 +337,7 @@ class _HistoryState extends State<History> {
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => DashBoard(),
+          builder: (context) => HomeScreen(),
         ),
       );
       setState(() {
@@ -304,13 +361,23 @@ class _HistoryState extends State<History> {
     }
   }
 
+  MaterialColor getStatusColor(String status){
+    if(status == 'Picked'){
+      return Colors.green;
+    }else if(status == 'Disposed'){
+      return Colors.red;
+    }else{
+      return Colors.grey;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Column(
         children: <Widget>[
           Padding(
-            padding: const EdgeInsets.only(left: 20.0, right: 16.0, top: 50.0),
+            padding: const EdgeInsets.only(left: 16.0, right: 16.0, top: 50.0),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
@@ -342,6 +409,30 @@ class _HistoryState extends State<History> {
               ),
             ),
           ),
+
+          Container(
+            padding: const EdgeInsets.all(1.0),
+            margin: const EdgeInsets.all(1.0),
+            child: Row(
+              children: categories.map(
+                      (status) => Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: FilterChip(
+                        selected: selectedCategories.contains(status),
+                        label: Text(status),
+                        onSelected: (selected){
+                          setState(() {
+                            if(selected){
+                              selectedCategories.add(status);
+                            }else{
+                              selectedCategories.remove(status);
+                            }
+                          });
+                        }),
+                  )
+              ).toList(),
+            ),
+          ),
           _buildListView(), // Use the custom ListView
         ],
       ),
@@ -371,6 +462,7 @@ class _HistoryState extends State<History> {
     );
   }
 }
+
 
 
 

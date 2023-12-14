@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:jom_pick/HomeScreen.dart';
 import 'package:jom_pick/main.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -53,13 +54,14 @@ class _SettingState extends State<Setting> {
               child: Container(
                 alignment: Alignment.centerLeft,
                 child: IconButton(
-                  icon: Icon(Icons.arrow_back, color: Colors.black),
+                  icon: Icon(Icons.arrow_back_ios, color: Colors.black),
                   onPressed: () {
                     // Navigate to the home page and replace the current page
                     Navigator.pushReplacement(
                       context,
-                      MaterialPageRoute(builder: (context) => DashBoard()),
-                    );                  },
+                      MaterialPageRoute(builder: (context) => HomeScreen()),
+                    );
+                    },
                 ),
               ),
             ),

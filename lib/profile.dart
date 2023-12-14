@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:jom_pick/HomeScreen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'dashboard.dart';
@@ -160,6 +161,9 @@ class _ProfileState extends State<Profile> {
         final Map<String, dynamic> responseData =
         json.decode(await response.stream.bytesToString());
 
+        print('Response body: $responseData');
+
+
         if (responseData['success']) {
           // Update was successful, show the toast and update state
           Fluttertoast.showToast(
@@ -230,7 +234,7 @@ class _ProfileState extends State<Profile> {
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => DashBoard(),
+          builder: (context) => HomeScreen(),
         ),
       );
       setState(() {

@@ -1,15 +1,21 @@
+import 'dart:convert';
+import 'dart:typed_data';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:jom_pick/HomeScreen.dart';
+import 'package:jom_pick/item_detail.dart';
+import 'package:jom_pick/penalty_details.dart';
+import 'package:jom_pick/setting.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'PickUpLocationMap.dart';
 import 'dashboard.dart';
+import 'models/item.dart';
+import 'models/penalty_details_model.dart';
 import 'profile.dart';
 import 'history.dart';
-import '../models/item.dart';
-import 'package:shared_preferences/shared_preferences.dart'; // Import SharedPreferences
 import 'package:http/http.dart' as http;
-import 'dart:convert';
-import 'package:intl/intl.dart'; // Import the intl package
-import 'dart:typed_data';
-import 'item_detail_history.dart';
 import 'main.dart';
+
 
 class Penalty extends StatefulWidget {
   const Penalty({Key? key}) : super(key: key);
@@ -19,21 +25,28 @@ class Penalty extends StatefulWidget {
 }
 
 class _PenaltyState extends State<Penalty> {
+  int? userId;  // Check if userId have value or null
   int _selectedIndex = 2; // Index of the selected tab
-  int? userId;
 
-  List<Item> itemData = []; // List to store fetched data
-  List<Item> filteredItemData = []; // List to store filtered data
+  List<PenaltyDetails> itemData = [];
+  List<PenaltyDetails> filteredItemData = [];
+
+  final List<String> categories = [
+    'paid',
+    'unpaid'
+  ];
+
+  List<String> selectedCategories =[];
 
   TextEditingController searchController = TextEditingController();
 
+  // Ensure that data fetching process start as soon as the widget is created
   @override
-  void initState() {
+  void initState(){
     super.initState();
-    fetchItemData(); // Fetch user data when the widget is created
+    fetchItemData();
   }
 
-  // Fetch user data based on the user ID stored in SharedPreferences
   Future<void> fetchItemData() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     userId = prefs.getInt('user_id');
@@ -51,7 +64,7 @@ class _PenaltyState extends State<Penalty> {
             final List<dynamic> jsonData = json.decode(response.body);
 
             setState(() {
-              itemData = (jsonData as List).map((item) => Item.fromJson(item)).toList();
+              itemData = (jsonData as List).map((item) => PenaltyDetails.fromJson(item)).toList();
               itemData.sort((a, b) => b.registerDate!.compareTo(a.registerDate!));
               filteredItemData = List.from(itemData);
             });
@@ -74,8 +87,15 @@ class _PenaltyState extends State<Penalty> {
   }
 
   Widget _buildListView() {
+
+    final filterCategory = filteredItemData.where((PenaltyDetails) {
+      return selectedCategories.isEmpty ||
+          selectedCategories.contains(PenaltyDetails.paymentStatus);
+    }).toList();
+
+
     return Expanded(
-      child: filteredItemData.isEmpty
+      child: filterCategory.isEmpty
           ? Center(
         child: Text(
           'No data available',
@@ -85,8 +105,16 @@ class _PenaltyState extends State<Penalty> {
           : Center(
         child: Scrollbar(
           child: ListView.builder(
-            itemCount: filteredItemData.length,
+            //itemCount: filteredItemData.length,
+            itemCount: filterCategory.length,
             itemBuilder: (context, index) {
+              //final category = filterCategory[index];
+
+              print('Filtered items count: ${filterCategory.length}');
+
+
+              //print("Payment Status adaaaaa: ${filteredItemData[index].paymentStatus}");
+
               return Card(
                 margin: EdgeInsets.all(8.0),
                 elevation: 4.0, // Set the elevation (shadow) here
@@ -96,33 +124,39 @@ class _PenaltyState extends State<Penalty> {
                     mainAxisSize: MainAxisSize.min,
                     children: <Widget>[
                       ListTile(
-                        contentPadding: EdgeInsets.all(0), // Remove default ListTile padding
                         leading: Container(
                           width: 90,
                           height: 90,
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
-                            image: DecorationImage(
-                              fit: BoxFit.cover,
-                              image: AssetImage('assets/jompick.jpg'), // adjust the path accordingly
-                            ),
+                            color: Colors.blueGrey,
                           ),
                         ),
                         title: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(
-                              filteredItemData[index].itemName,
-                              style: TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                              ),
+                            Row(
+                              children: [
+                                Flexible(
+                                  child: Text(
+                                    filterCategory[index].itemName, // Use filteredItemData instead of itemData
+                                    // Avoid text from exceed the status container
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(width: 8), // Adjust the spacing between item name and status
+                              ],
                             ),
                             SizedBox(height: 10),
                           ],
                         ),
                         subtitle: Text(
-                          filteredItemData[index].location,
+                          filterCategory[index].location,
                           style: TextStyle(
                             fontSize: 14,
                           ),
@@ -131,24 +165,20 @@ class _PenaltyState extends State<Penalty> {
                           width: 90,
                           height: 25,
                           decoration: BoxDecoration(
-                            color: filteredItemData[index].penaltyStatus == 'Paid'
-                                ? Colors.green
-                                : Colors.red,
+                            color: getStatusColor(filterCategory[index].paymentStatus),
                           ),
                           alignment: Alignment.center,
                           child: Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               Icon(
-                                filteredItemData[index].penaltyStatus == 'Paid'
-                                    ? Icons.check_circle
-                                    : Icons.error,
+                                Icons.error,
                                 color: Colors.white,
                                 size: 16,
                               ),
                               SizedBox(width: 4),
                               Text(
-                                filteredItemData[index].penaltyStatus ?? '', // Use the confirmation status here
+                                filterCategory[index].paymentStatus,
                                 style: TextStyle(
                                   color: Colors.white,
                                   fontSize: 12,
@@ -158,6 +188,7 @@ class _PenaltyState extends State<Penalty> {
                           ),
                         ),
                       ),
+
                       Divider(
                         height: 20.0,
                         thickness: 1.0,
@@ -172,8 +203,8 @@ class _PenaltyState extends State<Penalty> {
                             Icon(Icons.calendar_today),
                             SizedBox(width: 8),
                             Text(
-                              filteredItemData[index].registerDate != null
-                                  ? DateFormat('EEEE, dd MMMM yyyy').format(filteredItemData[index].registerDate!)
+                              filterCategory[index].registerDate != null
+                                  ? DateFormat('EEEE, dd MMMM yyyy').format(filterCategory[index].registerDate!)
                                   : "N/A",
                               style: TextStyle(fontSize: 14),
                             ),
@@ -181,8 +212,8 @@ class _PenaltyState extends State<Penalty> {
                             Icon(Icons.access_time),
                             SizedBox(width: 4),
                             Text(
-                              filteredItemData[index].registerDate != null
-                                  ? DateFormat('h:mm a').format(filteredItemData[index].registerDate!)
+                              filterCategory[index].registerDate != null
+                                  ? DateFormat('h:mm a').format(filterCategory[index].registerDate!)
                                   : "N/A",
                               style: TextStyle(fontSize: 14),
                             ),
@@ -194,14 +225,17 @@ class _PenaltyState extends State<Penalty> {
                         children: <Widget>[
                           ElevatedButton(
                             onPressed: () {
-                              _detailsItem(
-                                filteredItemData[index].itemId,
-                                filteredItemData[index].itemName,
-                                filteredItemData[index].trackingNumber,
-                                filteredItemData[index].itemType,
-                                filteredItemData[index].imageData,
-                                filteredItemData[index].status,
-                                filteredItemData[index].confirmationDate,
+                              _detailsPenaltyItem(
+                                  filteredItemData[index].itemId,
+                                  filteredItemData[index].itemName,
+                                  filteredItemData[index].itemType,
+                                  filteredItemData[index].trackingNumber,
+                                  filteredItemData[index].dueDate,
+                                  filteredItemData[index].dueDateStatus,
+                                  filteredItemData[index].paymentStatus,
+                                  filteredItemData[index].paymentAmount,
+                                  filteredItemData[index].pickUpLocation,
+                                 filteredItemData[index].imageData
                               );
                             },
                             style: ElevatedButton.styleFrom(
@@ -225,22 +259,10 @@ class _PenaltyState extends State<Penalty> {
     );
   }
 
-  void _detailsItem(int itemId, String itemName, String trackingNumber, String itemType, Uint8List imageData, String status, DateTime confirmationDate) {
-    // Navigate to the item detail page and pass the item_id
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => ItemDetailPage(
-          itemId: itemId,
-          itemName: itemName,
-          trackingNumber : trackingNumber,
-          itemType : itemType,
-          imageData: imageData,
-          status: status,
-          confirmationDate: confirmationDate,
-        ),
-      ),
-    );
+  void handleSetting() async {
+
+    // Navigate to the login page (Assuming your login page is named Setting)
+    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Setting()));
   }
 
   void _onItemTapped(int index) {
@@ -270,7 +292,7 @@ class _PenaltyState extends State<Penalty> {
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => DashBoard(),
+          builder: (context) => HomeScreen(),
         ),
       );
       setState(() {
@@ -294,13 +316,59 @@ class _PenaltyState extends State<Penalty> {
     }
   }
 
+  MaterialColor getStatusColor(String status){
+    if(status == 'paid'){
+      return Colors.green;
+    }else if(status == 'unpaid'){
+      return Colors.red;
+    }else{
+      return Colors.grey;
+    }
+  }
+
+
+  void _detailsPenaltyItem(
+      int itemId,
+      String itemName,
+      String itemType,
+      String trackingNumber,
+      String dueDate,
+      String dueDateStatus,
+      String paymentStatus,
+      String paymentAmount,
+      String pickUpLocation,
+      Uint8List imageData
+      ){
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context)=> penaltyDetailPage(
+          itemId: itemId,
+          itemName: itemName,
+          itemType: itemType,
+          trackingNumber : trackingNumber,
+          dueDate : dueDate,
+          dueDateStatus: dueDateStatus,
+          paymentStatus: paymentStatus,
+          paymentAmount: paymentAmount,
+          pickUpLocation: pickUpLocation,
+          imageData: imageData,
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
+    // final filterCategory = filteredItemData.where((categories) {
+    //   return selectedCategories.isEmpty || selectedCategories.contains(categories.itemType);
+    // }).toList();
     return Scaffold(
       body: Column(
         children: <Widget>[
           Padding(
-            padding: const EdgeInsets.only(left: 20.0, right: 16.0, top: 50.0),
+            padding: const EdgeInsets.only(left: 16.0, right: 16.0, top: 50.0),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
@@ -310,6 +378,12 @@ class _PenaltyState extends State<Penalty> {
                     fontSize: 30.0,
                     fontWeight: FontWeight.bold,
                   ),
+                ),
+                IconButton(
+                  icon: Icon(Icons.settings),
+                  onPressed: () {
+                    handleSetting(); // Logout when the button is pressed
+                  },
                 ),
               ],
             ),
@@ -332,7 +406,33 @@ class _PenaltyState extends State<Penalty> {
               ),
             ),
           ),
-          _buildListView(), // Use the custom ListView
+          // Create filter button to filter the item category
+          Container(
+            padding: const EdgeInsets.all(1.0),
+            margin: const EdgeInsets.all(1.0),
+            child: Row(
+              children: categories.map(
+                    (paymentStatus) => Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: FilterChip(
+                      selected: selectedCategories.contains(paymentStatus),
+                      label: Text(paymentStatus),
+                      onSelected: (selected){
+                        setState(() {
+                          if(selected){
+                            selectedCategories.add(paymentStatus);
+                          }else{
+                            selectedCategories.remove(paymentStatus);
+                          }
+                        });
+                      }),
+                ),
+              ).toList(),
+            ),
+          ),
+
+          _buildListView(),
+          // Use the custom ListView
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(
@@ -361,3 +461,6 @@ class _PenaltyState extends State<Penalty> {
     );
   }
 }
+
+
+

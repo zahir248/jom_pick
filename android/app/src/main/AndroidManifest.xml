@@ -1,8 +1,13 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
     <application
         android:label="JomPick"
         android:name="${applicationName}"
         android:icon="@mipmap/jompick">
+
+        <meta-data android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyDD_PLf4ykayhHaE9mFWZ9ZxxVFu435jSM" />
+
         <activity
             android:name=".MainActivity"
             android:exported="true"
@@ -21,7 +26,7 @@
               />
 
             <meta-data android:name="com.google.android.geo.API_KEY"
-                android:value="AIzaSyCOgQJS48nQl3KvLvINvVh-GedGP9INvEc"
+                android:value="AIzaSyBgod1ukFHd2DOAwVNedNvKWxCdQoQXvww"
                 />
 
             <intent-filter>
