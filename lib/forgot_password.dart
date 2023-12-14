@@ -5,13 +5,15 @@ import 'dart:convert';
 import 'main.dart';
 
 class ForgotPasswordPage extends StatefulWidget {
+  final String username;
+
+  ForgotPasswordPage({required this.username});
+
   @override
   _ForgotPasswordPageState createState() => _ForgotPasswordPageState();
 }
 
 class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
-  TextEditingController usernameController = TextEditingController();
-  TextEditingController emailController = TextEditingController();
   TextEditingController newPasswordController = TextEditingController();
   TextEditingController confirmPasswordController = TextEditingController();
 
@@ -25,8 +27,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
         Uri.http(MyApp.baseIpAddress, MyApp.updateForgotPasswordPath, {'q': '{http}'}),
 
         body: {
-          'username': usernameController.text,
-          'emailAddress': emailController.text,
+          'username': widget.username,
           'newPassword': newPasswordController.text,
         },
       );
@@ -41,8 +42,6 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
           );
 
           setState(() {
-            usernameController.clear();
-            emailController.clear();
             newPasswordController.clear();
             confirmPasswordController.clear();
           });
@@ -119,27 +118,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                 ),
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(16.0, 20.0, 16.0, 16.0),
-              child: TextField(
-                controller: usernameController,
-                obscureText: false,
-                decoration: InputDecoration(
-                  labelText: 'Username',
-                ),
-              ),
-            ),
             const SizedBox(height: 5),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(16.0, 20.0, 16.0, 16.0),
-              child: TextField(
-                controller: emailController,
-                obscureText: false,
-                decoration: InputDecoration(
-                  labelText: 'Email address',
-                ),
-              ),
-            ),
             Padding(
               padding: const EdgeInsets.fromLTRB(16.0, 20.0, 16.0, 16.0),
               child: TextField(

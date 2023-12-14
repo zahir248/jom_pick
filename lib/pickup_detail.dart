@@ -6,6 +6,7 @@ import 'dart:convert';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:geocoding/geocoding.dart';
 import 'main.dart';
+import 'qr_code.dart';
 
 class PickupDetailPage extends StatefulWidget {
   final String address;
@@ -363,95 +364,6 @@ class _PickupDetailPageState extends State<PickupDetailPage> {
     );
   }
 
-  void _showConfirmationForm() {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return Dialog(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16.0),
-          ),
-          child: Container(
-            padding: EdgeInsets.all(16.0),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Align(
-                  alignment: Alignment.topLeft,
-                  child: IconButton(
-                    icon: Icon(Icons.cancel),
-                    onPressed: () {
-                      if (mounted) {
-                        Navigator.pop(context);
-                      }
-                    },
-                  ),
-                ),
-                SizedBox(height: 16),
-                Text(
-                  'You already pick up your item?',
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                SizedBox(height: 16),
-                ElevatedButton(
-                  onPressed: () async {
-                    // Handle 'Yes' button press
-                    Navigator.pop(context);
-                    await _updateConfirmationStatus('Picked');
-                  },
-                  style: ElevatedButton.styleFrom(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(100),
-                    ),
-                    fixedSize: Size(250, 30), // Adjust the width and height as needed
-                  ),
-                  child: Text('Yes'),
-                ),
-              ],
-            ),
-          ),
-        );
-      },
-    );
-  }
-
-  Future<void> _updateConfirmationStatus(String status) async {
-    try {
-      // You should replace this with the actual logic to update the status on the server
-      final updateStatus = await updateConfirmationStatusOnServer(widget.itemId, status);
-
-      if (updateStatus == "Update successful") {
-        // Show toast after successful update
-        Fluttertoast.showToast(
-          msg: "Pick-up confirmed",
-          toastLength: Toast.LENGTH_SHORT,
-          gravity: ToastGravity.BOTTOM,
-          timeInSecForIosWeb: 1,
-          backgroundColor: Colors.green,
-          textColor: Colors.white,
-          fontSize: 16.0,
-        );
-      } else {
-        // Display a message based on the server response
-        Fluttertoast.showToast(
-          msg: updateStatus,
-          toastLength: Toast.LENGTH_SHORT,
-          gravity: ToastGravity.BOTTOM,
-          timeInSecForIosWeb: 1,
-          backgroundColor: Colors.red,
-          textColor: Colors.white,
-          fontSize: 16.0,
-        );
-      }
-    } catch (e) {
-      print('Error updating confirmation status: $e');
-      // Handle the error, show a message, or log it as needed
-    }
-  }
-
   Future<void> _sendDataToServer(String itemId, String? duration, String formattedUserLocation) async {
     try {
       // Print the values before sending
@@ -484,7 +396,6 @@ class _PickupDetailPageState extends State<PickupDetailPage> {
       print('Error sending data to the server: $e');
     }
   }
-
 
   Future<String> updateConfirmationStatusOnServer(int itemId, String status) async {
     final url = Uri(
@@ -587,7 +498,7 @@ class _PickupDetailPageState extends State<PickupDetailPage> {
                     ),
                     Padding(
                       padding: const EdgeInsets.fromLTRB(
-                          16.0, 70.0, 16.0, 50.0),
+                          5.0, 70.0, 75.0, 50.0),
                       child: Text(
                         'Pick-up Detail',
                         style: TextStyle(
@@ -596,11 +507,6 @@ class _PickupDetailPageState extends State<PickupDetailPage> {
                         ),
                       ),
                     ),
-                    IconButton(
-                      icon: Icon(Icons.refresh),
-                      onPressed: _refresh,
-                    ),
-                    //SizedBox(width: 50),
                   ],
                 ),
                 Row(
@@ -922,7 +828,7 @@ class _PickupDetailPageState extends State<PickupDetailPage> {
                             crossAxisAlignment: CrossAxisAlignment.start, // Align items to the start
                             children: [
                               Text(
-                                'Have taken your item?',
+                                'Item Pick-up confirmation',
                                 style: TextStyle(
                                   fontSize: 18,
                                   fontWeight: FontWeight.bold,
@@ -930,7 +836,7 @@ class _PickupDetailPageState extends State<PickupDetailPage> {
                               ),
                               SizedBox(height: 8), // Add some space between text and button
                               Text(
-                                '*Please confirm that you have taken your item',
+                                '*Show QR Code to the management staff',
                                 style: TextStyle(
                                   fontSize: 14,
                                   color: Colors.grey,
@@ -939,7 +845,10 @@ class _PickupDetailPageState extends State<PickupDetailPage> {
                               SizedBox(height: 8), // Add some space between notes and button
                               ElevatedButton(
                                 onPressed: () {
-                                  _showConfirmationForm();
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(builder: (context) => QrCode(itemId: widget.itemId)),
+                                  );
                                 },
                                 style: ElevatedButton.styleFrom(
                                   fixedSize: Size(100, 30),
@@ -947,7 +856,7 @@ class _PickupDetailPageState extends State<PickupDetailPage> {
                                     borderRadius: BorderRadius.circular(100),
                                   ),
                                 ),
-                                child: Text('Confirm'),
+                                child: Text('Show'),
                               ),
                             ],
                           )
@@ -959,7 +868,11 @@ class _PickupDetailPageState extends State<PickupDetailPage> {
               ],
             ),
           ),
-        )
+        ),
+      floatingActionButton: FloatingActionButton(
+      onPressed: _refresh,
+      child: Icon(Icons.refresh),
+    ),
     );
   }
 }

@@ -8,10 +8,11 @@ import 'DashBoard.dart';
 import 'package:flutter/gestures.dart';
 import 'splashscreen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'forgot_password.dart';
 import 'package:path_provider/path_provider.dart';
 import 'dart:io';
 import 'package:geolocator/geolocator.dart';
+import 'admin.dart';
+import 'security_questions.dart';
 
 void main() {
   runApp(const MyApp());
@@ -35,6 +36,9 @@ class MyApp extends StatelessWidget {
   static final String updateForgotPasswordPath = "/jompick/forgotPassword.php";
   static final String itemHomePath = "/jompick/itemHome.php";
   static final String updatePasswordPath = "/jompick/updatePassword.php";
+
+  static final String verifySecurityQuestions = "/jompick/verifySecurityQuestions.php";
+
   static final String notification = "/jompick/notification.php";
   static final String pickupLocationPath = "/jompick/pickupLocation.php";
   static final String user = "/jompick/userDetail.php";
@@ -134,12 +138,35 @@ class _MyHomePageState extends State<MyHomePage> {
                 prefs.setString('emailAddress', emailAddress);
               }
 
+
+              // Check for the role information and redirect accordingly
+              if (data.containsKey('rolename')) {
+                String rolename = data['rolename'];
+                if (rolename == 'admin' || rolename == 'staff') {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => AdminPage(username: user.text), // Pass the username here
+                    ),                  );
+                } else if (rolename == 'student' || rolename == 'public') {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => DashBoard()),
+                  );
+                } else {
+                  print('Unknown rolename: $rolename');
+                }
+              } else {
+                print('rolename not found in response');
+              }
+
               Navigator.push(
                 context,
                 MaterialPageRoute(
                   builder: (context) => HomeScreen(),
                 ),
               );
+
             } else {
               print('Failed to parse user_id as int');
             }
@@ -273,7 +300,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => ForgotPasswordPage()),
+                    MaterialPageRoute(builder: (context) => SecurityQuestions()),
                   );
                 },
                 child: Text(
