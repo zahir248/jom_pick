@@ -76,6 +76,7 @@ class _MyHomePageState extends State<MyHomePage> {
       return; // Exit the function to prevent further execution
     }
 
+
     var url = Uri.http(MyApp.baseIpAddress, MyApp.loginPath, {'q': '{http}'});
 
     var response = await http.post(url, body: {
