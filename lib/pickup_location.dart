@@ -2,15 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:jom_pick/PickUpLocationMap.dart';
 import 'HomeScreen.dart';
 import 'models/pickup_location_model.dart';
-import 'setting.dart';
-import '../models/item.dart';
-import 'package:shared_preferences/shared_preferences.dart'; // Import SharedPreferences
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'package:intl/intl.dart'; // Import the intl package
-import 'item_detail.dart';
 import 'dart:typed_data';
 import 'main.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 // void main() {
 //   runApp(MyLocationList());
@@ -180,12 +176,7 @@ class _pickupLocation extends State<pickupLocation> {
                           padding: EdgeInsets.symmetric(horizontal: 16.0),
                           child:  ElevatedButton(
                             onPressed: (){
-                              Navigator.push( context, MaterialPageRoute(
-                                builder: (context) => PickupLocationMap(
-                                 destinationAddress: filteredItemData[index].address,
-                                ),
-                              ),
-                              );
+                              _launchGoogleMaps(filteredItemData[index].address);
                             },
                             style: ElevatedButton.styleFrom(
                               fixedSize: Size(340, 45),
@@ -213,6 +204,22 @@ class _pickupLocation extends State<pickupLocation> {
     );
   }
 
+
+  void _launchGoogleMaps(String destinationAddress) async {
+    // Construct the Google Maps URL with the destination address
+    final url = 'https://www.google.com/maps/dir/?api=1&destination=$destinationAddress';
+
+    // Launch the URL
+    try {
+      if (await canLaunch(url)) {
+        await launch(url);
+      } else {
+        print('Could not launch Google Maps');
+      }
+    } catch (e) {
+      print('Error launching Google Maps: $e');
+    }
+  }
 
   // Update the filterItems method to filter itemData only when the search bar has a value
   void filterItems(String query) {

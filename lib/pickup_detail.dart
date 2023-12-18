@@ -7,6 +7,8 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:geocoding/geocoding.dart';
 import 'main.dart';
 import 'qr_code.dart';
+import 'package:intl/intl.dart';
+
 
 class PickupDetailPage extends StatefulWidget {
   final String address;
@@ -14,7 +16,12 @@ class PickupDetailPage extends StatefulWidget {
   final DateTime confirmationDate;
 
   // In the constructor, require the address property.
-  PickupDetailPage({Key? key, required this.address, required this.itemId, required this.confirmationDate,}) : super(key: key);
+  PickupDetailPage(
+      {Key? key,
+        required this.address,
+        required this.itemId,
+        required this.confirmationDate,})
+      : super(key: key);
 
   @override
   _PickupDetailPageState createState() => _PickupDetailPageState();
@@ -787,6 +794,11 @@ class _PickupDetailPageState extends State<PickupDetailPage> {
                                 ),
                                 child: Text('Select'),
                               ),
+                              // Text('Pick-up date : ${DateFormat('yyyy-MM-dd').format(widget.pickUpDate)}',
+                              // style: TextStyle(
+                              //   fontSize: 16,
+                              //   fontWeight: FontWeight.bold,
+                              // ),),
                             ],
                           ),
                           SizedBox(height: 50),

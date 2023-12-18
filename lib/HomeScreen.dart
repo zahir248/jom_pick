@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:jom_pick/DashBoard.dart';
@@ -36,7 +37,7 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     fetchItemData();
-    //fetchUserData();
+    fetchUserData();
   }
 
   Future<void> fetchItemData() async {
@@ -66,31 +67,31 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
 
-  // Future<void> fetchUserData() async {
-  //   SharedPreferences prefs = await SharedPreferences.getInstance();
-  //   userId = prefs.getInt('user_id');
-  //
-  //   if (userId != null) {
-  //
-  //     final response = await http.get(Uri.parse('http://${MyApp.baseIpAddress}${MyApp.user}?user_id=$userId'));
-  //     print('Raw JSON response: ${response.body}');
-  //
-  //     if (response.statusCode == 200) {
-  //
-  //       final List<dynamic> jsonData = json.decode(response.body);
-  //
-  //       setState(() {
-  //         userData = (jsonData as List).map((item) => User.fromJson(item)).toList();
-  //         //filteredItemData = List.from(itemData); // Initialize filteredItemData
-  //
-  //       });
-  //     } else {
-  //       throw Exception('Failed to load user data. Status code: ${response.statusCode}');
-  //     }
-  //   } else {
-  //     print('User ID not found in SharedPreferences');
-  //   }
-  // }
+  Future<void> fetchUserData() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    userId = prefs.getInt('user_id');
+
+    if (userId != null) {
+
+      final response = await http.get(Uri.parse('http://${MyApp.baseIpAddress}${MyApp.user}?user_id=$userId'));
+      print('Raw JSON response: ${response.body}');
+
+      if (response.statusCode == 200) {
+
+        final List<dynamic> jsonData = json.decode(response.body);
+
+        setState(() {
+          userData = (jsonData as List).map((item) => User.fromJson(item)).toList();
+          //filteredItemData = List.from(itemData); // Initialize filteredItemData
+
+        });
+      } else {
+        throw Exception('Failed to load user data. Status code: ${response.statusCode}');
+      }
+    } else {
+      print('User ID not found in SharedPreferences');
+    }
+  }
 
 
 
@@ -146,8 +147,11 @@ class _HomeScreenState extends State<HomeScreen> {
                                   color: Colors.blue, // Optional: Set the background color of the circle
                                 ),
                                 child: ClipOval(
-                                  child: Image.asset(
-                                    'assets/jompick.jpg', // Replace with your image URL
+                                  child: Image.memory(
+                                    userData.isNotEmpty && userData[0].image != null
+                                          ? userData[0].image!
+                                    :Uint8List(0),
+                                    //'assets/jompick.jpg', 
                                     width: 50,
                                     height: 50,
                                     fit: BoxFit.cover,
@@ -163,7 +167,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 Padding(
                                   padding: const EdgeInsets.only(top: 10.0),
                                   child: Text(
-                                    'Welcome To JomPick',
+                                    'Hi ${userData.isNotEmpty ? userData[0].userName : ''}',
                                     style: TextStyle(
                                       fontFamily: 'Monoton',
                                         color: Colors.black87,

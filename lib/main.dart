@@ -22,7 +22,7 @@ void main() {
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
 
-  static final String baseIpAddress = "192.168.0.119";
+  static final String baseIpAddress = "10.131.78.236";
 
   static final String loginPath = "/jompick/login.php";
   static final String registerPath = "/jompick/register.php";
@@ -151,7 +151,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 } else if (rolename == 'student' || rolename == 'public') {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => DashBoard()),
+                    MaterialPageRoute(builder: (context) => HomeScreen()),
                   );
                 } else {
                   print('Unknown rolename: $rolename');
@@ -159,13 +159,13 @@ class _MyHomePageState extends State<MyHomePage> {
               } else {
                 print('rolename not found in response');
               }
-
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => HomeScreen(),
-                ),
-              );
+              //
+              // Navigator.push(
+              //   context,
+              //   MaterialPageRoute(
+              //     builder: (context) => HomeScreen(),
+              //   ),
+              // );
 
             } else {
               print('Failed to parse user_id as int');

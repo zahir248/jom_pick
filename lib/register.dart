@@ -292,8 +292,6 @@ class _RegisterState extends State<Register> {
                       }
                   ),
                 ),
-
-              ),
               Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: Column(
@@ -347,37 +345,31 @@ class _RegisterState extends State<Register> {
                 ),
               ),
 
-              Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: TextField(
-                  controller: pass,
-                  obscureText: !isPasswordVisible,
-                  decoration: InputDecoration(
-                    labelText: 'Password',
-                    suffixIcon: GestureDetector(
-                      onTap: () {
-                        setState(() {
-                          isPasswordVisible = !isPasswordVisible;
-                        });
-                      },
-                      child: Icon(
-                        isPasswordVisible
-                            ? Icons.visibility
-                            : Icons.visibility_off,
-
-                      ),
-                      validator: (value){
-                        if(value!.isEmpty || !RegExp(r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_-]).+$').hasMatch(value) || value.length<8){
-                          return 'Password must contains at lower case, upper case, number, special character and at least 8 character';
-                        }else{
-                          return null;
-                        }
-                      }
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: TextField(
+              controller: pass,
+              obscureText: !isPasswordVisible,
+              decoration: InputDecoration(
+                labelText: 'Password',
+                suffixIcon: GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      isPasswordVisible = !isPasswordVisible;
+                    });
+                  },
+                  child: Icon(
+                    isPasswordVisible
+                        ? Icons.visibility
+                        : Icons.visibility_off,
                   ),
                 ),
+              ),
+            ),
+          ),
                 Padding(
                   padding: const EdgeInsets.all(16.0),
-                  child: TextField(
+                  child: TextFormField(
                     controller: confirmPass,
                     obscureText: !isConfirmPasswordVisible, // Use the new variable
                     decoration: InputDecoration(
@@ -396,6 +388,13 @@ class _RegisterState extends State<Register> {
                         ),
                       ),
                     ),
+                      validator: (value){
+                        if(value!.isEmpty || !RegExp(r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_-]).+$').hasMatch(value) || value.length<8){
+                          return 'Password must contains at lower case, upper case, number, special character and at least 8 character';
+                        }else{
+                          return null;
+                        }
+                      },
                   ),
                 ),
                 ElevatedButton(

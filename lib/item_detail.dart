@@ -15,6 +15,7 @@ class ItemDetailPage extends StatefulWidget {
   final Uint8List imageData;
   final DateTime confirmationDate;
   final String address;
+  //final DateTime pickUpDate;
 
   ItemDetailPage({
     required this.itemId,
@@ -25,6 +26,7 @@ class ItemDetailPage extends StatefulWidget {
     required this.status,
     required this.confirmationDate,
     required this.address,
+    //required this.pickUpDate,
   });
 
   @override
@@ -74,12 +76,16 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
                   buildDetailItem("Item ID", widget.itemId.toString()),*/
                   SizedBox(height: 20),
                   buildDetailItem("Name", widget.itemName),
+                  Divider(),
                   SizedBox(height: 20),
                   buildDetailItem("Tracking Number", widget.trackingNumber),
+                  Divider(),
                   SizedBox(height: 20),
                   buildDetailItem("Type", widget.itemType),
+                  Divider(),
                   SizedBox(height: 20),
                   buildDetailItem("Pick-up Location", widget.address),
+                  Divider(),
                   SizedBox(height: 20),
                   buildDetailItem("Picture", ""),
                   Center(
@@ -95,13 +101,16 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
                       ),
                     ),
                   ),
+                  Divider(),
                   SizedBox(height: 20),
                   buildDetailItem("Status", widget.status),
+                  Divider(),
                   SizedBox(height: 20),
                   buildDetailItem(
                       "Pick-up Due Date",
                       DateFormat('d MMMM yyyy')
                           .format(widget.confirmationDate)),
+                  Divider(),
                   SizedBox(height: 50),
                 ],
               ),
@@ -126,7 +135,8 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
                 builder: (context) => PickupDetailPage(
                   address: widget.address,
                   itemId: widget.itemId,
-                  confirmationDate: widget.confirmationDate, // Pass the confirmationDate to PickupDetailPage
+                  confirmationDate: widget.confirmationDate,
+                  //pickUpDate : widget.pickUpDate,// Pass the confirmationDate to PickupDetailPage
                 ),
               ),
             );
@@ -310,7 +320,7 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
   Widget buildDetailItem(String label, dynamic value) {
     String formattedValue = value is DateTime
         ? DateFormat('yyyy-MM-dd').format(value)
-        : value.toString();
+        : value.toString() ?? 'N/A';
 
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 5),

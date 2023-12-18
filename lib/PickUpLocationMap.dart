@@ -193,6 +193,7 @@ class PickupLocationMapState extends State<PickupLocationMap> {
   Future<void> getPlaceDetails(String placeId) async{
 
     final apiKey = 'AIzaSyBgod1ukFHd2DOAwVNedNvKWxCdQoQXvww';
+
     final url = 'https://maps.googleapis.com/maps/api/place/details/json?place_id=$placeId&fields=name,photos&key=$apiKey';
 
     final response = await http.get(Uri.parse(url));

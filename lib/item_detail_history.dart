@@ -67,10 +67,13 @@ class _ItemDetailPageHistoryState extends State<ItemDetailPageHistory> {
                   buildDetailItem("Item ID", widget.itemId.toString()),*/
                   SizedBox(height: 20),
                   buildDetailItem("Name", widget.itemName),
+                  Divider(),
                   SizedBox(height: 20),
                   buildDetailItem("Tracking Number", widget.trackingNumber),
+                  Divider(),
                   SizedBox(height: 20),
                   buildDetailItem("Type", widget.itemType),
+                  Divider(),
                   SizedBox(height: 20),
                   buildDetailItem("Picture", ""),
                   Center(
@@ -86,13 +89,16 @@ class _ItemDetailPageHistoryState extends State<ItemDetailPageHistory> {
                       ),
                     ),
                   ),
+                  Divider(),
                   SizedBox(height: 20),
                   buildDetailItem("Status", widget.status),
+                  Divider(),
                   SizedBox(height: 20),
                   buildDetailItem(
                       "Pick-up Date",
                       DateFormat('d MMMM yyyy')
                           .format(widget.confirmationDate)),
+                  Divider(),
                   SizedBox(height: 50),
                 ],
               ),

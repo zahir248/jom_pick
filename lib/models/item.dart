@@ -14,6 +14,7 @@ class Item {
   final DateTime confirmationDate;
   final String penaltyStatus;
   final String paymentStatus;
+  //final DateTime pickUpDate;
 
   Item({
     required this.itemId,
@@ -28,6 +29,7 @@ class Item {
     required this.confirmationDate,
     required this.penaltyStatus,
     required this.paymentStatus,
+    //required this.pickUpDate,
   });
 
   factory Item.fromJson(Map<String, dynamic> json) {
@@ -46,6 +48,7 @@ class Item {
       confirmationDate: DateTime.parse(json['confirmationDate'] ?? ''),
       penaltyStatus: json['penaltyStatus'] ?? '',
       paymentStatus: json['paymentStatus'] ?? '',
+      //pickUpDate: DateTime.parse(json['pickUpDate'] ?? ''),
     );
   }
 }

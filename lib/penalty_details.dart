@@ -78,10 +78,13 @@ class penaltyDetailPageState extends State<penaltyDetailPage> {
                   buildDetailItem("Item ID", widget.itemId.toString()),*/
                   SizedBox(height: 20),
                   buildDetailItem("Name", widget.itemName),
+                  Divider(),
                   SizedBox(height: 20),
                   buildDetailItem("Tracking Number", widget.trackingNumber),
+                  Divider(),
                   SizedBox(height: 20),
                   buildDetailItem("Type", widget.itemType),
+                  Divider(),
                   SizedBox(height: 20),
                   buildDetailItem("Picture", ""),
                   Center(
@@ -97,18 +100,23 @@ class penaltyDetailPageState extends State<penaltyDetailPage> {
                       ),
                     ),
                   ),
+                  Divider(),
                   SizedBox(height: 20),
                   buildDetailItem("Status", widget.dueDateStatus),
+                  Divider(),
                   SizedBox(height: 20),
                   // buildDetailItem(
                   //     "Due Date",
                   //     DateFormat('d MMMM yyyy')
                   //         .format(widget.dueDate)),
                   buildDetailItem("Due Date", widget.dueDate),
+                  Divider(),
                   SizedBox(height: 20),
                   buildDetailItem("Payment Amount (RM)", widget.paymentAmount),
+                  Divider(),
                   SizedBox(height: 20),
                   buildDetailItem("Payment Status", widget.paymentStatus),
+                  Divider(),
                   SizedBox(height: 50),
                   // Container(
                   //   height: 95,
