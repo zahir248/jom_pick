@@ -3,11 +3,19 @@ import 'package:qr_flutter/qr_flutter.dart';
 
 class QrCode extends StatelessWidget {
   final int itemId;
+  final String itemName;
+  final String fullName;
+  final String pickupType;
+  final int confirmationId;
 
-  const QrCode({Key? key, required this.itemId}) : super(key: key);
+  const QrCode({Key? key, required this.itemId, required this.itemName, required this.fullName, required this.pickupType, required this.confirmationId})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    // Combine itemId and itemName in the data string
+    String qrData = 'itemID=$itemId&itemName=$itemName&status=Picked&fullName=$fullName&pickupType=$pickupType&confirmationID=$confirmationId';
+
     return Scaffold(
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -35,14 +43,14 @@ class QrCode extends StatelessWidget {
                     ),
                   ),
                 ),
-                SizedBox(width: 16.0), // Adjust the width for the desired spacing
+                SizedBox(width: 16.0),
               ],
             ),
           ),
-          SizedBox(height: 80.0), // Add space between text and QR Code
+          SizedBox(height: 80.0),
           Center(
             child: QrImageView(
-              data: 'itemID=$itemId&status=Picked',
+              data: qrData, // Use the combined data string
               version: QrVersions.auto,
               size: 290.0,
             ),

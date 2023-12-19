@@ -14,6 +14,11 @@ import 'models/penalty_details_model.dart';
 import 'profile.dart';
 import 'history.dart';
 import 'package:http/http.dart' as http;
+
+import 'dart:convert';
+import 'package:intl/intl.dart'; // Import the intl package
+import 'dart:typed_data';
+import 'item_detail_penalty.dart';
 import 'main.dart';
 
 
@@ -263,6 +268,22 @@ class _PenaltyState extends State<Penalty> {
 
     // Navigate to the login page (Assuming your login page is named Setting)
     Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Setting()));
+  void _detailsItem(int itemId, String itemName, String trackingNumber, String itemType, Uint8List imageData, String status, DateTime confirmationDate) {
+    // Navigate to the item detail page and pass the item_id
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => ItemDetailPenaltyPage(
+          itemId: itemId,
+          itemName: itemName,
+          trackingNumber : trackingNumber,
+          itemType : itemType,
+          imageData: imageData,
+          status: status,
+          confirmationDate: confirmationDate,
+        ),
+      ),
+    );
   }
 
   void _onItemTapped(int index) {

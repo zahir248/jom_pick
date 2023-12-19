@@ -17,6 +17,10 @@ class ItemDetailPage extends StatefulWidget {
   final String address;
   //final DateTime pickUpDate;
 
+  final String fullName;
+  final String pickupType;
+  final int confirmationId;
+
   ItemDetailPage({
     required this.itemId,
     required this.itemName,
@@ -27,6 +31,9 @@ class ItemDetailPage extends StatefulWidget {
     required this.confirmationDate,
     required this.address,
     //required this.pickUpDate,
+    required this.fullName,
+    required this.pickupType,
+    required this.confirmationId,
   });
 
   @override
@@ -133,10 +140,15 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
               context,
               MaterialPageRoute(
                 builder: (context) => PickupDetailPage(
-                  address: widget.address,
-                  itemId: widget.itemId,
-                  confirmationDate: widget.confirmationDate,
-                  //pickUpDate : widget.pickUpDate,// Pass the confirmationDate to PickupDetailPage
+
+                    address: widget.address,
+                    itemId: widget.itemId,
+                    confirmationDate: widget.confirmationDate, // Pass the confirmationDate to PickupDetailPage
+                    itemName: widget.itemName,
+                    fullName: widget.fullName,
+                    pickupType: widget.pickupType,
+                    confirmationId: widget.confirmationId,
+
                 ),
               ),
             );

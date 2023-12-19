@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'dart:typed_data';
 import 'package:intl/intl.dart';
 
-class ItemDetailPageHistory extends StatefulWidget {
+class ItemDetailPenaltyPage extends StatefulWidget {
   final int itemId;
   final String itemName;
   final String trackingNumber;
@@ -10,9 +10,8 @@ class ItemDetailPageHistory extends StatefulWidget {
   final String status;
   final Uint8List imageData;
   final DateTime confirmationDate;
-  final Uint8List imageProofData;
 
-  ItemDetailPageHistory({
+  ItemDetailPenaltyPage({
     required this.itemId,
     required this.itemName,
     required this.trackingNumber,
@@ -20,14 +19,13 @@ class ItemDetailPageHistory extends StatefulWidget {
     required this.imageData,
     required this.status,
     required this.confirmationDate,
-    required this.imageProofData,
   });
 
   @override
-  _ItemDetailPageHistoryState createState() => _ItemDetailPageHistoryState();
+  _ItemDetailPenaltyPageState createState() => _ItemDetailPenaltyPageState();
 }
 
-class _ItemDetailPageHistoryState extends State<ItemDetailPageHistory> {
+class _ItemDetailPenaltyPageState extends State<ItemDetailPenaltyPage> {
   int _currentIndex = 0; // Index for BottomNavigationBar
 
   @override
@@ -69,13 +67,10 @@ class _ItemDetailPageHistoryState extends State<ItemDetailPageHistory> {
                   buildDetailItem("Item ID", widget.itemId.toString()),*/
                   SizedBox(height: 20),
                   buildDetailItem("Name", widget.itemName),
-                  Divider(),
                   SizedBox(height: 20),
                   buildDetailItem("Tracking Number", widget.trackingNumber),
-                  Divider(),
                   SizedBox(height: 20),
                   buildDetailItem("Type", widget.itemType),
-                  Divider(),
                   SizedBox(height: 20),
                   buildDetailItem("Picture", ""),
                   Center(
@@ -91,31 +86,13 @@ class _ItemDetailPageHistoryState extends State<ItemDetailPageHistory> {
                       ),
                     ),
                   ),
-                  Divider(),
                   SizedBox(height: 20),
                   buildDetailItem("Status", widget.status),
-                  Divider(),
                   SizedBox(height: 20),
                   buildDetailItem(
                       "Pick-up Date",
                       DateFormat('d MMMM yyyy')
                           .format(widget.confirmationDate)),
-                  Divider(),
-                  SizedBox(height: 20),
-                  buildDetailItem("Pick-up Proof", ""),
-                  Center(
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(15.0),
-                      child: Container(
-                        width: 350,
-                        height: 200,
-                        child: Image.memory(
-                          widget.imageProofData,
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-                    ),
-                  ),
                   SizedBox(height: 50),
                 ],
               ),
