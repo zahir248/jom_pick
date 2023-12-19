@@ -13,6 +13,10 @@ class Item {
   final String status;
   final DateTime confirmationDate;
   final String penaltyStatus;
+  final String fullName;
+  final String pickupType;
+  final int confirmationId;
+  final Uint8List imageProofData; // Use Uint8List for binary image data
 
   Item({
     required this.itemId,
@@ -26,11 +30,17 @@ class Item {
     required this.status,
     required this.confirmationDate,
     required this.penaltyStatus,
+    required this.fullName,
+    required this.pickupType,
+    required this.confirmationId,
+    required this.imageProofData,
   });
 
   factory Item.fromJson(Map<String, dynamic> json) {
     // Decode base64 to Uint8List
     Uint8List decodedImageData = base64.decode(json['image']);
+    Uint8List decodedImageProofData = base64.decode(json['imageProof']);
+
     return Item(
       itemId: int.parse(json['item_id'] ?? '0'),
       itemName: json['name'] ?? '',
@@ -43,6 +53,10 @@ class Item {
       status: json['status'] ?? '',
       confirmationDate: DateTime.parse(json['confirmationDate'] ?? ''),
       penaltyStatus: json['penaltyStatus'] ?? '',
+      fullName: json['fullName'] ?? '',
+      pickupType: json['pickupType'] ?? '',
+      confirmationId: int.parse(json['confirmation_id'] ?? '0'),
+      imageProofData: decodedImageProofData,
     );
   }
 }

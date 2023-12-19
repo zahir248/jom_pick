@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'dart:typed_data';
 import 'package:intl/intl.dart';
 
-class ItemDetailPage extends StatefulWidget {
+class ItemDetailPenaltyPage extends StatefulWidget {
   final int itemId;
   final String itemName;
   final String trackingNumber;
@@ -10,9 +10,8 @@ class ItemDetailPage extends StatefulWidget {
   final String status;
   final Uint8List imageData;
   final DateTime confirmationDate;
-  final Uint8List imageProofData;
 
-  ItemDetailPage({
+  ItemDetailPenaltyPage({
     required this.itemId,
     required this.itemName,
     required this.trackingNumber,
@@ -20,14 +19,13 @@ class ItemDetailPage extends StatefulWidget {
     required this.imageData,
     required this.status,
     required this.confirmationDate,
-    required this.imageProofData,
   });
 
   @override
-  _ItemDetailPageState createState() => _ItemDetailPageState();
+  _ItemDetailPenaltyPageState createState() => _ItemDetailPenaltyPageState();
 }
 
-class _ItemDetailPageState extends State<ItemDetailPage> {
+class _ItemDetailPenaltyPageState extends State<ItemDetailPenaltyPage> {
   int _currentIndex = 0; // Index for BottomNavigationBar
 
   @override
@@ -95,21 +93,6 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
                       "Pick-up Date",
                       DateFormat('d MMMM yyyy')
                           .format(widget.confirmationDate)),
-                  SizedBox(height: 20),
-                  buildDetailItem("Pick-up Proof", ""),
-                  Center(
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(15.0),
-                      child: Container(
-                        width: 350,
-                        height: 200,
-                        child: Image.memory(
-                          widget.imageProofData,
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-                    ),
-                  ),
                   SizedBox(height: 50),
                 ],
               ),

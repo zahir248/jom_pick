@@ -32,7 +32,7 @@ class _SecurityQuestionsState extends State<SecurityQuestions> {
     }
 
     // Add your server endpoint for verification
-    var url = Uri.http(MyApp.baseIpAddress, MyApp.verifySecurityQuestions, {'q': '{http}'});
+    var url = Uri.http(MyApp.baseIpAddress, MyApp.verifySecurityQuestionsPath, {'q': '{http}'});
 
     try {
       var response = await http.post(

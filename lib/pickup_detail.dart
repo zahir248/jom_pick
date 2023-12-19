@@ -12,9 +12,13 @@ class PickupDetailPage extends StatefulWidget {
   final String address;
   final int itemId;
   final DateTime confirmationDate;
+  final String itemName;
+  final String fullName;
+  final String pickupType;
+  final int confirmationId;
 
   // In the constructor, require the address property.
-  PickupDetailPage({Key? key, required this.address, required this.itemId, required this.confirmationDate,}) : super(key: key);
+  PickupDetailPage({Key? key, required this.address, required this.itemId, required this.confirmationDate, required this.itemName, required this.fullName, required this.pickupType, required this.confirmationId}) : super(key: key);
 
   @override
   _PickupDetailPageState createState() => _PickupDetailPageState();
@@ -201,6 +205,7 @@ class _PickupDetailPageState extends State<PickupDetailPage> {
 
   void _showPickupForm() {
     String _vehicleType = 'Driving'; // Default selection
+    String _pickupType = 'Self Pickup'; // Default selection
 
     showDialog(
       context: context,
@@ -211,7 +216,8 @@ class _PickupDetailPageState extends State<PickupDetailPage> {
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(16.0),
               ),
-              child: Container(
+            child: SingleChildScrollView(
+            child: Container(
                 padding: EdgeInsets.all(16.0),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
@@ -229,7 +235,7 @@ class _PickupDetailPageState extends State<PickupDetailPage> {
                     ),
                     SizedBox(height: 16),
                     Text(
-                      'Please select the type of vehicle you will be riding to reach the pickup location.',
+                      'Please select the type of vehicle you will be riding to reach the pickup location:',
                       style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
@@ -313,13 +319,40 @@ class _PickupDetailPageState extends State<PickupDetailPage> {
                       },
                     ),
                     SizedBox(height: 16),
+                    Text(
+                      'Please select the person who will pick up your item:',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    SizedBox(height: 16),
+                    CheckboxListTile(
+                      title: Text('Take the item myself'),
+                      value: _pickupType == 'Self Pickup',
+                      onChanged: (bool? value) {
+                        setState(() {
+                          _pickupType = 'Self Pickup';
+                        });
+                      },
+                    ),
+                    CheckboxListTile(
+                      title: Text('Someone else will take my item'),
+                      value: _pickupType == 'Someone Else Pickup',
+                      onChanged: (bool? value) {
+                        setState(() {
+                          _pickupType = 'Someone Else Pickup';
+                        });
+                      },
+                    ),
+                    SizedBox(height: 16),
                     ElevatedButton(
                       onPressed: () async {
                         // Get the durations
                         Map<String, String> durations = await _getDurations();
 
                         // Send data to the server
-                        await _sendDataToServer(widget.itemId.toString(), durations['$_vehicleType'], formattedUserLocation);
+                        await _sendDataToServer(widget.itemId.toString(), durations['$_vehicleType'], formattedUserLocation, _pickupType);
 
                         // Show success message
                         Fluttertoast.showToast(
@@ -345,6 +378,7 @@ class _PickupDetailPageState extends State<PickupDetailPage> {
                   ],
                 ),
               ),
+            )
             );
           },
         );
@@ -352,10 +386,10 @@ class _PickupDetailPageState extends State<PickupDetailPage> {
     );
   }
 
-  Future<void> _sendDataToServer(String itemId, String? duration, String formattedUserLocation) async {
+  Future<void> _sendDataToServer(String itemId, String? duration, String formattedUserLocation, String pickupType) async {
     try {
       // Print the values before sending
-      print('Item ID: $itemId, Pick-up Duration: $duration, User Location: $formattedUserLocation');
+      print('Item ID: $itemId, Pick-up Duration: $duration, User Location: $formattedUserLocation, Pickup Type: $pickupType');
 
       final url = Uri(
         scheme: 'http',
@@ -370,6 +404,7 @@ class _PickupDetailPageState extends State<PickupDetailPage> {
           'itemId': itemId,
           'pickUpDuration': duration ?? 'default_duration', // Replace 'default_duration' with your default value or handle it accordingly
           'currentLocation': formattedUserLocation,
+          'pickupType': pickupType,
         },
       );
 
@@ -384,6 +419,7 @@ class _PickupDetailPageState extends State<PickupDetailPage> {
       print('Error sending data to the server: $e');
     }
   }
+
 
   Future<String> updateConfirmationStatusOnServer(int itemId, String status) async {
     final url = Uri(
@@ -410,6 +446,10 @@ class _PickupDetailPageState extends State<PickupDetailPage> {
       initialDate: DateTime.now(),
       firstDate: DateTime.now(),
       lastDate: widget.confirmationDate,
+      selectableDayPredicate: (DateTime date) {
+        // Disable Saturdays and Sundays
+        return date.weekday != DateTime.saturday && date.weekday != DateTime.sunday;
+      },
     );
 
     if (picked != null) {
@@ -422,7 +462,7 @@ class _PickupDetailPageState extends State<PickupDetailPage> {
       await updatePickUpDateOnServer(widget.itemId, formattedDate);
 
       Fluttertoast.showToast(
-        msg: "Pick-up Date set succesfully",
+        msg: "Pick-up Date set successfully",
         toastLength: Toast.LENGTH_SHORT,
         gravity: ToastGravity.BOTTOM,
         timeInSecForIosWeb: 1,
@@ -430,11 +470,11 @@ class _PickupDetailPageState extends State<PickupDetailPage> {
         textColor: Colors.white,
         fontSize: 16.0,
       );
-
     } else {
       //print("Date selection canceled");
     }
   }
+
 
   Future<void> updatePickUpDateOnServer(int itemId, String newPickupDate) async {
     final url = Uri(
@@ -751,11 +791,20 @@ class _PickupDetailPageState extends State<PickupDetailPage> {
                                 ),
                               ),
                               SizedBox(height: 8),
-                              Text(
-                                '*Set date to pick your item',
-                                style: TextStyle(
-                                  fontSize: 14,
-                                  color: Colors.grey,
+                              RichText(
+                                text: TextSpan(
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    color: Colors.grey,
+                                  ),
+                                  children: <TextSpan>[
+                                    TextSpan(text: '*Please set date to take your item on '),
+                                    TextSpan(
+                                      text: 'weekdays',
+                                      style: TextStyle(fontWeight: FontWeight.bold),
+                                    ),
+                                    TextSpan(text: ' only'),
+                                  ],
                                 ),
                               ),
                               SizedBox(height: 8),
@@ -831,7 +880,15 @@ class _PickupDetailPageState extends State<PickupDetailPage> {
                                 onPressed: () {
                                   Navigator.push(
                                     context,
-                                    MaterialPageRoute(builder: (context) => QrCode(itemId: widget.itemId)),
+                                    MaterialPageRoute(
+                                      builder: (context) => QrCode(
+                                        itemId: widget.itemId,
+                                        itemName: widget.itemName, // Pass the itemName to the next page
+                                        fullName: widget.fullName,
+                                        pickupType: widget.pickupType,
+                                        confirmationId: widget.confirmationId,
+                                      ),
+                                    ),
                                   );
                                 },
                                 style: ElevatedButton.styleFrom(

@@ -201,6 +201,9 @@ class _DashBoardState extends State<DashBoard> {
                                 filteredItemData[index].status,
                                 filteredItemData[index].confirmationDate,
                                 filteredItemData[index].address,
+                                filteredItemData[index].fullName,
+                                filteredItemData[index].pickupType,
+                                filteredItemData[index].confirmationId,
                               );
                             },
                             style: ElevatedButton.styleFrom(
@@ -224,7 +227,7 @@ class _DashBoardState extends State<DashBoard> {
     );
   }
 
-  void _detailsItem(int itemId, String itemName, String trackingNumber, String itemType, Uint8List imageData, String status, DateTime confirmationDate, String address) {
+  void _detailsItem(int itemId, String itemName, String trackingNumber, String itemType, Uint8List imageData, String status, DateTime confirmationDate, String address, String fullName, String pickupType, int confirmationId) {
     // Navigate to the item detail page and pass the item_id
     Navigator.push(
       context,
@@ -238,6 +241,9 @@ class _DashBoardState extends State<DashBoard> {
             status: status,
             confirmationDate: confirmationDate,
             address: address,
+            fullName: fullName,
+            pickupType: pickupType,
+            confirmationId: confirmationId,
         ),
       ),
     );

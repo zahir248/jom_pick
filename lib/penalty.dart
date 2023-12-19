@@ -8,7 +8,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:intl/intl.dart'; // Import the intl package
 import 'dart:typed_data';
-import 'item_detail_history.dart';
+import 'item_detail_penalty.dart';
 import 'main.dart';
 
 class Penalty extends StatefulWidget {
@@ -230,7 +230,7 @@ class _PenaltyState extends State<Penalty> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => ItemDetailPage(
+        builder: (context) => ItemDetailPenaltyPage(
           itemId: itemId,
           itemName: itemName,
           trackingNumber : trackingNumber,

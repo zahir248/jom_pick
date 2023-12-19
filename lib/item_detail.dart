@@ -15,6 +15,9 @@ class ItemDetailPage extends StatefulWidget {
   final Uint8List imageData;
   final DateTime confirmationDate;
   final String address;
+  final String fullName;
+  final String pickupType;
+  final int confirmationId;
 
   ItemDetailPage({
     required this.itemId,
@@ -25,6 +28,9 @@ class ItemDetailPage extends StatefulWidget {
     required this.status,
     required this.confirmationDate,
     required this.address,
+    required this.fullName,
+    required this.pickupType,
+    required this.confirmationId,
   });
 
   @override
@@ -127,6 +133,10 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
                     address: widget.address,
                     itemId: widget.itemId,
                     confirmationDate: widget.confirmationDate, // Pass the confirmationDate to PickupDetailPage
+                    itemName: widget.itemName,
+                    fullName: widget.fullName,
+                    pickupType: widget.pickupType,
+                    confirmationId: widget.confirmationId,
                 ),
               ),
             );
