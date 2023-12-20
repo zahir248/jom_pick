@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:jom_pick/HomeScreen.dart';
+import 'package:jom_pick/setting.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'dashboard.dart';
@@ -208,7 +209,7 @@ class _ProfileState extends State<Profile> {
   }
 
   void _onItemTapped(int index) {
-    if (index == 3) {
+    if (index == 4) {
       // If the "Profile" button is tapped (index 2), navigate to the profile page
       Navigator.push(
         context,
@@ -230,7 +231,14 @@ class _ProfileState extends State<Profile> {
           builder: (context) => History(),
         ),
       );
-    } else {
+    } else if(index == 3){
+      Navigator.push(
+        context,
+          MaterialPageRoute(
+            builder: (context) => Setting(),
+          ),
+    );
+    }else {
       Navigator.push(
         context,
         MaterialPageRoute(
@@ -419,8 +427,12 @@ class _ProfileState extends State<Profile> {
             label: 'Penalty',
           ),
           BottomNavigationBarItem(
+            icon: Icon(Icons.settings),
+            label: 'Setting',
+          ),
+          BottomNavigationBarItem(
             icon: Icon(Icons.person),
-            label: 'Profile',
+            label: 'Profile ',
           ),
         ],
         currentIndex: _selectedIndex,

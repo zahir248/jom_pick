@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'dart:typed_data';
 import 'package:intl/intl.dart';
 
-class ItemDetailPageHistory extends StatefulWidget {
+class ItemDetailPage extends StatefulWidget {
   final int itemId;
   final String itemName;
   final String trackingNumber;
@@ -12,7 +12,7 @@ class ItemDetailPageHistory extends StatefulWidget {
   final DateTime confirmationDate;
   final Uint8List imageProofData;
 
-  ItemDetailPageHistory({
+  ItemDetailPage({
     required this.itemId,
     required this.itemName,
     required this.trackingNumber,
@@ -24,10 +24,10 @@ class ItemDetailPageHistory extends StatefulWidget {
   });
 
   @override
-  _ItemDetailPageHistoryState createState() => _ItemDetailPageHistoryState();
+  _ItemDetailPageState createState() => _ItemDetailPageState();
 }
 
-class _ItemDetailPageHistoryState extends State<ItemDetailPageHistory> {
+class _ItemDetailPageState extends State<ItemDetailPage> {
   int _currentIndex = 0; // Index for BottomNavigationBar
 
   @override

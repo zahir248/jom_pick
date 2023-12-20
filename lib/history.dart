@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:typed_data';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
+import 'package:jom_pick/setting.dart';
 import 'dashboard.dart';
 import 'models/item.dart';
 import 'profile.dart';
@@ -102,7 +103,7 @@ class _HistoryState extends State<History> {
 
     final filterCategory = filteredItemData.where((Item){
       return selectedCategories.isEmpty ||
-            selectedCategories.contains(Item.status);
+          selectedCategories.contains(Item.status);
     }).toList();
 
     Container(
@@ -111,8 +112,8 @@ class _HistoryState extends State<History> {
       child: Row(
         children: categories.map(
                 (status) => Padding(
-                    padding: const EdgeInsets.all(8.0),
-                child: FilterChip(
+              padding: const EdgeInsets.all(8.0),
+              child: FilterChip(
                   selected: selectedCategories.contains(status),
                   label: Text(status),
                   onSelected: (selected){
@@ -124,7 +125,7 @@ class _HistoryState extends State<History> {
                       }
                     });
                   }),
-                )
+            )
         ).toList(),
       ),
     );
@@ -286,13 +287,12 @@ class _HistoryState extends State<History> {
     );
   }
 
-
   void _detailsItem(int itemId, String itemName, String trackingNumber, String itemType, Uint8List imageData, String status, DateTime confirmationDate, Uint8List imageProofData ) {
     // Navigate to the item detail page and pass the item_id
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => ItemDetailPageHistory(
+        builder: (context) => ItemDetailPage(
           itemId: itemId,
           itemName: itemName,
           trackingNumber : trackingNumber,
@@ -307,7 +307,7 @@ class _HistoryState extends State<History> {
   }
 
   void _onItemTapped(int index) {
-    if (index == 3) {
+    if (index == 4) {
       // If the "Profile" button is tapped (index 2), navigate to the profile page
       Navigator.push(
         context,
@@ -327,6 +327,13 @@ class _HistoryState extends State<History> {
         context,
         MaterialPageRoute(
           builder: (context) => History(),
+        ),
+      );
+    } else if (index == 3) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => Setting(),
         ),
       );
     } else {
@@ -376,7 +383,7 @@ class _HistoryState extends State<History> {
           Padding(
             padding: const EdgeInsets.only(left: 16.0, right: 16.0, top: 50.0),
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 Text(
                   'History',
@@ -449,6 +456,10 @@ class _HistoryState extends State<History> {
             label: 'Penalty',
           ),
           BottomNavigationBarItem(
+            icon: Icon(Icons.settings),
+            label: 'Setting',
+          ),
+          BottomNavigationBarItem(
             icon: Icon(Icons.person),
             label: 'Profile',
           ),
@@ -459,7 +470,6 @@ class _HistoryState extends State<History> {
     );
   }
 }
-
 
 
 

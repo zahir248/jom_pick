@@ -264,30 +264,32 @@ class _PenaltyState extends State<Penalty> {
     );
   }
 
-  void handleSetting() async {
+  // void handleSetting() async {
+  //   // Navigate to the login page (Assuming your login page is named Setting)
+  //   Navigator.pushReplacement(
+  //       context, MaterialPageRoute(builder: (context) => Setting()));
+  // }
 
-    // Navigate to the login page (Assuming your login page is named Setting)
-    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Setting()));
-  void _detailsItem(int itemId, String itemName, String trackingNumber, String itemType, Uint8List imageData, String status, DateTime confirmationDate) {
-    // Navigate to the item detail page and pass the item_id
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => ItemDetailPenaltyPage(
-          itemId: itemId,
-          itemName: itemName,
-          trackingNumber : trackingNumber,
-          itemType : itemType,
-          imageData: imageData,
-          status: status,
-          confirmationDate: confirmationDate,
-        ),
-      ),
-    );
-  }
+  // void _detailsItem(int itemId, String itemName, String trackingNumber, String itemType, Uint8List imageData, String status, DateTime confirmationDate) {
+  //   // Navigate to the item detail page and pass the item_id
+  //   Navigator.push(
+  //     context,
+  //     MaterialPageRoute(
+  //       builder: (context) => ItemDetailPenaltyPage(
+  //         itemId: itemId,
+  //         itemName: itemName,
+  //         trackingNumber : trackingNumber,
+  //         itemType : itemType,
+  //         imageData: imageData,
+  //         status: status,
+  //         confirmationDate: confirmationDate,
+  //       ),
+  //     ),
+  //   );
+  // }
 
   void _onItemTapped(int index) {
-    if (index == 3) {
+    if (index == 4) {
       // If the "Profile" button is tapped (index 2), navigate to the profile page
       Navigator.push(
         context,
@@ -307,6 +309,13 @@ class _PenaltyState extends State<Penalty> {
         context,
         MaterialPageRoute(
           builder: (context) => History(),
+        ),
+      );
+    } else if (index == 3) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => Setting(),
         ),
       );
     } else {
@@ -391,7 +400,7 @@ class _PenaltyState extends State<Penalty> {
           Padding(
             padding: const EdgeInsets.only(left: 16.0, right: 16.0, top: 50.0),
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 Text(
                   'Penalty',
@@ -399,12 +408,6 @@ class _PenaltyState extends State<Penalty> {
                     fontSize: 30.0,
                     fontWeight: FontWeight.bold,
                   ),
-                ),
-                IconButton(
-                  icon: Icon(Icons.settings),
-                  onPressed: () {
-                    handleSetting(); // Logout when the button is pressed
-                  },
                 ),
               ],
             ),
@@ -470,6 +473,10 @@ class _PenaltyState extends State<Penalty> {
           BottomNavigationBarItem(
             icon: Icon(Icons.error),
             label: 'Penalty',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.settings),
+            label: 'Setting',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.person),

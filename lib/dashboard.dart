@@ -225,25 +225,23 @@ class _DashBoardState extends State<DashBoard> {
     );
   }
 
-
   void _detailsItem(int itemId, String itemName, String trackingNumber, String itemType, Uint8List imageData, String status, DateTime confirmationDate, String address, String fullName, String pickupType, int confirmationId) {
-
     // Navigate to the item detail page and pass the item_id
     Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) => ItemDetailPage(
-            itemId: itemId,
-            itemName: itemName,
-            trackingNumber : trackingNumber,
-            itemType : itemType,
-            imageData: imageData,
-            status: status,
-            confirmationDate: confirmationDate,
-            address: address,
-            fullName: fullName,
-            pickupType: pickupType,
-            confirmationId: confirmationId,
+          itemId: itemId,
+          itemName: itemName,
+          trackingNumber : trackingNumber,
+          itemType : itemType,
+          imageData: imageData,
+          status: status,
+          confirmationDate: confirmationDate,
+          address: address,
+          fullName: fullName,
+          pickupType: pickupType,
+          confirmationId: confirmationId,
         ),
       ),
     );

@@ -22,7 +22,7 @@ void main() {
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
 
-  static final String baseIpAddress = "10.131.78.236";
+  static final String baseIpAddress = "192.168.0.119";
 
   static final String loginPath = "/jompick/login.php";
   static final String registerPath = "/jompick/register.php";

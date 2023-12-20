@@ -13,8 +13,6 @@ class Item {
   final String status;
   final DateTime confirmationDate;
   final String penaltyStatus;
-  final String paymentStatus;
-  //final DateTime pickUpDate;
   final String fullName;
   final String pickupType;
   final int confirmationId;
@@ -32,8 +30,6 @@ class Item {
     required this.status,
     required this.confirmationDate,
     required this.penaltyStatus,
-    required this.paymentStatus,
-    //required this.pickUpDate,
     required this.fullName,
     required this.pickupType,
     required this.confirmationId,
@@ -57,8 +53,6 @@ class Item {
       status: json['status'] ?? '',
       confirmationDate: DateTime.parse(json['confirmationDate'] ?? ''),
       penaltyStatus: json['penaltyStatus'] ?? '',
-      paymentStatus: json['paymentStatus'] ?? '',
-      //pickUpDate: DateTime.parse(json['pickUpDate'] ?? ''),
       fullName: json['fullName'] ?? '',
       pickupType: json['pickupType'] ?? '',
       confirmationId: int.parse(json['confirmation_id'] ?? '0'),

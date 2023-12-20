@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:jom_pick/HomeScreen.dart';
+import 'package:jom_pick/setting.dart';
 
 class UserManual extends StatelessWidget {
   @override
@@ -14,7 +16,9 @@ class UserManual extends StatelessWidget {
                 child: IconButton(
                   icon: Icon(Icons.arrow_back, color: Colors.black),
                   onPressed: () {
-                    Navigator.pop(context);
+                    Navigator.pushReplacement(context,
+                        MaterialPageRoute(builder: (context) => Setting()),
+                    );
                   },
                 ),
               ),

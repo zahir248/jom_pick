@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:jom_pick/HomeScreen.dart';
+import 'package:jom_pick/history.dart';
 import 'package:jom_pick/main.dart';
+import 'package:jom_pick/penalty.dart';
+import 'package:jom_pick/profile.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'change_password.dart';
@@ -16,6 +19,9 @@ class Setting extends StatefulWidget {
 }
 
 class _SettingState extends State<Setting> {
+
+  int _selectedIndex = 4;
+
   void handleLogout() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
@@ -151,6 +157,77 @@ class _SettingState extends State<Setting> {
           ],
         )
       ),
+      bottomNavigationBar: BottomNavigationBar(
+        type: BottomNavigationBarType.fixed,
+        items: const <BottomNavigationBarItem>[
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home),
+            label: 'Home',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.history),
+            label: 'History',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.error),
+            label: 'Penalty',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.settings),
+            label: 'Setting',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.person),
+            label: 'Profile',
+          ),
+        ],
+        currentIndex: _selectedIndex,
+        onTap: _onItemTapped,
+      ),
     );
   }
+
+  void _onItemTapped(int index) {
+    if (index == 4) {
+      // If the "Profile" button is tapped (index 2), navigate to the profile page
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => Profile(),
+        ),
+      );
+    } else if (index == 2) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => Penalty(),
+        ),
+      );
+    } else if (index == 1) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => History(),
+        ),
+      );
+    }else if (index == 3) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => Setting(),
+        ),
+      );
+    } else {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => HomeScreen(),
+        ),
+      );
+      setState(() {
+        _selectedIndex = index;
+      });
+    }
+  }
+
 }

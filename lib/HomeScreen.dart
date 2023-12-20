@@ -177,10 +177,10 @@ class _HomeScreenState extends State<HomeScreen> {
                                 ),
                                 SizedBox(height: 5),
                                 Text(
-                                  'Good to see you back',
+                                  'Manage your item here',
                                   style: TextStyle(
-                                    color: Colors.black,
-                                    fontSize: 25,
+                                    color: Colors.black54,
+                                    fontSize: 16,
                                   ),
                                 ),
                               ],
@@ -333,6 +333,10 @@ class _HomeScreenState extends State<HomeScreen> {
             label: 'Penalty',
           ),
           BottomNavigationBarItem(
+            icon: Icon(Icons.settings),
+            label: 'Setting',
+          ),
+          BottomNavigationBarItem(
             icon: Icon(Icons.person),
             label: 'Profile',
           ),
@@ -350,7 +354,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void _onItemTapped(int index) {
-    if (index == 3) {
+    if (index == 4) {
       // If the "Profile" button is tapped (index 2), navigate to the profile page
       Navigator.push(
         context,
@@ -370,6 +374,13 @@ class _HomeScreenState extends State<HomeScreen> {
         context,
         MaterialPageRoute(
           builder: (context) => History(),
+        ),
+      );
+    }else if (index == 3) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => Setting(),
         ),
       );
     } else {
@@ -504,8 +515,6 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
   }
-
-
 
 }
 

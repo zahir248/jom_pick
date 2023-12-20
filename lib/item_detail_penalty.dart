@@ -67,10 +67,13 @@ class _ItemDetailPenaltyPageState extends State<ItemDetailPenaltyPage> {
                   buildDetailItem("Item ID", widget.itemId.toString()),*/
                   SizedBox(height: 20),
                   buildDetailItem("Name", widget.itemName),
+                  Divider(),
                   SizedBox(height: 20),
                   buildDetailItem("Tracking Number", widget.trackingNumber),
+                  Divider(),
                   SizedBox(height: 20),
                   buildDetailItem("Type", widget.itemType),
+                  Divider(),
                   SizedBox(height: 20),
                   buildDetailItem("Picture", ""),
                   Center(
@@ -86,8 +89,10 @@ class _ItemDetailPenaltyPageState extends State<ItemDetailPenaltyPage> {
                       ),
                     ),
                   ),
+                  Divider(),
                   SizedBox(height: 20),
                   buildDetailItem("Status", widget.status),
+                  Divider(),
                   SizedBox(height: 20),
                   buildDetailItem(
                       "Pick-up Date",

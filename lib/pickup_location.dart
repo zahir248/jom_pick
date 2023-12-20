@@ -244,27 +244,26 @@ class _pickupLocation extends State<pickupLocation> {
           Padding(
             padding: const EdgeInsets.only(left: 16.0, right: 16.0, top: 50.0),
             child: Row(
-              //mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                Align(
-                  alignment: Alignment.centerLeft,
-                  child: IconButton(
-                    icon: Icon(Icons.arrow_back, color: Colors.black),
-                    onPressed: () {
-                      // Navigate to the home page and replace the current page
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(builder: (context) => HomeScreen()),
-                      );
-                    },
-                  ),
+                IconButton(
+                  icon: Icon(Icons.arrow_back, color: Colors.black),
+                  onPressed: () {
+                    // Navigate to the home page and replace the current page
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(builder: (context) => HomeScreen()),
+                    );
+                  },
                 ),
-                Spacer(),
-                Text(
-                  'Pickup Store',
-                  style: TextStyle(
-                    fontSize: 30.0,
-                    fontWeight: FontWeight.bold,
+                Expanded(
+                  child: Center(
+                    child: Text(
+                      'Pending Items',
+                      style: TextStyle(
+                        fontSize: 30.0,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
                   ),
                 ),
               ],
@@ -291,7 +290,7 @@ class _pickupLocation extends State<pickupLocation> {
           _buildListView(), // Use the custom ListView
         ],
       ),
-
     );
   }
+
 }
