@@ -277,7 +277,6 @@ class _DashBoardState extends State<DashBoard> {
           Padding(
             padding: const EdgeInsets.only(left: 16.0, right: 16.0, top: 50.0),
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
                 IconButton(
                   icon: Icon(Icons.arrow_back, color: Colors.black),
@@ -289,18 +288,16 @@ class _DashBoardState extends State<DashBoard> {
                     );
                   },
                 ),
-                Text(
-                  'Pending Items',
-                  style: TextStyle(
-                    fontSize: 30.0,
-                    fontWeight: FontWeight.bold,
+                Expanded(
+                  child: Center(
+                    child: Text(
+                      'Pending Items',
+                      style: TextStyle(
+                        fontSize: 30.0,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
                   ),
-                ),
-                IconButton(
-                  icon: Icon(Icons.settings),
-                  onPressed: () {
-                    handleSetting(); // Logout when the button is pressed
-                  },
                 ),
               ],
             ),

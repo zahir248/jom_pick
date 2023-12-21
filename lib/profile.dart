@@ -20,7 +20,7 @@ class Profile extends StatefulWidget {
 }
 
 class _ProfileState extends State<Profile> {
-  int _selectedIndex = 3; // Index of the selected tab
+  int _selectedIndex = 4; // Index of the selected tab
   String icNumber = ''; // Variable to store the IC number
   int? userId;
   String fullName = ''; // Variable to store the full name

@@ -109,8 +109,8 @@ class _AdminPageState extends State<AdminPage> {
                       ),
                       SizedBox(height: 15),
                       Text(
-                          'Item Name: ${scannedItemDetails['itemName']}',
-                          style: TextStyle(
+                        'Item Name: ${scannedItemDetails['itemName']}',
+                        style: TextStyle(
                           fontSize: 16,
                         ),
                       ),

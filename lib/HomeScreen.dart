@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:jom_pick/DashBoard.dart';
 import 'package:jom_pick/history.dart';
+import 'package:jom_pick/models/item.dart';
 import 'package:jom_pick/penalty.dart';
 import 'package:jom_pick/pickup_location.dart';
 import 'package:jom_pick/profile.dart';
@@ -12,6 +13,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import 'PickUpLocationMap.dart';
 import 'main.dart';
+import 'models/latestRegisteredItem.dart';
 import 'models/notification_model.dart';
 import 'models/user.dart';
 
@@ -29,8 +31,8 @@ class _HomeScreenState extends State<HomeScreen> {
   int? userId;
   int _selectedIndex = 0;
 
-  List<SendNotification> itemData = [];
-  List<SendNotification> filteredItemData =[];
+  List<latestRegisteredItem> itemData = [];
+  List<latestRegisteredItem> filteredItemData =[];
   List<User> userData = [];
 
   @override
@@ -46,7 +48,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
     if (userId != null) {
 
-      final response = await http.get(Uri.parse('http://${MyApp.baseIpAddress}${MyApp.notification}?user_id=$userId'));
+      final response = await http.get(Uri.parse('http://${MyApp.baseIpAddress}${MyApp.latestRegisteredItem}?user_id=$userId'));
       print('Raw JSON response: ${response.body}');
 
       if (response.statusCode == 200) {
@@ -54,8 +56,8 @@ class _HomeScreenState extends State<HomeScreen> {
         final List<dynamic> jsonData = json.decode(response.body);
 
         setState(() {
-          itemData = (jsonData as List).map((item) => SendNotification.fromJson(item)).toList();
-          filteredItemData = List.from(itemData); // Initialize filteredItemData
+          itemData = (jsonData as List).map((item) => latestRegisteredItem.fromJson(item)).toList();
+          //filteredItemData = List.from(itemData); // Initialize filteredItemData
 
         });
       } else {
@@ -93,8 +95,6 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
-
-
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
@@ -123,15 +123,15 @@ class _HomeScreenState extends State<HomeScreen> {
                 //padding: EdgeInsets.all(20.0),
                 child: Stack(
                   children: <Widget>[
-                    Positioned.fill(
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.vertical(bottom: Radius.circular(40.0)), // Adjust the radius as needed
-                        child: Image.asset(
-                          'assets/jompick_homepage.jpg',
-                          fit: BoxFit.cover,
+                      Positioned.fill(
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.vertical(bottom: Radius.circular(40.0)), // Adjust the radius as needed
+                          child: Image.asset(
+                            'assets/jompick_homepage.jpg',
+                            fit: BoxFit.cover,
+                          ),
                         ),
                       ),
-                    ),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
@@ -179,19 +179,13 @@ class _HomeScreenState extends State<HomeScreen> {
                                 Text(
                                   'Manage your item here',
                                   style: TextStyle(
-                                    color: Colors.black54,
+                                    color: Colors.black,
                                     fontSize: 16,
                                   ),
                                 ),
                               ],
                             ),
                             Spacer(),
-                            IconButton(
-                              icon: Icon(Icons.settings),
-                              onPressed: () {
-                                handleSetting(); // Logout when the button is pressed
-                              },
-                            ),
                           ],
                         ),
                         SizedBox(height: 60),
@@ -227,14 +221,15 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    SizedBox(height: 20),
-
-                    // ... Existing code for Promo section
-
+                    SizedBox(height: 5),
+                    Text('Activities : ',
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    ),
+                    SizedBox(height: 10),
                     Container(
-                      // ... Existing code for Promo Cards
-
-                      // Container for the filtered items list
                       height: 220,
                       child: ListView(
                         scrollDirection: Axis.horizontal,
@@ -244,72 +239,93 @@ class _HomeScreenState extends State<HomeScreen> {
                         ],
                       ),
                     ),
-                    SizedBox(height: 30),
+                    SizedBox(height: 25),
 
-                    // ... Existing code for the filtered items list
-                    Container(
-                      decoration: BoxDecoration(
-                        color: Colors.grey[300],
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      child: ListView.builder(
-                        itemCount: filteredItemData.length,
-                        itemBuilder: (context, index) {
-                          return Card(
-                            elevation: 4.0,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            color: Colors.blueGrey[300],
-                            child: ListTile(
-                              title: RichText(
-                                text: TextSpan(
-                                  text: filteredItemData[index].itemName,
-                                  style: TextStyle(
-                                    color: Colors.black,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 18,
-                                    height: 1.5,
-                                  ),
-                                  children: [
-                                    TextSpan(
-                                      text: '\n${filteredItemData[index].pickUpLocation}',
-                                      style: TextStyle(
-                                        color: Colors.black,
-                                        fontWeight: FontWeight.normal,
-                                        fontSize: 15,
-                                        height: 1.5,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              subtitle: Padding(
-                                padding: const EdgeInsets.only(top: 8.0),
-                                child: Text(
-                                  filteredItemData[index].registerDate != null
-                                      ? " Arrived on ${DateFormat('EEEE, dd MMMM yyyy').format(filteredItemData[index].registerDate!)} \n"
-                                      "Pick up before ${filteredItemData[index].dueDate!}"
-                                      : "N/A",
-                                  style: TextStyle(
-                                    fontSize: 13,
-                                    fontStyle: FontStyle.italic,
-                                    color: Colors.grey.shade800,
-                                  ),
-                                ),
-                              ),
-                              trailing: IconButton(
-                                onPressed: () {
-                                  // Add code to handle delete action
-                                },
-                                icon: const Icon(Icons.delete),
-                              ),
-                            ),
-                          );
-                        },
-                      ),
-                      height: 150,
+                    Text('Latest Update : ',
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
                     ),
+                    ),
+                    SizedBox(height: 10),
+                    Container(
+                      // decoration: BoxDecoration(
+                      //   color: Colors.blue[100],
+                      //   borderRadius: BorderRadius.circular(20),
+                      // ),
+                      child: itemData.isNotEmpty
+                          ? Card(
+                        elevation: 4.0,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        color: Colors.blue[100],
+                        child: ListTile(
+                          title: RichText(
+                            text: TextSpan(
+                              text: itemData[0].itemName,
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 18,
+                                height: 1.5,
+                              ),
+                              // children: [
+                              //   TextSpan(
+                              //     text: '\n',
+                              //   ),
+                              // ],
+                            ),
+                          ),
+                          subtitle: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Container(
+                                padding: EdgeInsets.all(8),
+                                decoration: BoxDecoration(
+                                  color: getStatusColor(itemData[0].status),
+                                  borderRadius: BorderRadius.circular(5),
+                                ),
+                                child: Text(
+                                  itemData[0].status,
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                              SizedBox(width: 8),
+                              Text(
+                                itemData[0].registerDate != null
+                                    ? "\n Arrived on ${DateFormat('EEEE, dd MMMM yyyy').format(itemData[0].registerDate!)} \n"
+                                    : "N/A",
+                                style: TextStyle(
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.bold,
+                                  //fontStyle: FontStyle.italic,
+                                  //color: Colors.grey.shade800,
+                                ),
+                              ),
+                              Text(
+                                itemData[0].confirmationDate != null
+                                    ? " Due on ${DateFormat('EEEE, dd MMMM yyyy').format(itemData[0].confirmationDate!)} \n"
+                                    : "N/A",
+                                style: TextStyle(
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.bold,
+                                  //fontStyle: FontStyle.italic,
+                                  //color: Colors.grey.shade800,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      )
+                          : Container(),
+                      height: 140,
+                    ),
+
+
                   ],
                 ),
               ),
@@ -348,9 +364,14 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
 
-  void handleSetting() async {
-    // Navigate to the login page (Assuming your login page is named Setting)
-    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Setting()));
+  MaterialColor getStatusColor(String status){
+    if(status == 'Picked'){
+      return Colors.green;
+    }else if(status == 'pending'){
+      return Colors.red;
+    }else{
+      return Colors.grey;
+    }
   }
 
   void _onItemTapped(int index) {
@@ -441,7 +462,7 @@ class _HomeScreenState extends State<HomeScreen> {
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 Text(
-                  'Item Activities', // Add your text here
+                  'Items', // Add your text here
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 16,

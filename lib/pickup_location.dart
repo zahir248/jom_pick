@@ -258,7 +258,7 @@ class _pickupLocation extends State<pickupLocation> {
                 Expanded(
                   child: Center(
                     child: Text(
-                      'Pending Items',
+                      'Pick Up Point',
                       style: TextStyle(
                         fontSize: 30.0,
                         fontWeight: FontWeight.bold,

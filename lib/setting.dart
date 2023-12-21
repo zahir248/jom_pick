@@ -20,7 +20,7 @@ class Setting extends StatefulWidget {
 
 class _SettingState extends State<Setting> {
 
-  int _selectedIndex = 4;
+  int _selectedIndex = 3;
 
   void handleLogout() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();

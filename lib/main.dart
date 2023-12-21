@@ -41,6 +41,7 @@ class MyApp extends StatelessWidget {
   static final String notification = "/jompick/notification.php";
   static final String pickupLocationPath = "/jompick/pickupLocation.php";
   static final String user = "/jompick/userDetail.php";
+  static final String latestRegisteredItem = "/jompick/latestRegisteredItem.php";
 
 
   @override
