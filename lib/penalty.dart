@@ -37,8 +37,8 @@ class _PenaltyState extends State<Penalty> {
   List<PenaltyDetails> filteredItemData = [];
 
   final List<String> categories = [
-    'paid',
-    'unpaid'
+    'Paid',
+    'Unpaid'
   ];
 
   List<String> selectedCategories =[];
@@ -116,7 +116,6 @@ class _PenaltyState extends State<Penalty> {
               //final category = filterCategory[index];
 
               print('Filtered items count: ${filterCategory.length}');
-
 
               //print("Payment Status adaaaaa: ${filteredItemData[index].paymentStatus}");
 
@@ -347,9 +346,9 @@ class _PenaltyState extends State<Penalty> {
   }
 
   MaterialColor getStatusColor(String status){
-    if(status == 'paid'){
+    if(status == 'Paid'){
       return Colors.green;
-    }else if(status == 'unpaid'){
+    }else if(status == 'Unpaid'){
       return Colors.red;
     }else{
       return Colors.grey;

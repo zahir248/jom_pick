@@ -401,6 +401,67 @@ class _PickupDetailPageState extends State<PickupDetailPage> {
     );
   }
 
+  void _showUnavailableMessage() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return Dialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16.0),
+          ),
+          child: Container(
+            padding: EdgeInsets.all(16.0),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                // Align(
+                //   alignment: Alignment.topLeft,
+                //   child: IconButton(
+                //     icon: Icon(Icons.cancel),
+                //     onPressed: () {
+                //       if (mounted) {
+                //         Navigator.pop(context);
+                //       }
+                //     },
+                //   ),
+                // ),
+                SizedBox(height: 16),
+                Text(
+                  'Sorry, we are closed today',
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                SizedBox(height: 16),
+                Text(
+                  'Please make the request from Monday to Friday',
+                  style: TextStyle(
+                    fontSize: 16,
+                  ),
+                ),
+                SizedBox(height: 16),
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.pop(context); // Close the dialog
+                  },
+                  style: ElevatedButton.styleFrom(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(100),
+                    ),
+                    fixedSize: Size(100, 30), // Adjust the width and height as needed
+                  ),
+                  child: Text('OK'),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+
   Future<void> _sendDataToServer(String itemId, String? duration, String formattedUserLocation, String pickupType) async {
     try {
       // Print the values before sending
@@ -457,45 +518,109 @@ class _PickupDetailPageState extends State<PickupDetailPage> {
 
   Future<void> _selectDate(BuildContext context) async {
 
-    DateTime currentDate = DateTime.now();
-    DateTime lastSelectableDate = widget.confirmationDate;
+    // DateTime currentDate = DateTime.now();
+    // DateTime lastSelectableDate = widget.confirmationDate;
 
     DateTime? picked = await showDatePicker(
       context: context,
       // initialDate: currentDate,
       // firstDate: currentDate,
-      // lastDate: lastSelectableDate.isAfter(currentDate) ? lastSelectableDate : DateTime(9999),
+      //  lastDate: lastSelectableDate.isAfter(currentDate) ? lastSelectableDate : DateTime(9999),
       initialDate: DateTime.now(),
       firstDate: DateTime.now(),
       lastDate: widget.confirmationDate,
-      selectableDayPredicate: (DateTime date) {
-        // Disable Saturdays and Sundays
-        return date.weekday != DateTime.saturday && date.weekday != DateTime.sunday;
-      },
+      // selectableDayPredicate: (DateTime date) {
+      //   // Disable Saturdays and Sundays
+      //   return date.weekday != DateTime.saturday && date.weekday != DateTime.sunday;
+      // },
     );
 
     if (picked != null) {
-      //print("Selected date: $picked");
+      // Check if the selected date is a weekend (Saturday or Sunday)
+      if (picked.weekday == DateTime.saturday || picked.weekday == DateTime.sunday) {
+        // Show a message that the service is closed on weekends
+        _unavailableDateMessage();
+      } else {
+        // Convert the selected date to a string in a suitable format
+        String formattedDate = picked.toIso8601String();
 
-      // Convert the selected date to a string in a suitable format
-      String formattedDate = picked.toIso8601String();
+        // Send the date to the server
+        await updatePickUpDateOnServer(widget.itemId, formattedDate);
 
-      // Send the date to the server
-      await updatePickUpDateOnServer(widget.itemId, formattedDate);
-
-      Fluttertoast.showToast(
-        msg: "Pick-up Date set successfully",
-        toastLength: Toast.LENGTH_SHORT,
-        gravity: ToastGravity.BOTTOM,
-        timeInSecForIosWeb: 1,
-        backgroundColor: Colors.green,
-        textColor: Colors.white,
-        fontSize: 16.0,
-      );
+        Fluttertoast.showToast(
+          msg: "Pick-up Date set successfully",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.green,
+          textColor: Colors.white,
+          fontSize: 16.0,
+        );
+      }
     } else {
-      //print("Date selection canceled");
+      // User canceled date selection
     }
   }
+
+void _unavailableDateMessage(){
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return Dialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16.0),
+        ),
+        child: Container(
+          padding: EdgeInsets.all(16.0),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // Align(
+              //   alignment: Alignment.topLeft,
+              //   child: IconButton(
+              //     icon: Icon(Icons.cancel),
+              //     onPressed: () {
+              //       if (mounted) {
+              //         Navigator.pop(context);
+              //       }
+              //     },
+              //   ),
+              // ),
+              SizedBox(height: 16),
+              Text(
+                'Sorry, we are closed on selected date',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              SizedBox(height: 16),
+              Text(
+                'Please select your pick up date from Monday to Friday',
+                style: TextStyle(
+                  fontSize: 16,
+                ),
+              ),
+              SizedBox(height: 16),
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.pop(context); // Close the dialog
+                },
+                style: ElevatedButton.styleFrom(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(100),
+                  ),
+                  fixedSize: Size(100, 30), // Adjust the width and height as needed
+                ),
+                child: Text('OK'),
+              ),
+            ],
+          ),
+        ),
+      );
+    },
+  );
+}
 
 
   Future<void> updatePickUpDateOnServer(int itemId, String newPickupDate) async {
@@ -544,15 +669,16 @@ class _PickupDetailPageState extends State<PickupDetailPage> {
                     ),
                     Padding(
                       padding: const EdgeInsets.fromLTRB(
-                          5.0, 70.0, 75.0, 50.0),
+                          16.0, 50.0, 16.0, 10.0),
                       child: Text(
-                        'Pick-up Detail',
+                        'Pick-Up Details',
                         style: TextStyle(
                           fontSize: 30,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
                     ),
+                    SizedBox(width: 50),
                   ],
                 ),
                 Row(
@@ -871,7 +997,19 @@ class _PickupDetailPageState extends State<PickupDetailPage> {
                               SizedBox(height: 8), // Add some space between notes and button
                               ElevatedButton(
                                 onPressed: () {
-                                  _showPickupForm();
+                                  // Get the current day of the week (1 for Monday, 7 for Sunday)
+                                  int currentDayOfWeek = DateTime.now().weekday;
+
+                                  // Check if it's a weekend (Saturday or Sunday)
+                                  bool isWeekend = currentDayOfWeek == DateTime.saturday || currentDayOfWeek == DateTime.sunday;
+
+                                  if (isWeekend) {
+                                    // Show a message that the service is unavailable on weekends
+                                    _showUnavailableMessage();
+                                  } else {
+                                    // Execute the _showPickUpForm() function
+                                    _showPickupForm();
+                                  }
                                 },
                                 style: ElevatedButton.styleFrom(
                                   fixedSize: Size(100, 30),
@@ -880,7 +1018,7 @@ class _PickupDetailPageState extends State<PickupDetailPage> {
                                   ),
                                 ),
                                 child: Text('Pick Now'),
-                              ),
+                              )
                             ],
                           ),
                           SizedBox(height: 50),

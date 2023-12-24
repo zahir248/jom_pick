@@ -46,7 +46,7 @@ factory PenaltyDetails.fromJson(Map<String, dynamic> json){
       itemType: json['itemTypeName'] ?? '',
       confirmationStatus: json['confirmationStatus'] ?? '',
       confirmationDate: DateTime.parse(json['confirmationDate'] ?? ''),
-      dueDateStatus: json['dueDateStatus'] ?? '',
+      dueDateStatus: json['type'] ?? '',
       pickUpLocation: json['address'] ?? '',
       dueDate: json['dueDate'] ?? '',
       paymentStatus: json['paymentStatus'] ?? '',
