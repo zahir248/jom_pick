@@ -22,6 +22,7 @@ void main() {
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
 
+
   static final String baseIpAddress = "192.168.0.119";
 
   static final String loginPath = "/jompick/login.php";
@@ -42,6 +43,7 @@ class MyApp extends StatelessWidget {
   static final String pickupLocationPath = "/jompick/pickupLocation.php";
   static final String user = "/jompick/userDetail.php";
   static final String latestRegisteredItem = "/jompick/latestRegisteredItem.php";
+  static final String updateConfirmationStatusAdminPath = "/jompick/updateConfirmationStatusAdmin.php";
 
 
   @override

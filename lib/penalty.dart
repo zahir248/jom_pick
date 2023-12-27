@@ -175,11 +175,11 @@ class _PenaltyState extends State<Penalty> {
                           child: Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              Icon(
-                                Icons.error,
-                                color: Colors.white,
-                                size: 16,
-                              ),
+                              // Icon(
+                              //   Icons.error,
+                              //   color: Colors.white,
+                              //   size: 16,
+                              // ),
                               SizedBox(width: 4),
                               Text(
                                 filterCategory[index].paymentStatus,

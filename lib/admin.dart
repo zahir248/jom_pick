@@ -287,7 +287,7 @@ class _AdminPageState extends State<AdminPage> {
     final url = Uri(
       scheme: 'http',
       host: MyApp.baseIpAddress,
-      path: MyApp.updateConfirmationStatusPath,
+      path: MyApp.updateConfirmationStatusAdminPath,
     );
 
     final nonNullableStatus = status ?? '';

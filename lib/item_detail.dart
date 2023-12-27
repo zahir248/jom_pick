@@ -14,6 +14,7 @@ class ItemDetailPage extends StatefulWidget {
   final String status;
   final Uint8List imageData;
   final DateTime confirmationDate;
+  final DateTime pickUpDate;
   final String address;
   //final DateTime pickUpDate;
 
@@ -29,6 +30,7 @@ class ItemDetailPage extends StatefulWidget {
     required this.imageData,
     required this.status,
     required this.confirmationDate,
+    required this.pickUpDate,
     required this.address,
     //required this.pickUpDate,
     required this.fullName,
@@ -148,6 +150,7 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
                     fullName: widget.fullName,
                     pickupType: widget.pickupType,
                     confirmationId: widget.confirmationId,
+                    pickUpDate: widget.pickUpDate,
 
                 ),
               ),

@@ -12,6 +12,7 @@ class Item {
   final Uint8List imageData; // Use Uint8List for binary image data
   final String status;
   final DateTime confirmationDate;
+  final DateTime pickUpDate;
   final String penaltyStatus;
   final String fullName;
   final String pickupType;
@@ -29,6 +30,7 @@ class Item {
     required this.imageData,
     required this.status,
     required this.confirmationDate,
+    required this.pickUpDate,
     required this.penaltyStatus,
     required this.fullName,
     required this.pickupType,
@@ -52,6 +54,7 @@ class Item {
       imageData: decodedImageData,
       status: json['status'] ?? '',
       confirmationDate: DateTime.parse(json['confirmationDate'] ?? ''),
+      pickUpDate: json['pickUpDate'] != null ? DateTime.parse(json['pickUpDate']) : DateTime.now(),
       penaltyStatus: json['penaltyStatus'] ?? '',
       fullName: json['fullName'] ?? '',
       pickupType: json['pickupType'] ?? '',

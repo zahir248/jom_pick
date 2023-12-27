@@ -289,7 +289,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 child: Text(
                                   itemData[0].status,
                                   style: TextStyle(
-                                    color: Colors.white,
+                                    color: Colors.black,
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
@@ -367,7 +367,9 @@ class _HomeScreenState extends State<HomeScreen> {
   MaterialColor getStatusColor(String status){
     if(status == 'Picked'){
       return Colors.green;
-    }else if(status == 'pending'){
+    }else if(status == 'Pending'){
+      return Colors.yellow;
+    }else if(status == 'Disposed'){
       return Colors.red;
     }else{
       return Colors.grey;

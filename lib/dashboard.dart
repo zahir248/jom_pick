@@ -131,22 +131,17 @@ class _DashBoardState extends State<DashBoard> {
                           width: 90,
                           height: 25,
                           decoration: BoxDecoration(
-                            color: Colors.red,
+                            color: getStatusColor(filteredItemData[index].status),
                           ),
                           alignment: Alignment.center,
                           child: Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              Icon(
-                                Icons.error,
-                                color: Colors.white,
-                                size: 16,
-                              ),
                               SizedBox(width: 4),
                               Text(
-                                'Pending',
+                                filteredItemData[index].status,
                                 style: TextStyle(
-                                  color: Colors.white,
+                                  color: Colors.black,
                                   fontSize: 12,
                                 ),
                               ),
@@ -198,6 +193,7 @@ class _DashBoardState extends State<DashBoard> {
                                 filteredItemData[index].imageData,
                                 filteredItemData[index].status,
                                 filteredItemData[index].confirmationDate,
+                                filteredItemData[index].pickUpDate,
                                 filteredItemData[index].address,
                                 filteredItemData[index].fullName,
                                 filteredItemData[index].pickupType,
@@ -225,7 +221,7 @@ class _DashBoardState extends State<DashBoard> {
     );
   }
 
-  void _detailsItem(int itemId, String itemName, String trackingNumber, String itemType, Uint8List imageData, String status, DateTime confirmationDate, String address, String fullName, String pickupType, int confirmationId) {
+  void _detailsItem(int itemId, String itemName, String trackingNumber, String itemType, Uint8List imageData, String status, DateTime confirmationDate, DateTime pickUpDate, String address, String fullName, String pickupType, int confirmationId) {
     // Navigate to the item detail page and pass the item_id
     Navigator.push(
       context,
@@ -238,6 +234,7 @@ class _DashBoardState extends State<DashBoard> {
           imageData: imageData,
           status: status,
           confirmationDate: confirmationDate,
+          pickUpDate: pickUpDate,
           address: address,
           fullName: fullName,
           pickupType: pickupType,
@@ -251,6 +248,15 @@ class _DashBoardState extends State<DashBoard> {
 
     // Navigate to the login page (Assuming your login page is named Setting)
     Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Setting()));
+  }
+
+
+  MaterialColor getStatusColor(String status){
+    if(status == 'Pending'){
+      return Colors.yellow;
+    }else{
+      return Colors.orange;
+    }
   }
 
 

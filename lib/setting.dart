@@ -46,7 +46,12 @@ class _SettingState extends State<Setting> {
     );
 
     // Navigate to the login page (Assuming your login page is named MyHomePage)
-    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => MyHomePage()));
+    Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(
+            builder: (context) => MyHomePage()),
+        (route) => false,
+    );
   }
 
   @override
@@ -60,7 +65,7 @@ class _SettingState extends State<Setting> {
               child: Container(
                 alignment: Alignment.centerLeft,
                 child: IconButton(
-                  icon: Icon(Icons.arrow_back_ios, color: Colors.black),
+                  icon: Icon(Icons.arrow_back, color: Colors.black),
                   onPressed: () {
                     // Navigate to the home page and replace the current page
                     Navigator.pushReplacement(

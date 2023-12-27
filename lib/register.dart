@@ -218,13 +218,13 @@ class _RegisterState extends State<Register> {
                       decoration: InputDecoration(
                         labelText: 'Matric Number',
                       ),
-                      validator: (value){
-                        if(value!.isEmpty || RegExp(r'^[a-z A-Z]+$').hasMatch(value!) || RegExp(r'^[0-9]+$').hasMatch(value!)){
-                          return 'Invalid format for matric number';
-                        }else{
-                          return null;
-                        }
-                      }
+                      // validator: (value){
+                      //   if(value!.isEmpty || RegExp(r'^[a-z A-Z]+$').hasMatch(value!) || RegExp(r'^[0-9]+$').hasMatch(value!)){
+                      //     return 'Invalid format for matric number';
+                      //   }else{
+                      //     return null;
+                      //   }
+                      // }
                   ),
                 ),
                 Padding(

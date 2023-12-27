@@ -14,6 +14,7 @@ class PickupDetailPage extends StatefulWidget {
   final String address;
   final int itemId;
   final DateTime confirmationDate;
+  final DateTime pickUpDate;
   final String itemName;
   final String fullName;
   final String pickupType;
@@ -21,16 +22,28 @@ class PickupDetailPage extends StatefulWidget {
 
   // In the constructor, require the address property.
 
-  PickupDetailPage({Key? key, required this.address, required this.itemId, required this.confirmationDate, required this.itemName, required this.fullName, required this.pickupType, required this.confirmationId}) : super(key: key);
+  PickupDetailPage({
+    Key? key,
+    required this.address,
+    required this.itemId,
+    required this.confirmationDate,
+    required this.pickUpDate,
+    required this.itemName,
+    required this.fullName,
+    required this.pickupType,
+    required this.confirmationId,
+  }) : super(key: key);
 
   @override
   _PickupDetailPageState createState() => _PickupDetailPageState();
 }
 
 class _PickupDetailPageState extends State<PickupDetailPage> {
+
   String userLocation = 'Fetching...';
   late Position currentPosition;
   Future<Map<String, String>>? durationFuture;
+
 
   @override
   void initState() {
@@ -94,17 +107,32 @@ class _PickupDetailPageState extends State<PickupDetailPage> {
     }
   }
 
+  void _launchGoogleMaps(String destinationAddress) async {
+    // Construct the Google Maps URL with the destination address
+    final url = 'https://www.google.com/maps/dir/?api=1&destination=$destinationAddress';
 
-  void _launchGoogleMaps() async {
-    final url =
-        'https://www.google.com/maps/search/?api=1&query=${widget.address}';
-
-    if (await canLaunch(url)) {
-      await launch(url);
-    } else {
-      throw 'Could not launch $url';
+    // Launch the URL
+    try {
+      if (await canLaunch(url)) {
+        await launch(url);
+      } else {
+        print('Could not launch Google Maps');
+      }
+    } catch (e) {
+      print('Error launching Google Maps: $e');
     }
   }
+
+  // void _launchGoogleMaps() async {
+  //   final url =
+  //       'https://www.google.com/maps/search/?api=1&query=${widget.address}';
+  //
+  //   if (await canLaunch(url)) {
+  //     await launch(url);
+  //   } else {
+  //     throw 'Could not launch $url';
+  //   }
+  // }
 
   Future<Map<String, String>> _getDurations() async {
     try {
@@ -651,6 +679,7 @@ void _unavailableDateMessage(){
 
   @override
   Widget build(BuildContext context) {
+    String destinationAddress = widget.address;
     return Scaffold(
         body: SingleChildScrollView(
           child: Padding(
@@ -681,6 +710,7 @@ void _unavailableDateMessage(){
                     SizedBox(width: 50),
                   ],
                 ),
+                SizedBox(height: 30,),
                 Row(
                   children: [
                     Text(
@@ -692,7 +722,7 @@ void _unavailableDateMessage(){
                     ),
                     SizedBox(width: 8),
                     ElevatedButton(
-                      onPressed: _launchGoogleMaps,
+                      onPressed: () => _launchGoogleMaps(destinationAddress),
                       style: ElevatedButton.styleFrom(
                         fixedSize: Size(70, 30),
                         shape: RoundedRectangleBorder(
@@ -955,6 +985,13 @@ void _unavailableDateMessage(){
                                   ],
                                 ),
                               ),
+                              SizedBox(height: 10),
+                              Text('Pick-up date : ${DateFormat('yyyy-MM-dd').format(widget.pickUpDate)}',
+                                style: TextStyle(
+                                  color: Colors.grey,
+                                  fontSize: 14,
+                                ),
+                              ),
                               SizedBox(height: 8),
                               ElevatedButton(
                                 onPressed: () {
@@ -968,11 +1005,7 @@ void _unavailableDateMessage(){
                                 ),
                                 child: Text('Select'),
                               ),
-                              // Text('Pick-up date : ${DateFormat('yyyy-MM-dd').format(widget.pickUpDate)}',
-                              // style: TextStyle(
-                              //   fontSize: 16,
-                              //   fontWeight: FontWeight.bold,
-                              // ),),
+
                             ],
                           ),
                           SizedBox(height: 50),

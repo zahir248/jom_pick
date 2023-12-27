@@ -38,40 +38,59 @@ class UserManual extends StatelessWidget {
             ),
             const SizedBox(height: 5),
             SizedBox(height: 16),
-            Text(
-              '1. Introduction',
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
+
             SizedBox(height: 8),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(16.0, 1.0, 16.0, 10.0),
-              child: Text(
-                'This user manual provides information on how to use the application',
-                style: TextStyle(
-                  fontSize: 16,
-                ),
-                textAlign: TextAlign.center, // Center alignment for this specific text
-              ),
-            ),
             SizedBox(height: 16),
-            Text(
-              '2. Getting Started',
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-              ),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  '1. Introduction',
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                 Text(
+                    'This user manual provides information on how to use the application',
+                    style: TextStyle(
+                      fontSize: 16,
+                    ),
+                    textAlign: TextAlign.center, // Center alignment for this specific text
+                  ),
+                SizedBox(height: 18),
+                Text(
+                  '2. Getting Started',
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                SizedBox(height: 8),
+                Text(
+                  'To get started, follow these steps:',
+                  style: TextStyle(fontSize: 16),
+                ),
+                SizedBox(height: 8),
+                Text('Pending Items :',
+                style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold
+                  ),
+                ),
+                SizedBox(height: 10),
+                Text('1. Open Items box at the homescreen'),
+                Text('2. Click on Details button for your item'),
+                Text('3. You can extend your pickup day up to 3 days but only for once'),
+                Text('4. Click Pick-up Detail button see pick-up option'),
+                Text('5. Click Go button if you want to get direction to your pick-up location '),
+                Text('6. Click Select button on Choose Pick-up date to choose a specific pick-up date'),
+                Text('7. Click Pick Now button to pick-up your item at current time'),
+                Text('8. Click Show button when you arrived at pick-up location to let the staff verify your item by scanning the QR code'),
+              ],
             ),
             SizedBox(height: 8),
-            Text(
-              'To get started, follow these steps:',
-              style: TextStyle(fontSize: 16),
-            ),
-            SizedBox(height: 8),
-            Text('- Step 1: Open the app'),
-            Text('- Step 2: Explore the features'),
+
             // Add more steps as needed
           ],
         ),
