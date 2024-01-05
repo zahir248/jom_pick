@@ -1,24 +1,15 @@
 import 'dart:convert';
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:intl/intl.dart';
 import 'package:jom_pick/HomeScreen.dart';
-import 'package:jom_pick/item_detail.dart';
 import 'package:jom_pick/penalty_details.dart';
 import 'package:jom_pick/setting.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'PickUpLocationMap.dart';
-import 'dashboard.dart';
-import 'models/item.dart';
 import 'models/penalty_details_model.dart';
-import 'profile.dart';
 import 'history.dart';
 import 'package:http/http.dart' as http;
-
-import 'dart:convert';
-import 'package:intl/intl.dart'; // Import the intl package
-import 'dart:typed_data';
-import 'item_detail_penalty.dart';
 import 'main.dart';
 
 
@@ -31,7 +22,9 @@ class Penalty extends StatefulWidget {
 
 class _PenaltyState extends State<Penalty> {
   int? userId;  // Check if userId have value or null
+  String? jomPickId;
   int _selectedIndex = 2; // Index of the selected tab
+  bool isLoading = true;
 
   List<PenaltyDetails> itemData = [];
   List<PenaltyDetails> filteredItemData = [];
@@ -54,12 +47,13 @@ class _PenaltyState extends State<Penalty> {
 
   Future<void> fetchItemData() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    userId = prefs.getInt('user_id');
+    //userId = prefs.getInt('user_id');
+    jomPickId =  prefs.getString('JomPick_ID');
 
-    if (userId != null) {
+    if (jomPickId != null) {
       try {
         final response = await http.get(
-          Uri.parse('http://${MyApp.baseIpAddress}${MyApp.itemPenaltyPath}?user_id=$userId'),
+          Uri.parse('http://${MyApp.baseIpAddress}${MyApp.itemPenaltyPath}?JomPick_ID=\'${jomPickId}\''),
         );
 
         print('Raw JSON response: ${response.body}');
@@ -72,6 +66,7 @@ class _PenaltyState extends State<Penalty> {
               itemData = (jsonData as List).map((item) => PenaltyDetails.fromJson(item)).toList();
               itemData.sort((a, b) => b.registerDate!.compareTo(a.registerDate!));
               filteredItemData = List.from(itemData);
+              isLoading = false;
             });
           } catch (e) {
             print('Server responded with "0 results". User has no item data.');
@@ -85,9 +80,15 @@ class _PenaltyState extends State<Penalty> {
         }
       } catch (e) {
         print('Error fetching data from the server: $e');
+        setState(() {
+          isLoading = false;
+        });
       }
     } else {
       print('User ID not found in SharedPreferences');
+      setState(() {
+        isLoading = false;
+      });
     }
   }
 
@@ -99,8 +100,20 @@ class _PenaltyState extends State<Penalty> {
     }).toList();
 
 
-    return Expanded(
-      child: filterCategory.isEmpty
+    return isLoading
+        ? Center(
+      child: SpinKitThreeInOut(
+        itemBuilder: (BuildContext context, int index) {
+          return DecoratedBox(
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: index.isEven ? Colors.blue : Colors.grey,
+            ),
+          );
+        },
+      ),
+    )
+     : filterCategory.isEmpty
           ? Center(
         child: Text(
           'No data available',
@@ -175,11 +188,6 @@ class _PenaltyState extends State<Penalty> {
                           child: Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              // Icon(
-                              //   Icons.error,
-                              //   color: Colors.white,
-                              //   size: 16,
-                              // ),
                               SizedBox(width: 4),
                               Text(
                                 filterCategory[index].paymentStatus,
@@ -259,8 +267,8 @@ class _PenaltyState extends State<Penalty> {
             },
           ),
         ),
-      ),
-    );
+      );
+
   }
 
   // void handleSetting() async {
@@ -288,15 +296,7 @@ class _PenaltyState extends State<Penalty> {
   // }
 
   void _onItemTapped(int index) {
-    if (index == 4) {
-      // If the "Profile" button is tapped (index 2), navigate to the profile page
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => Profile(),
-        ),
-      );
-    } else if (index == 2) {
+    if (index == 2) {
       Navigator.push(
         context,
         MaterialPageRoute(
@@ -394,69 +394,91 @@ class _PenaltyState extends State<Penalty> {
     //   return selectedCategories.isEmpty || selectedCategories.contains(categories.itemType);
     // }).toList();
     return Scaffold(
-      body: Column(
-        children: <Widget>[
-          Padding(
-            padding: const EdgeInsets.only(left: 16.0, right: 16.0, top: 50.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                Text(
-                  'Penalty',
-                  style: TextStyle(
-                    fontSize: 30.0,
-                    fontWeight: FontWeight.bold,
+      appBar: null,
+      body: Stack(
+        children:[
+          Column(
+            children: <Widget>[
+              Padding(
+                padding: const EdgeInsets.only(left: 16.0, right: 16.0, top: 50.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Text(
+                      'Penalty',
+                      style: TextStyle(
+                        fontSize: 30.0,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: TextField(
+                  controller: searchController,
+                  onChanged: filterItems,
+                  decoration: InputDecoration(
+                    hintText: 'Search',
+                    prefixIcon: Icon(Icons.search),
+                    filled: true,
+                    fillColor: Colors.white24, // Set the background color to grey
+                    contentPadding: EdgeInsets.symmetric(vertical: 15.0, horizontal: 20.0), // Adjust the padding as needed
+                    border: OutlineInputBorder( // Use OutlineInputBorder for border
+                      borderSide: BorderSide(color: Colors.white12), // Set the border color to grey
+                      borderRadius: BorderRadius.circular(10.0), // Adjust the border radius as needed
+                    ),
                   ),
                 ),
-              ],
-            ),
+              ),
+              // Create filter button to filter the item category
+              Container(
+                padding: const EdgeInsets.all(1.0),
+                margin: const EdgeInsets.all(1.0),
+                child: Row(
+                  children: categories.map(
+                        (paymentStatus) => Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: FilterChip(
+                          selected: selectedCategories.contains(paymentStatus),
+                          label: Text(paymentStatus),
+                          onSelected: (selected){
+                            setState(() {
+                              if(selected){
+                                selectedCategories.add(paymentStatus);
+                              }else{
+                                selectedCategories.remove(paymentStatus);
+                              }
+                            });
+                          }),
+                    ),
+                  ).toList(),
+                ),
+              ),
+              Expanded(
+                child: _buildListView(),
+              ),
+            ],
           ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: TextField(
-              controller: searchController,
-              onChanged: filterItems,
-              decoration: InputDecoration(
-                hintText: 'Search',
-                prefixIcon: Icon(Icons.search),
-                filled: true,
-                fillColor: Colors.white24, // Set the background color to grey
-                contentPadding: EdgeInsets.symmetric(vertical: 15.0, horizontal: 20.0), // Adjust the padding as needed
-                border: OutlineInputBorder( // Use OutlineInputBorder for border
-                  borderSide: BorderSide(color: Colors.white12), // Set the border color to grey
-                  borderRadius: BorderRadius.circular(10.0), // Adjust the border radius as needed
+          if (isLoading)
+            Positioned.fill(
+              child: Container(
+                child: Center(
+                  // child: SpinKitThreeInOut(
+                  //   itemBuilder: (BuildContext context, int index) {
+                  //     return DecoratedBox(
+                  //       decoration: BoxDecoration(
+                  //         shape: BoxShape.circle,
+                  //         color: index.isEven ? Colors.blue : Colors.grey,
+                  //       ),
+                  //     );
+                  //   },
+                  // ),
                 ),
               ),
             ),
-          ),
-          // Create filter button to filter the item category
-          Container(
-            padding: const EdgeInsets.all(1.0),
-            margin: const EdgeInsets.all(1.0),
-            child: Row(
-              children: categories.map(
-                    (paymentStatus) => Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: FilterChip(
-                      selected: selectedCategories.contains(paymentStatus),
-                      label: Text(paymentStatus),
-                      onSelected: (selected){
-                        setState(() {
-                          if(selected){
-                            selectedCategories.add(paymentStatus);
-                          }else{
-                            selectedCategories.remove(paymentStatus);
-                          }
-                        });
-                      }),
-                ),
-              ).toList(),
-            ),
-          ),
-
-          _buildListView(),
-          // Use the custom ListView
-        ],
+        ]
       ),
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
@@ -477,10 +499,10 @@ class _PenaltyState extends State<Penalty> {
             icon: Icon(Icons.settings),
             label: 'Setting',
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: 'Profile',
-          ),
+          // BottomNavigationBarItem(
+          //   icon: Icon(Icons.person),
+          //   label: 'Profile',
+          // ),
         ],
         currentIndex: _selectedIndex,
         onTap: _onItemTapped,

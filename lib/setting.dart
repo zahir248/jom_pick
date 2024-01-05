@@ -60,24 +60,24 @@ class _SettingState extends State<Setting> {
       body: Center(
         child: Column(
           children: [
+            // Padding(
+            //   padding: const EdgeInsets.fromLTRB(16.0, 50, 16.0, 0),
+            //   child: Container(
+            //     alignment: Alignment.centerLeft,
+            //     child: IconButton(
+            //       icon: Icon(Icons.arrow_back, color: Colors.black),
+            //       onPressed: () {
+            //         // Navigate to the home page and replace the current page
+            //         Navigator.pushReplacement(
+            //           context,
+            //           MaterialPageRoute(builder: (context) => HomeScreen()),
+            //         );
+            //         },
+            //     ),
+            //   ),
+            // ),
             Padding(
-              padding: const EdgeInsets.fromLTRB(16.0, 50, 16.0, 0),
-              child: Container(
-                alignment: Alignment.centerLeft,
-                child: IconButton(
-                  icon: Icon(Icons.arrow_back, color: Colors.black),
-                  onPressed: () {
-                    // Navigate to the home page and replace the current page
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(builder: (context) => HomeScreen()),
-                    );
-                    },
-                ),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(16.0, 1.0, 16.0, 10.0),
+              padding: const EdgeInsets.fromLTRB(16.0, 50, 16.0, 10.0),
               child: Text(
                 'Setting',
                 style: TextStyle(
@@ -110,7 +110,7 @@ class _SettingState extends State<Setting> {
                 ),
               ),
             ),
-            SizedBox(height: 5), // Add space between the second and third buttons
+            SizedBox(height:10), // Add space between the second and third buttons
             Container(
               child: ElevatedButton(
                 onPressed: () {
@@ -129,6 +129,30 @@ class _SettingState extends State<Setting> {
                   padding: EdgeInsets.all(10.0), // Adjust the padding as needed
                   child: Text(
                     'User Manual',
+                    style: TextStyle(fontSize: 16), // Increase the font size here
+                  ),
+                ),
+              ),
+            ),
+            SizedBox(height: 10),
+            Container(
+              child: ElevatedButton(
+                onPressed: () {
+                  // Navigate to User Manual Page
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => Profile()),
+                  );},
+                style: ElevatedButton.styleFrom(
+                  fixedSize: Size(340, 45),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(100),
+                  ),
+                ),
+                child: Padding(
+                  padding: EdgeInsets.all(10.0), // Adjust the padding as needed
+                  child: Text(
+                    'Profile',
                     style: TextStyle(fontSize: 16), // Increase the font size here
                   ),
                 ),
@@ -181,10 +205,10 @@ class _SettingState extends State<Setting> {
             icon: Icon(Icons.settings),
             label: 'Setting',
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: 'Profile',
-          ),
+          // BottomNavigationBarItem(
+          //   icon: Icon(Icons.person),
+          //   label: 'Profile',
+          // ),
         ],
         currentIndex: _selectedIndex,
         onTap: _onItemTapped,
@@ -193,15 +217,7 @@ class _SettingState extends State<Setting> {
   }
 
   void _onItemTapped(int index) {
-    if (index == 4) {
-      // If the "Profile" button is tapped (index 2), navigate to the profile page
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => Profile(),
-        ),
-      );
-    } else if (index == 2) {
+    if (index == 2) {
       Navigator.push(
         context,
         MaterialPageRoute(

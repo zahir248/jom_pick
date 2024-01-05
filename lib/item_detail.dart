@@ -12,8 +12,9 @@ class ItemDetailPage extends StatefulWidget {
   final String trackingNumber;
   final String itemType;
   final String status;
+  final DateTime dueDate;
   final Uint8List imageData;
-  final DateTime confirmationDate;
+  //final DateTime confirmationDate;
   final DateTime pickUpDate;
   final String address;
   //final DateTime pickUpDate;
@@ -29,7 +30,8 @@ class ItemDetailPage extends StatefulWidget {
     required this.itemType,
     required this.imageData,
     required this.status,
-    required this.confirmationDate,
+    required this.dueDate,
+    //required this.confirmationDate,
     required this.pickUpDate,
     required this.address,
     //required this.pickUpDate,
@@ -118,7 +120,7 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
                   buildDetailItem(
                       "Pick-up Due Date",
                       DateFormat('d MMMM yyyy')
-                          .format(widget.confirmationDate)),
+                          .format(widget.dueDate)),
                   Divider(),
                   SizedBox(height: 50),
                 ],
@@ -145,7 +147,7 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
 
                     address: widget.address,
                     itemId: widget.itemId,
-                    confirmationDate: widget.confirmationDate, // Pass the confirmationDate to PickupDetailPage
+                    dueDate: widget.dueDate, // Pass the confirmationDate to PickupDetailPage
                     itemName: widget.itemName,
                     fullName: widget.fullName,
                     pickupType: widget.pickupType,
@@ -167,11 +169,12 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
     );
   }
 
+  // Ubah confirmation datev -> due date
   void _showExtendDueDateForm() {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        DateTime newPickupDate = widget.confirmationDate.add(Duration(days: 3));
+        DateTime newPickupDate = widget.dueDate.add(Duration(days: 3));
 
         return Dialog(
           shape: RoundedRectangleBorder(

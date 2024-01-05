@@ -13,7 +13,7 @@ import 'package:intl/intl.dart';
 class PickupDetailPage extends StatefulWidget {
   final String address;
   final int itemId;
-  final DateTime confirmationDate;
+  final DateTime dueDate;
   final DateTime pickUpDate;
   final String itemName;
   final String fullName;
@@ -26,7 +26,7 @@ class PickupDetailPage extends StatefulWidget {
     Key? key,
     required this.address,
     required this.itemId,
-    required this.confirmationDate,
+    required this.dueDate,
     required this.pickUpDate,
     required this.itemName,
     required this.fullName,
@@ -556,7 +556,7 @@ class _PickupDetailPageState extends State<PickupDetailPage> {
       //  lastDate: lastSelectableDate.isAfter(currentDate) ? lastSelectableDate : DateTime(9999),
       initialDate: DateTime.now(),
       firstDate: DateTime.now(),
-      lastDate: widget.confirmationDate,
+      lastDate: widget.dueDate,
       // selectableDayPredicate: (DateTime date) {
       //   // Disable Saturdays and Sundays
       //   return date.weekday != DateTime.saturday && date.weekday != DateTime.sunday;

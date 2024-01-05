@@ -4,6 +4,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:jom_pick/HomeScreen.dart';
 import 'package:jom_pick/register.dart';
 import 'package:http/http.dart' as http;
+import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'DashBoard.dart';
 import 'package:flutter/gestures.dart';
 import 'splashscreen.dart';
@@ -15,8 +16,41 @@ import 'admin.dart';
 import 'security_questions.dart';
 
 void main() {
-  runApp(const MyApp());
+
   GeolocatorPlatform.instance;
+
+  // WidgetsFlutterBinding.ensureInitialized();
+  // OneSignal.initialize("b470c9ed-9cfe-4ae2-8aef-63d312e6bbe8");
+  // OneSignal.Notifications.requestPermission(true);
+  // OneSignal.Notifications.addPermissionObserver((state) {
+  //   print("Has permission " + state.toString());
+  // });
+
+  WidgetsFlutterBinding.ensureInitialized();
+  OneSignal.Debug.setLogLevel(OSLogLevel.verbose);
+  OneSignal.Debug.setAlertLevel(OSLogLevel.none);
+  OneSignal.initialize("b470c9ed-9cfe-4ae2-8aef-63d312e6bbe8");
+  OneSignal.Notifications.requestPermission(true);
+  OneSignal.Notifications.addPermissionObserver((state) {
+    print("Has permission " + state.toString());
+  });
+
+  // WidgetsFlutterBinding.ensureInitialized();
+  // OneSignal.Debug.setLogLevel(OSLogLevel.verbose);
+  // OneSignal.Debug.setAlertLevel(OSLogLevel.none);
+  // OneSignal.initialize("b470c9ed-9cfe-4ae2-8aef-63d312e6bbe8");
+  // OneSignal.shared.setNotificationReceivedHandler((OSNotification notification) {
+  //   // Handle received notification
+  //   print('Received notification: $notification');
+  // });
+  //
+  // OneSignal.shared.setNotificationOpenedHandler((OSNotificationOpenedResult result) {
+  //   // Handle opened notification
+  //   print('Opened notification: $result');
+  // });
+
+
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -24,7 +58,7 @@ class MyApp extends StatelessWidget {
 
 
   static final String baseIpAddress = "192.168.0.119";
-
+  //static final String baseIpAddress = "jompickService.000webhostapp.com";
   static final String loginPath = "/jompick/login.php";
   static final String registerPath = "/jompick/register.php";
   static final String updateProfilePath = "/jompick/updateProfile.php";
@@ -71,6 +105,9 @@ class _MyHomePageState extends State<MyHomePage> {
   TextEditingController user = TextEditingController();
   TextEditingController pass = TextEditingController();
 
+  var url = Uri.parse("https://onesignal.com/api/v1/notifications");
+
+
   Future login() async {
     if (user.text.isEmpty || pass.text.isEmpty) {
       Fluttertoast.showToast(
@@ -81,7 +118,6 @@ class _MyHomePageState extends State<MyHomePage> {
       );
       return; // Exit the function to prevent further execution
     }
-
 
     var url = Uri.http(MyApp.baseIpAddress, MyApp.loginPath, {'q': '{http}'});
 
@@ -111,6 +147,8 @@ class _MyHomePageState extends State<MyHomePage> {
             int? userId = int.tryParse(data['user_id']);
             if (userId != null) {
               prefs.setInt('user_id', userId);
+              print(userId);
+              OneSignal.login(userId.toString());
 
               if (data.containsKey('image')) {
                 // Save the image locally and store its path in SharedPreferences
@@ -140,6 +178,12 @@ class _MyHomePageState extends State<MyHomePage> {
                 prefs.setString('emailAddress', emailAddress);
               }
 
+              if (data.containsKey('JomPick_ID')) {
+                String jomPickId = data['JomPick_ID'];
+                prefs.setString('JomPick_ID', jomPickId);
+              } else {
+                print('JomPick_ID not found in response');
+              }
 
               // Check for the role information and redirect accordingly
               if (data.containsKey('rolename')) {
@@ -192,6 +236,57 @@ class _MyHomePageState extends State<MyHomePage> {
       // Handle the case of a failed HTTP request
     }
   }
+
+  // Future<String?> getOneSignalPlayerId() async {
+  //   var status = await OneSignal.shared.getPermissionSubscriptionState();
+  //   return status.subscriptionStatus.userId;
+  // }
+
+  // Future sendNotification(String playerID) async {
+  //
+  //   if (playerID == null || playerID.isEmpty) {
+  //     print("Invalid playerID");
+  //     return; // Exit the function if playerID is invalid
+  //   }
+  //
+  //   SharedPreferences prefs = await SharedPreferences.getInstance();
+  //   String userId = prefs.getInt('user_id').toString();
+  //
+  //   var url = Uri.parse("https://onesignal.com/api/v1/notifications");
+  //
+  //   var headers = {
+  //     "Content-Type": "application/json",
+  //     "Authorization": "Basic MGE5N2Q4YWMtMjQ5Mi00ODNlLWIyMTUtZWU5ZjFlZDA5MGE1",
+  //   };
+  //
+  //   var body = jsonEncode({
+  //     "app_id": "b470c9ed-9cfe-4ae2-8aef-63d312e6bbe8",
+  //     "include_player_ids": [playerID],
+  //     "data": {"foo": "bar"},
+  //     "contents": {"en": "Test notification to $userId"}
+  //   });
+  //
+  //   var response = await http.post(
+  //       url,
+  //       headers: headers,
+  //       body: body
+  //     );
+  //
+  //   if (response.statusCode == 200) {
+  //     // Handle successful notification sent
+  //     print("Notification sent successfully");
+  //   } else {
+  //     // Handle the case of a failed HTTP request
+  //     print('HTTP request failed with status: ${response.statusCode}');
+  //   }
+  // }
+
+  // Future<String?> getOneSignalPlayerId() async {
+  //   // Fetch the OneSignal user ID (Player ID) after OneSignal initialization
+  //   var status = await OneSignal.Notifications.getPermissionSubscriptionState();
+  //   var playerId = status.subscriptionStatus.userId;
+  //   return playerId;
+  // }
 
   Future<String> _saveImageLocally(List<int> imageBytes, int userId) async {
     // Save the image in the app's cache directory with a filename based on the user's ID
@@ -287,7 +382,7 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
               const SizedBox(height: 10),
               ElevatedButton(
-                onPressed: () {
+                onPressed: () async {
                   login();
                 },
                 style: ElevatedButton.styleFrom(

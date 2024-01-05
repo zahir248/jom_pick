@@ -8,7 +8,8 @@ class latestRegisteredItem {
   final String trackingNumber;
   final Uint8List imageData; // Use Uint8List for binary image data
   final String status;
-  final DateTime confirmationDate;
+  //final DateTime confirmationDate;
+  final DateTime dueDate;
 // Use Uint8List for binary image data
 
   latestRegisteredItem({
@@ -18,7 +19,8 @@ class latestRegisteredItem {
     required this.trackingNumber,
     required this.imageData,
     required this.status,
-    required this.confirmationDate,
+    //required this.confirmationDate,
+    required this.dueDate,
   });
 
   factory latestRegisteredItem.fromJson(Map<String, dynamic> json) {
@@ -32,7 +34,8 @@ class latestRegisteredItem {
       trackingNumber: json['trackingNumber'] ?? '',
       imageData: decodedImageData,
       status: json['status'] ?? '',
-      confirmationDate: DateTime.parse(json['confirmationDate'] ?? ''),
+      //confirmationDate: DateTime.parse(json['confirmationDate'] ?? ''),
+      dueDate: DateTime.parse(json['dueDate'] ?? ''),
     );
   }
 }

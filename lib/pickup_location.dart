@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:jom_pick/PickUpLocationMap.dart';
 import 'HomeScreen.dart';
 import 'models/pickup_location_model.dart';
@@ -8,23 +9,6 @@ import 'dart:typed_data';
 import 'main.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-// void main() {
-//   runApp(MyLocationList());
-// }
-//
-// class MyLocationList extends StatelessWidget {
-//   @override
-//   Widget build(BuildContext context) {
-//     return MaterialApp(
-//       title: 'Your App Title',
-//       theme: ThemeData(
-//         primarySwatch: Colors.blue,
-//       ),
-//       home: pickupLocation(),
-//     );
-//   }
-// }
-//
 
 class pickupLocation extends StatefulWidget {
   const pickupLocation({Key? key}) : super(key: key);
@@ -36,7 +20,8 @@ class pickupLocation extends StatefulWidget {
 class _pickupLocation extends State<pickupLocation> {
 
   int? userId;
-  late String destinationAddress  ;
+  late String destinationAddress;
+  bool isLoading = true;
 
   List<pickupLocationList> itemData = []; // List to store fetched data
   List<pickupLocationList> filteredItemData = []; // List to store filtered data
@@ -65,6 +50,7 @@ class _pickupLocation extends State<pickupLocation> {
           setState(() {
             itemData = (jsonData as List).map((item) => pickupLocationList.fromJson(item)).toList();
             filteredItemData = List.from(itemData);
+            isLoading = false;
           });
         } catch (e) {
           print('Error parsing JSON: $e');
@@ -78,13 +64,28 @@ class _pickupLocation extends State<pickupLocation> {
       }
     } catch (e) {
       print('Error fetching data: $e');
+      setState(() {
+        isLoading = false;
+      });
     }
   }
 
 
   Widget _buildListView() {
-    return Expanded(
-      child: filteredItemData.isEmpty
+    return isLoading
+        ? Center(
+      child: SpinKitThreeInOut(
+        itemBuilder: (BuildContext context, int index) {
+          return DecoratedBox(
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: index.isEven ? Colors.blue : Colors.grey,
+            ),
+          );
+        },
+      ),
+    )
+    : filteredItemData.isEmpty
           ? Center(
         child: Text(
           'No data available',
@@ -101,7 +102,7 @@ class _pickupLocation extends State<pickupLocation> {
                 elevation: 4.0, // Set the elevation (shadow) here
                 child: SizedBox(
                   width: double.infinity,
-                  height: 130.0 ,
+                  height: 150.0 ,
                   child: Padding(
                     padding: EdgeInsets.only(bottom: 15.0),
                     child: Column(
@@ -137,6 +138,13 @@ class _pickupLocation extends State<pickupLocation> {
                                 ),
                               ),
                               SizedBox(height: 10),
+                              Text(
+                                filteredItemData[index].name,
+                              style: TextStyle(
+                                fontSize: 15,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.grey,
+                              ),)
                             ],
                           ),
                           // subtitle: Text(
@@ -172,6 +180,7 @@ class _pickupLocation extends State<pickupLocation> {
                           //   ),
                           // ),
                         ),
+                        SizedBox(height: 10,),
                         Padding(
                           padding: EdgeInsets.symmetric(horizontal: 16.0),
                           child:  ElevatedButton(
@@ -200,8 +209,7 @@ class _pickupLocation extends State<pickupLocation> {
             },
           ),
         ),
-      ),
-    );
+      );
   }
 
 
@@ -239,56 +247,108 @@ class _pickupLocation extends State<pickupLocation> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
-        children: <Widget>[
-          Padding(
-            padding: const EdgeInsets.only(left: 16.0, right: 16.0, top: 50.0),
-            child: Row(
-              children: <Widget>[
-                IconButton(
-                  icon: Icon(Icons.arrow_back, color: Colors.black),
-                  onPressed: () {
-                    // Navigate to the home page and replace the current page
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(builder: (context) => HomeScreen()),
-                    );
-                  },
-                ),
-                Expanded(
-                  child: Center(
-                    child: Text(
-                      'Pick Up Point',
-                      style: TextStyle(
-                        fontSize: 30.0,
-                        fontWeight: FontWeight.bold,
+      appBar: null,
+      body: Stack(
+        children: [
+          Column(
+            children: <Widget>[
+              Padding(
+                padding: const EdgeInsets.only(left: 16.0, right: 16.0, top: 50.0),
+                child: Row(
+                  children: <Widget>[
+                    IconButton(
+                      icon: Icon(Icons.arrow_back, color: Colors.black),
+                      onPressed: () {
+                        // Navigate to the home page and replace the current page
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(builder: (context) => HomeScreen()),
+                        );
+                      },
+                    ),
+                    Expanded(
+                      child: Center(
+                        child: Text(
+                          'Pick Up Point',
+                          style: TextStyle(
+                            fontSize: 30.0,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
                       ),
+                    ),
+                  ],
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: TextField(
+                  controller: searchController,
+                  onChanged: filterItems,
+                  decoration: InputDecoration(
+                    hintText: 'Search',
+                    prefixIcon: Icon(Icons.search),
+                    filled: true,
+                    fillColor: Colors.white24, // Set the background color to grey
+                    contentPadding: EdgeInsets.symmetric(vertical: 15.0, horizontal: 20.0), // Adjust the padding as needed
+                    border: OutlineInputBorder( // Use OutlineInputBorder for border
+                      borderSide: BorderSide(color: Colors.white12), // Set the border color to grey
+                      borderRadius: BorderRadius.circular(10.0), // Adjust the border radius as needed
                     ),
                   ),
                 ),
-              ],
-            ),
+              ),
+              Container(
+                // decoration: BoxDecoration(
+                //   color: Colors.blue[100],
+                //   borderRadius: BorderRadius.circular(20),
+                // ),
+                child: itemData.isNotEmpty
+                    ? Card(
+                  elevation: 4.0,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(30),
+                  ),
+                  color: Colors.red[100],
+                  child: ListTile(
+                    title: RichText(
+                      text:TextSpan(
+                          text: 'You can search your pick up location here and get the direction if you need to go there.',
+                          style: TextStyle(
+                            fontSize: 20,
+                            color: Colors.black,
+                          )
+                      ),
+                    ),
+                  ),
+                )
+                    : Container(),
+                height: 70,
+              ),
+
+              Expanded(
+                child: _buildListView(),
+              ), // Use the custom ListView
+            ],
           ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: TextField(
-              controller: searchController,
-              onChanged: filterItems,
-              decoration: InputDecoration(
-                hintText: 'Search',
-                prefixIcon: Icon(Icons.search),
-                filled: true,
-                fillColor: Colors.white24, // Set the background color to grey
-                contentPadding: EdgeInsets.symmetric(vertical: 15.0, horizontal: 20.0), // Adjust the padding as needed
-                border: OutlineInputBorder( // Use OutlineInputBorder for border
-                  borderSide: BorderSide(color: Colors.white12), // Set the border color to grey
-                  borderRadius: BorderRadius.circular(10.0), // Adjust the border radius as needed
+          if (isLoading)
+            Positioned.fill(
+              child: Container(
+                child: Center(
+                  // child: SpinKitThreeInOut(
+                  //   itemBuilder: (BuildContext context, int index) {
+                  //     return DecoratedBox(
+                  //       decoration: BoxDecoration(
+                  //         shape: BoxShape.circle,
+                  //         color: index.isEven ? Colors.blue : Colors.grey,
+                  //       ),
+                  //     );
+                  //   },
+                  // ),
                 ),
               ),
             ),
-          ),
-          _buildListView(), // Use the custom ListView
-        ],
+        ]
       ),
     );
   }

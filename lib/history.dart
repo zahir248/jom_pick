@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:typed_data';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:jom_pick/setting.dart';
@@ -31,6 +32,8 @@ class History extends StatefulWidget {
 class _HistoryState extends State<History> {
   int _selectedIndex = 1; // Index of the selected tab
   int? userId;
+  String? jomPickId;
+  bool isLoading = true;
 
   List<Item> itemData = []; // List to store fetched data
   List<Item> filteredItemData = []; // List to store filtered data
@@ -52,12 +55,13 @@ class _HistoryState extends State<History> {
   // Fetch user data based on the user ID stored in SharedPreferences
   Future<void> fetchItemData() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    userId = prefs.getInt('user_id');
+    //userId = prefs.getInt('user_id');
+    jomPickId = prefs.getString('JomPick_ID');
 
-    if (userId != null) {
+    if (jomPickId != null) {
       try {
         final response = await http.get(
-          Uri.parse('http://${MyApp.baseIpAddress}${MyApp.itemHistoryPath}?user_id=$userId'),
+          Uri.parse('http://${MyApp.baseIpAddress}${MyApp.itemHistoryPath}?JomPick_ID=\'${jomPickId}\''),
         );
 
         print('Raw JSON response: ${response.body}');
@@ -73,6 +77,7 @@ class _HistoryState extends State<History> {
                 itemData = (jsonData as List).map((item) => Item.fromJson(item)).toList();
                 itemData.sort((a, b) => b.registerDate!.compareTo(a.registerDate!));
                 filteredItemData = List.from(itemData);
+                isLoading = false;
               });
             } else {
               print('Server responded with "0 results". User has no item data.');
@@ -93,44 +98,41 @@ class _HistoryState extends State<History> {
         }
       } catch (e) {
         print('Error fetching item data: $e');
+        setState(() {
+          isLoading = false;
+        });
       }
     } else {
       print('User ID not found in SharedPreferences');
+      setState(() {
+        isLoading = false;
+      });
     }
   }
 
   Widget _buildListView() {
 
-    final filterCategory = filteredItemData.where((Item){
+    final filterCategory = filteredItemData.where((Item) {
       return selectedCategories.isEmpty ||
           selectedCategories.contains(Item.status);
     }).toList();
 
-    Container(
-      padding: const EdgeInsets.all(8.0),
-      margin: const EdgeInsets.all(8.0),
-      child: Row(
-        children: categories.map(
-                (status) => Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: FilterChip(
-                  selected: selectedCategories.contains(status),
-                  label: Text(status),
-                  onSelected: (selected){
-                    setState(() {
-                      if(selected){
-                        selectedCategories.add(status);
-                      }else{
-                        selectedCategories.remove(status);
-                      }
-                    });
-                  }),
-            )
-        ).toList(),
+
+    return isLoading
+        ? Center(
+      child: SpinKitThreeInOut(
+        itemBuilder: (BuildContext context, int index) {
+          return DecoratedBox(
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: index.isEven ? Colors.blue : Colors.grey,
+            ),
+          );
+        },
       ),
-    );
-    return Expanded(
-      child: filteredItemData.isEmpty
+    )
+
+     : filterCategory.isEmpty
           ? Center(
         child: Text(
           'No data available',
@@ -144,6 +146,11 @@ class _HistoryState extends State<History> {
             itemCount: filterCategory.length,
             itemBuilder: (context, index) {
               //final category = filterCategory[index];
+
+              print('Filtered items count: ${filterCategory.length}');
+
+              //print("Payment Status adaaaaa: ${filteredItemData[index].paymentStatus}");
+
               return Card(
                 margin: EdgeInsets.all(8.0),
                 elevation: 4.0, // Set the elevation (shadow) here
@@ -166,13 +173,12 @@ class _HistoryState extends State<History> {
                           children: [
                             Row(
                               children: [
-                                // Make the overflow text two lines
                                 Flexible(
                                   child: Text(
-                                    filterCategory[index].itemName,
-                                    // Avoid the text overflow from the status container
+                                    filterCategory[index].itemName, // Use filteredItemData instead of itemData
+                                    // Avoid text from exceed the status container
                                     maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,// Use filteredItemData instead of itemData
+                                    overflow: TextOverflow.ellipsis,
                                     style: TextStyle(
                                       fontSize: 18,
                                       fontWeight: FontWeight.bold,
@@ -201,11 +207,6 @@ class _HistoryState extends State<History> {
                           child: Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              Icon(
-                                Icons.error,
-                                color: Colors.white,
-                                size: 16,
-                              ),
                               SizedBox(width: 4),
                               Text(
                                 filterCategory[index].status,
@@ -262,7 +263,7 @@ class _HistoryState extends State<History> {
                                 filteredItemData[index].itemType,
                                 filteredItemData[index].imageData,
                                 filteredItemData[index].status,
-                                filteredItemData[index].confirmationDate,
+                                filteredItemData[index].dueDate,
                                 filteredItemData[index].imageProofData,
                               );
                             },
@@ -283,11 +284,11 @@ class _HistoryState extends State<History> {
             },
           ),
         ),
-      ),
-    );
+      );
+
   }
 
-  void _detailsItem(int itemId, String itemName, String trackingNumber, String itemType, Uint8List imageData, String status, DateTime confirmationDate, Uint8List imageProofData ) {
+  void _detailsItem(int itemId, String itemName, String trackingNumber, String itemType, Uint8List imageData, String status, DateTime dueDate, Uint8List imageProofData ) {
     // Navigate to the item detail page and pass the item_id
     Navigator.push(
       context,
@@ -299,7 +300,7 @@ class _HistoryState extends State<History> {
           itemType : itemType,
           imageData: imageData,
           status: status,
-          confirmationDate: confirmationDate,
+          dueDate: dueDate,
           imageProofData: imageProofData,
         ),
       ),
@@ -307,15 +308,7 @@ class _HistoryState extends State<History> {
   }
 
   void _onItemTapped(int index) {
-    if (index == 4) {
-      // If the "Profile" button is tapped (index 2), navigate to the profile page
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => Profile(),
-        ),
-      );
-    } else if (index == 2) {
+    if (index == 2) {
       Navigator.push(
         context,
         MaterialPageRoute(
@@ -377,69 +370,95 @@ class _HistoryState extends State<History> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          Padding(
-            padding: const EdgeInsets.only(left: 16.0, right: 16.0, top: 50.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                Text(
-                  'History',
-                  style: TextStyle(
-                    fontSize: 30.0,
-                    fontWeight: FontWeight.bold,
+      appBar: null,
+      body: Stack(
+        children:[
+
+         Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Padding(
+              padding: const EdgeInsets.only(left: 16.0, right: 16.0, top: 50.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Text(
+                    'History',
+                    style: TextStyle(
+                      fontSize: 30.0,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: TextField(
-              controller: searchController,
-              onChanged: filterItems,
-              decoration: InputDecoration(
-                hintText: 'Search',
-                prefixIcon: Icon(Icons.search),
-                filled: true,
-                fillColor: Colors.white24, // Set the background color to grey
-                contentPadding: EdgeInsets.symmetric(vertical: 15.0, horizontal: 20.0), // Adjust the padding as needed
-                border: OutlineInputBorder( // Use OutlineInputBorder for border
-                  borderSide: BorderSide(color: Colors.white12), // Set the border color to grey
-                  borderRadius: BorderRadius.circular(10.0), // Adjust the border radius as needed
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: TextField(
+                controller: searchController,
+                onChanged: filterItems,
+                decoration: InputDecoration(
+                  hintText: 'Search',
+                  prefixIcon: Icon(Icons.search),
+                  filled: true,
+                  fillColor: Colors.white24, // Set the background color to grey
+                  contentPadding: EdgeInsets.symmetric(vertical: 15.0, horizontal: 20.0), // Adjust the padding as needed
+                  border: OutlineInputBorder( // Use OutlineInputBorder for border
+                    borderSide: BorderSide(color: Colors.white12), // Set the border color to grey
+                    borderRadius: BorderRadius.circular(10.0), // Adjust the border radius as needed
+                  ),
                 ),
               ),
             ),
-          ),
 
-          Container(
-            padding: const EdgeInsets.all(1.0),
-            margin: const EdgeInsets.all(1.0),
-            child: Row(
-              children: categories.map(
-                      (status) => Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: FilterChip(
-                        selected: selectedCategories.contains(status),
-                        label: Text(status),
-                        onSelected: (selected){
-                          setState(() {
-                            if(selected){
-                              selectedCategories.add(status);
-                            }else{
-                              selectedCategories.remove(status);
-                            }
-                          });
-                        }),
-                  )
-              ).toList(),
+            Container(
+              padding: const EdgeInsets.all(1.0),
+              margin: const EdgeInsets.all(1.0),
+              child: Row(
+                children: categories.map(
+                        (status) => Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: FilterChip(
+                          selected: selectedCategories.contains(status),
+                          label: Text(status),
+                          onSelected: (selected){
+                            setState(() {
+                              if(selected){
+                                selectedCategories.add(status);
+                              }else{
+                                selectedCategories.remove(status);
+                              }
+                            });
+                          }),
+                    )
+                ).toList(),
+              ),
             ),
-          ),
-          _buildListView(), // Use the custom ListView
+            Expanded(
+              child: _buildListView(),
+            ),
+          ],
+         ),
+          if (isLoading)
+            Positioned.fill(
+              child: Container(
+                child: Center(
+                  // child: SpinKitThreeInOut(
+                  //   itemBuilder: (BuildContext context, int index) {
+                  //     return DecoratedBox(
+                  //       decoration: BoxDecoration(
+                  //         shape: BoxShape.circle,
+                  //         color: index.isEven ? Colors.blue : Colors.grey,
+                  //       ),
+                  //     );
+                  //   },
+                  // ),
+                ),
+              ),
+            ),
         ],
       ),
+
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
         items: const <BottomNavigationBarItem>[
@@ -459,10 +478,10 @@ class _HistoryState extends State<History> {
             icon: Icon(Icons.settings),
             label: 'Setting',
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: 'Profile',
-          ),
+          // BottomNavigationBarItem(
+          //   icon: Icon(Icons.person),
+          //   label: 'Profile',
+          // ),
         ],
         currentIndex: _selectedIndex,
         onTap: _onItemTapped,

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'HomeScreen.dart';
 import 'setting.dart';
 import '../models/item.dart';
@@ -20,6 +21,8 @@ class DashBoard extends StatefulWidget {
 class _DashBoardState extends State<DashBoard> {
   int _selectedIndex = 0; // Index of the selected tab
   int? userId;
+  String? jomPickId;
+  bool isLoading = true;
 
   List<Item> itemData = []; // List to store fetched data
   List<Item> filteredItemData = []; // List to store filtered data
@@ -35,14 +38,14 @@ class _DashBoardState extends State<DashBoard> {
   // Fetch user data based on the user ID stored in SharedPreferences
   Future<void> fetchItemData() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    userId = prefs.getInt('user_id');
+    jomPickId = prefs.getString('JomPick_ID');
 
-    if (userId != null) {
+    print(jomPickId);
+    if (jomPickId != null) {
       try {
         final response = await http.get(
-          Uri.parse('http://${MyApp.baseIpAddress}${MyApp.itemHomePath}?user_id=$userId'),
+          Uri.parse('http://${MyApp.baseIpAddress}${MyApp.itemHomePath}?JomPick_ID=\'${jomPickId}\''),
         );
-
         print('Raw JSON response: ${response.body}');
 
         if (response.statusCode == 200) {
@@ -53,8 +56,11 @@ class _DashBoardState extends State<DashBoard> {
               itemData = (jsonData as List).map((item) => Item.fromJson(item)).toList();
               itemData.sort((a, b) => b.registerDate!.compareTo(a.registerDate!));
               filteredItemData = List.from(itemData);
+              isLoading = false;
             });
           } catch (e) {
+
+            print(Uri.parse('http://${MyApp.baseIpAddress}${MyApp.itemHomePath}?JomPick_ID=\'${jomPickId}\''));
             print('Server responded with "0 results". User has no item data.');
             setState(() {
               itemData = [];
@@ -66,15 +72,34 @@ class _DashBoardState extends State<DashBoard> {
         }
       } catch (e) {
         print('Error fetching item data: $e');
+        setState(() {
+          isLoading = false;
+        });
       }
     } else {
       print('User ID not found in SharedPreferences');
+      setState(() {
+        isLoading = false;
+      });
     }
   }
 
 
   Widget _buildListView() {
-    return Expanded(
+    return isLoading
+      ? Center(
+      child: SpinKitThreeInOut(
+        itemBuilder: (BuildContext context, int index) {
+          return DecoratedBox(
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: index.isEven ? Colors.blue : Colors.grey,
+            ),
+          );
+        },
+      ),
+    )
+     : Expanded(
       child: filteredItemData.isEmpty
           ? Center(
         child: Text(
@@ -143,6 +168,7 @@ class _DashBoardState extends State<DashBoard> {
                                 style: TextStyle(
                                   color: Colors.black,
                                   fontSize: 12,
+                                  fontWeight: FontWeight.bold,
                                 ),
                               ),
                             ],
@@ -192,7 +218,8 @@ class _DashBoardState extends State<DashBoard> {
                                 filteredItemData[index].itemType,
                                 filteredItemData[index].imageData,
                                 filteredItemData[index].status,
-                                filteredItemData[index].confirmationDate,
+                                filteredItemData[index].dueDate,
+                                //filteredItemData[index].confirmationDate,
                                 filteredItemData[index].pickUpDate,
                                 filteredItemData[index].address,
                                 filteredItemData[index].fullName,
@@ -221,7 +248,7 @@ class _DashBoardState extends State<DashBoard> {
     );
   }
 
-  void _detailsItem(int itemId, String itemName, String trackingNumber, String itemType, Uint8List imageData, String status, DateTime confirmationDate, DateTime pickUpDate, String address, String fullName, String pickupType, int confirmationId) {
+  void _detailsItem(int itemId, String itemName, String trackingNumber, String itemType, Uint8List imageData, String status, DateTime dueDate, /*DateTime confirmationDate,*/ DateTime pickUpDate, String address, String fullName, String pickupType, int confirmationId) {
     // Navigate to the item detail page and pass the item_id
     Navigator.push(
       context,
@@ -233,7 +260,8 @@ class _DashBoardState extends State<DashBoard> {
           itemType : itemType,
           imageData: imageData,
           status: status,
-          confirmationDate: confirmationDate,
+          dueDate: dueDate,
+          //confirmationDate: confirmationDate,
           pickUpDate: pickUpDate,
           address: address,
           fullName: fullName,
@@ -278,56 +306,80 @@ class _DashBoardState extends State<DashBoard> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
-        children: <Widget>[
-          Padding(
-            padding: const EdgeInsets.only(left: 16.0, right: 16.0, top: 50.0),
-            child: Row(
-              children: <Widget>[
-                IconButton(
-                  icon: Icon(Icons.arrow_back, color: Colors.black),
-                  onPressed: () {
-                    // Navigate to the home page and replace the current page
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(builder: (context) => HomeScreen()),
-                    );
-                  },
-                ),
-                Expanded(
-                  child: Center(
-                    child: Text(
-                      'Pending Items',
-                      style: TextStyle(
-                        fontSize: 30.0,
-                        fontWeight: FontWeight.bold,
+      appBar: null,
+      body: Stack(
+        children: [
+          Column(
+            children: <Widget>[
+              Padding(
+                padding: const EdgeInsets.only(left: 16.0, right: 16.0, top: 50.0),
+                child: Row(
+                  children: <Widget>[
+                    IconButton(
+                      icon: Icon(Icons.arrow_back, color: Colors.black),
+                      onPressed: () {
+                        // Navigate to the home page and replace the current page
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(builder: (context) => HomeScreen()),
+                        );
+                      },
+                    ),
+                    Expanded(
+                      child: Center(
+                        child: Text(
+                          'Pending Items',
+                          style: TextStyle(
+                            fontSize: 30.0,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
                       ),
+                    ),
+                  ],
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: TextField(
+                  controller: searchController,
+                  onChanged: filterItems,
+                  decoration: InputDecoration(
+                    hintText: 'Search',
+                    prefixIcon: Icon(Icons.search),
+                    filled: true,
+                    fillColor: Colors.white24, // Set the background color to grey
+                    contentPadding: EdgeInsets.symmetric(vertical: 15.0, horizontal: 20.0), // Adjust the padding as needed
+                    border: OutlineInputBorder( // Use OutlineInputBorder for border
+                      borderSide: BorderSide(color: Colors.white12), // Set the border color to grey
+                      borderRadius: BorderRadius.circular(10.0), // Adjust the border radius as needed
                     ),
                   ),
                 ),
-              ],
-            ),
+              ),
+              Expanded(
+                child: _buildListView(),
+              ),
+            ],
           ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: TextField(
-              controller: searchController,
-              onChanged: filterItems,
-              decoration: InputDecoration(
-                hintText: 'Search',
-                prefixIcon: Icon(Icons.search),
-                filled: true,
-                fillColor: Colors.white24, // Set the background color to grey
-                contentPadding: EdgeInsets.symmetric(vertical: 15.0, horizontal: 20.0), // Adjust the padding as needed
-                border: OutlineInputBorder( // Use OutlineInputBorder for border
-                  borderSide: BorderSide(color: Colors.white12), // Set the border color to grey
-                  borderRadius: BorderRadius.circular(10.0), // Adjust the border radius as needed
+          if (isLoading)
+            Positioned.fill(
+              child: Container(
+                child: Center(
+                  // child: SpinKitThreeInOut(
+                  //   itemBuilder: (BuildContext context, int index) {
+                  //     return DecoratedBox(
+                  //       decoration: BoxDecoration(
+                  //         shape: BoxShape.circle,
+                  //         color: index.isEven ? Colors.blue : Colors.grey,
+                  //       ),
+                  //     );
+                  //   },
+                  // ),
                 ),
               ),
             ),
-          ),
-          _buildListView(), // Use the custom ListView
-        ],
+        ]
       ),
 
     );

@@ -9,7 +9,7 @@ class ItemDetailPage extends StatefulWidget {
   final String itemType;
   final String status;
   final Uint8List imageData;
-  final DateTime confirmationDate;
+  final DateTime dueDate;
   final Uint8List imageProofData;
 
   ItemDetailPage({
@@ -19,7 +19,7 @@ class ItemDetailPage extends StatefulWidget {
     required this.itemType,
     required this.imageData,
     required this.status,
-    required this.confirmationDate,
+    required this.dueDate,
     required this.imageProofData,
   });
 
@@ -99,7 +99,7 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
                   buildDetailItem(
                       "Pick-up Date",
                       DateFormat('d MMMM yyyy')
-                          .format(widget.confirmationDate)),
+                          .format(widget.dueDate)),
                   Divider(),
                   SizedBox(height: 20),
                   buildDetailItem("Pick-up Proof", ""),

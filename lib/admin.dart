@@ -48,9 +48,10 @@ class _AdminPageState extends State<AdminPage> {
                       textColor: Colors.white,
                       toastLength: Toast.LENGTH_SHORT,
                     );
-                    Navigator.pushReplacement(
+                    Navigator.pushAndRemoveUntil(
                       context,
                       MaterialPageRoute(builder: (context) => MyHomePage()),
+                          (route) => false,
                     );
                   },
                 ),

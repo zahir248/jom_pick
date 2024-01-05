@@ -16,6 +16,7 @@ import 'main.dart';
 import 'models/latestRegisteredItem.dart';
 import 'models/notification_model.dart';
 import 'models/user.dart';
+import 'package:onesignal_flutter/onesignal_flutter.dart';
 
 
 class HomeScreen extends StatefulWidget {
@@ -29,6 +30,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
 
   int? userId;
+  String? jomPickId;
   int _selectedIndex = 0;
 
   List<latestRegisteredItem> itemData = [];
@@ -44,11 +46,12 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Future<void> fetchItemData() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    userId = prefs.getInt('user_id');
+    //userId = prefs.getInt('user_id');
+    jomPickId = prefs.getString('JomPick_ID');
 
-    if (userId != null) {
+    if (jomPickId != null) {
 
-      final response = await http.get(Uri.parse('http://${MyApp.baseIpAddress}${MyApp.latestRegisteredItem}?user_id=$userId'));
+      final response = await http.get(Uri.parse('http://${MyApp.baseIpAddress}${MyApp.latestRegisteredItem}?JomPick_ID=\'${jomPickId}\''));
       print('Raw JSON response: ${response.body}');
 
       if (response.statusCode == 200) {
@@ -177,9 +180,10 @@ class _HomeScreenState extends State<HomeScreen> {
                                 ),
                                 SizedBox(height: 5),
                                 Text(
-                                  'Manage your item here',
+                                  'Your parcel, our priority',
                                   style: TextStyle(
                                     color: Colors.black,
+                                    fontWeight: FontWeight.bold,
                                     fontSize: 16,
                                   ),
                                 ),
@@ -307,8 +311,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                 ),
                               ),
                               Text(
-                                itemData[0].confirmationDate != null
-                                    ? " Due on ${DateFormat('EEEE, dd MMMM yyyy').format(itemData[0].confirmationDate!)} \n"
+                                itemData[0].dueDate != null
+                                    ? " Due on ${DateFormat('EEEE, dd MMMM yyyy').format(itemData[0].dueDate!)} \n"
                                     : "N/A",
                                 style: TextStyle(
                                   fontSize: 13,
@@ -352,10 +356,10 @@ class _HomeScreenState extends State<HomeScreen> {
             icon: Icon(Icons.settings),
             label: 'Setting',
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: 'Profile',
-          ),
+          // BottomNavigationBarItem(
+          //   icon: Icon(Icons.person),
+          //   label: 'Profile',
+          // ),
         ],
         currentIndex: _selectedIndex,
         onTap: _onItemTapped,
@@ -372,20 +376,12 @@ class _HomeScreenState extends State<HomeScreen> {
     }else if(status == 'Disposed'){
       return Colors.red;
     }else{
-      return Colors.grey;
+      return Colors.orange;
     }
   }
 
   void _onItemTapped(int index) {
-    if (index == 4) {
-      // If the "Profile" button is tapped (index 2), navigate to the profile page
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => Profile(),
-        ),
-      );
-    } else if (index == 2) {
+    if (index == 2) {
       Navigator.push(
         context,
         MaterialPageRoute(
@@ -524,7 +520,7 @@ class _HomeScreenState extends State<HomeScreen> {
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 Text(
-                  'PickUp Store', // Add your text here
+                  'Pick Up Stores', // Add your text here
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 16,

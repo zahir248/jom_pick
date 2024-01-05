@@ -20,7 +20,7 @@ class Profile extends StatefulWidget {
 }
 
 class _ProfileState extends State<Profile> {
-  int _selectedIndex = 4; // Index of the selected tab
+  //int _selectedIndex = 4; // Index of the selected tab
   String icNumber = ''; // Variable to store the IC number
   int? userId;
   String fullName = ''; // Variable to store the full name
@@ -209,15 +209,7 @@ class _ProfileState extends State<Profile> {
   }
 
   void _onItemTapped(int index) {
-    if (index == 4) {
-      // If the "Profile" button is tapped (index 2), navigate to the profile page
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => Profile(),
-        ),
-      );
-    } else if (index == 2) {
+   if (index == 2) {
       Navigator.push(
         context,
         MaterialPageRoute(
@@ -245,9 +237,9 @@ class _ProfileState extends State<Profile> {
           builder: (context) => HomeScreen(),
         ),
       );
-      setState(() {
-        _selectedIndex = index;
-      });
+      // setState(() {
+      //   _selectedIndex = index;
+      // });
     }
   }
 
@@ -353,11 +345,27 @@ class _ProfileState extends State<Profile> {
           child: Column(
             children: [
               Padding(
-                padding: const EdgeInsets.only(top: 70.0),
+                padding: const EdgeInsets.fromLTRB(16.0, 50, 16.0, 0),
+                child: Container(
+                  alignment: Alignment.centerLeft,
+                  child: IconButton(
+                    icon: Icon(Icons.arrow_back, color: Colors.black),
+                    onPressed: () {
+                      // Navigate to the home page and replace the current page
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(builder: (context) => Setting()),
+                      );
+                    },
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(16.0, 0, 16.0, 10.0),
                 child: Text(
                   'Profile',
                   style: TextStyle(
-                    fontSize: 30,
+                    fontSize: 30, // Adjust the font size as needed
                     fontWeight: FontWeight.bold,
                   ),
                 ),
@@ -430,12 +438,8 @@ class _ProfileState extends State<Profile> {
             icon: Icon(Icons.settings),
             label: 'Setting',
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: 'Profile ',
-          ),
         ],
-        currentIndex: _selectedIndex,
+        //currentIndex: _selectedIndex,
         onTap: _onItemTapped,
       ),
     );
