@@ -283,13 +283,13 @@ class _RegisterState extends State<Register> {
                       decoration: InputDecoration(
                         labelText: 'Username',
                       ),
-                      validator: (value){
-                        if(value!.isEmpty || !RegExp(r'^[a-zA-Z0-9]+$').hasMatch(value) || value.length<8){
-                          return 'Username must contains at lower case, upper case, number and at least 8 character';
-                        }else{
-                          return null;
-                        }
-                      }
+                      // validator: (value){
+                      //   if(value!.isEmpty || !RegExp(r'^[a-zA-Z0-9]+$').hasMatch(value) || value.length<8){
+                      //     return 'Username must contains at lower case, upper case, number and at least 8 character';
+                      //   }else{
+                      //     return null;
+                      //   }
+                      // }
                   ),
                 ),
               Padding(
