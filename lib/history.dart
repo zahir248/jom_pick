@@ -120,7 +120,7 @@ class _HistoryState extends State<History> {
 
     return isLoading
         ? Center(
-      child: SpinKitThreeInOut(
+      child: SpinKitChasingDots(
         itemBuilder: (BuildContext context, int index) {
           return DecoratedBox(
             decoration: BoxDecoration(
@@ -165,7 +165,13 @@ class _HistoryState extends State<History> {
                           height: 90,
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
-                            color: Colors.blueGrey,
+                            image: DecorationImage(
+                              fit: BoxFit.cover,
+                              //image: AssetImage('assets/jompick.jpg'), // adjust the path accordingly
+                              image: MemoryImage(
+                                  filteredItemData[index].imageData
+                              ),
+                            ),
                           ),
                         ),
                         title: Column(
@@ -192,7 +198,7 @@ class _HistoryState extends State<History> {
                           ],
                         ),
                         subtitle: Text(
-                          filterCategory[index].location,
+                          'Picked at ${filteredItemData[index].pickUpLocation}',
                           style: TextStyle(
                             fontSize: 14,
                           ),

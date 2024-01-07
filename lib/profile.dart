@@ -28,6 +28,7 @@ class _ProfileState extends State<Profile> {
   String emailAddress = ''; // Variable to store the email address
   String username = ''; // Variable to store the email address
   String imagePath = ''; // Variable to store the image path
+  String jomPickId = '';
 
   @override
   void initState() {
@@ -44,6 +45,7 @@ class _ProfileState extends State<Profile> {
     String? storedEmailAddress = prefs.getString('emailAddress');
     String? storedUsername = prefs.getString('username');
     String? storedImagePath = prefs.getString('imagePath');
+    String? storedjomPickId = prefs.getString('JomPick_ID');
 
     if (storedIcNumber != null) {
       setState(() {
@@ -73,6 +75,11 @@ class _ProfileState extends State<Profile> {
     if (storedImagePath != null) {
       setState(() {
         imagePath = storedImagePath;
+      });
+    }
+    if (storedjomPickId != null){
+      setState(() {
+        jomPickId = storedjomPickId;
       });
     }
   }
@@ -118,6 +125,8 @@ class _ProfileState extends State<Profile> {
                     icNumber = controller.text;
                   } else if (label == 'Email Address') {
                     emailAddress = controller.text;
+                  } else if (label == 'JomPick ID'){
+                    jomPickId = controller.text;
                   }
                 });
                 // Update SharedPreferences here
@@ -152,6 +161,7 @@ class _ProfileState extends State<Profile> {
       request.fields['phoneNumber'] = phoneNumber;
       request.fields['icNumber'] = icNumber;
       request.fields['emailAddress'] = emailAddress;
+      request.fields['JomPick_ID'] = jomPickId;
 
       // Send the request
       var response = await request.send();
@@ -180,6 +190,7 @@ class _ProfileState extends State<Profile> {
             phoneNumber = responseData['phoneNumber'];
             icNumber = responseData['icNumber'];
             emailAddress = responseData['emailAddress'];
+            jomPickId = responseData['JomPick_ID'];
           });
 
           // Update SharedPreferences here
@@ -206,42 +217,9 @@ class _ProfileState extends State<Profile> {
     prefs.setString('phoneNumber', phoneNumber);
     prefs.setString('emailAddress', emailAddress);
     prefs.setString('imagePath', imagePath); // Update imagePath in SharedPreferences
+    prefs.setString('JomPick_ID', jomPickId);
   }
 
-  void _onItemTapped(int index) {
-   if (index == 2) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => Penalty(),
-        ),
-      );
-    } else if (index == 1) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => History(),
-        ),
-      );
-    } else if(index == 3){
-      Navigator.push(
-        context,
-          MaterialPageRoute(
-            builder: (context) => Setting(),
-          ),
-    );
-    }else {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => HomeScreen(),
-        ),
-      );
-      // setState(() {
-      //   _selectedIndex = index;
-      // });
-    }
-  }
 
   Future<void> _pickImage() async {
     showModalBottomSheet(
@@ -296,6 +274,8 @@ class _ProfileState extends State<Profile> {
 
 
   Widget buildProfileField(String label, String value) {
+    bool isEditable = label !='JomPick ID';
+
     return Align(
       alignment: Alignment.centerLeft,
       child: Container(
@@ -315,13 +295,15 @@ class _ProfileState extends State<Profile> {
                     fontWeight: FontWeight.bold, // Make the label bold
                   ),
                 ),
-                IconButton(
+                isEditable
+                ? IconButton(
                   icon: Icon(Icons.edit),
                   onPressed: () {
                     // Show the edit dialog when the edit icon is pressed
                     _showEditDialog(label, value);
                   },
-                ),
+                )
+                    : Container(),
               ],
             ),
             Text(
@@ -397,6 +379,7 @@ class _ProfileState extends State<Profile> {
               buildProfileField('Phone Number', phoneNumber),
               buildProfileField('IC Number', icNumber),
               buildProfileField('Email Address', emailAddress),
+              buildProfileField('JomPick ID', jomPickId),
               SizedBox(height: 20),
               Container(
                 child: ElevatedButton(
@@ -415,32 +398,10 @@ class _ProfileState extends State<Profile> {
                   ),
                 ),
               ),
+              SizedBox(height: 20,),
             ],
           ),
         ),
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        type: BottomNavigationBarType.fixed,
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.history),
-            label: 'History',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.error),
-            label: 'Penalty',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.settings),
-            label: 'Setting',
-          ),
-        ],
-        //currentIndex: _selectedIndex,
-        onTap: _onItemTapped,
       ),
     );
   }

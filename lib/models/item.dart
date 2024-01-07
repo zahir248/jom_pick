@@ -5,6 +5,7 @@ class Item {
   final int itemId;
   final String itemName;
   final String location;
+  final String pickUpLocation;
   final DateTime registerDate;
   final String trackingNumber;
   final String itemType;
@@ -24,6 +25,7 @@ class Item {
     required this.itemId,
     required this.itemName,
     required this.location,
+    required this.pickUpLocation,
     required this.registerDate,
     required this.trackingNumber,
     required this.itemType,
@@ -49,6 +51,7 @@ class Item {
       itemId: int.parse(json['item_id'] ?? '0'),
       itemName: json['name'] ?? '',
       location: json['location'] ?? '',
+      pickUpLocation: json['pickUpName'] ?? '',
       registerDate: DateTime.parse(json['registerDate'] ?? ''),
       trackingNumber: json['trackingNumber'] ?? '',
       itemType: json['itemType'] ?? '',

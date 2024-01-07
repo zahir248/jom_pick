@@ -88,7 +88,7 @@ class _DashBoardState extends State<DashBoard> {
   Widget _buildListView() {
     return isLoading
       ? Center(
-      child: SpinKitThreeInOut(
+      child: SpinKitChasingDots(
         itemBuilder: (BuildContext context, int index) {
           return DecoratedBox(
             decoration: BoxDecoration(
@@ -129,7 +129,10 @@ class _DashBoardState extends State<DashBoard> {
                             shape: BoxShape.circle,
                             image: DecorationImage(
                               fit: BoxFit.cover,
-                              image: AssetImage('assets/jompick.jpg'), // adjust the path accordingly
+                              //image: AssetImage('assets/jompick.jpg'),
+                              image: MemoryImage(
+                                  filteredItemData[index].imageData
+                              ),
                             ),
                           ),
                         ),
@@ -147,7 +150,7 @@ class _DashBoardState extends State<DashBoard> {
                           ],
                         ),
                         subtitle: Text(
-                          filteredItemData[index].location,
+                          'Arrived at ${filteredItemData[index].pickUpLocation}',
                           style: TextStyle(
                             fontSize: 14,
                           ),

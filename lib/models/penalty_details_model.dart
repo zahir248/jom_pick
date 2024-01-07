@@ -5,6 +5,7 @@ class PenaltyDetails{
     final int itemId;
     final String itemName;
     final String location;
+    final String pickUpLocationName;
     final DateTime registerDate;
     final String trackingNumber;
     final String itemType;
@@ -22,6 +23,7 @@ class PenaltyDetails{
     required this.itemId,
     required this.itemName,
     required this.location,
+        required this.pickUpLocationName,
     required this.registerDate,
     required this.trackingNumber,
     required this.itemType,
@@ -31,8 +33,7 @@ class PenaltyDetails{
     required this.pickUpLocation,
     required this.dueDate,
     required this.paymentStatus,
-    required this.paymentAmount,
-        required this.imageData,
+    required this.paymentAmount, required this.imageData,
 });
 
 factory PenaltyDetails.fromJson(Map<String, dynamic> json){
@@ -41,6 +42,7 @@ factory PenaltyDetails.fromJson(Map<String, dynamic> json){
       itemId: int.parse(json['item_id'] ?? '0'),
       itemName: json['name'] ?? '',
       location: json['location'] ?? '',
+      pickUpLocationName: json['pickUpName'] ?? '',
       registerDate: DateTime.parse(json['registerDate'] ?? ''),
       trackingNumber: json['trackingNumber'] ?? '',
       itemType: json['itemTypeName'] ?? '',

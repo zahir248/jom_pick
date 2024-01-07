@@ -102,7 +102,7 @@ class _PenaltyState extends State<Penalty> {
 
     return isLoading
         ? Center(
-      child: SpinKitThreeInOut(
+      child: SpinKitChasingDots(
         itemBuilder: (BuildContext context, int index) {
           return DecoratedBox(
             decoration: BoxDecoration(
@@ -146,7 +146,12 @@ class _PenaltyState extends State<Penalty> {
                           height: 90,
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
-                            color: Colors.blueGrey,
+                            image: DecorationImage(
+                              fit: BoxFit.cover,
+                              image: MemoryImage(
+                                  filteredItemData[index].imageData
+                              ),
+                            ),
                           ),
                         ),
                         title: Column(
@@ -173,7 +178,7 @@ class _PenaltyState extends State<Penalty> {
                           ],
                         ),
                         subtitle: Text(
-                          filterCategory[index].location,
+                          'Arrived at ${filteredItemData[index].pickUpLocationName}',
                           style: TextStyle(
                             fontSize: 14,
                           ),
