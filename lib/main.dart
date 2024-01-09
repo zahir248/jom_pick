@@ -19,13 +19,6 @@ void main() {
 
   GeolocatorPlatform.instance;
 
-  // WidgetsFlutterBinding.ensureInitialized();
-  // OneSignal.initialize("b470c9ed-9cfe-4ae2-8aef-63d312e6bbe8");
-  // OneSignal.Notifications.requestPermission(true);
-  // OneSignal.Notifications.addPermissionObserver((state) {
-  //   print("Has permission " + state.toString());
-  // });
-
   WidgetsFlutterBinding.ensureInitialized();
   OneSignal.Debug.setLogLevel(OSLogLevel.verbose);
   OneSignal.Debug.setAlertLevel(OSLogLevel.none);
@@ -34,21 +27,6 @@ void main() {
   OneSignal.Notifications.addPermissionObserver((state) {
     print("Has permission " + state.toString());
   });
-
-  // WidgetsFlutterBinding.ensureInitialized();
-  // OneSignal.Debug.setLogLevel(OSLogLevel.verbose);
-  // OneSignal.Debug.setAlertLevel(OSLogLevel.none);
-  // OneSignal.initialize("b470c9ed-9cfe-4ae2-8aef-63d312e6bbe8");
-  // OneSignal.shared.setNotificationReceivedHandler((OSNotification notification) {
-  //   // Handle received notification
-  //   print('Received notification: $notification');
-  // });
-  //
-  // OneSignal.shared.setNotificationOpenedHandler((OSNotificationOpenedResult result) {
-  //   // Handle opened notification
-  //   print('Opened notification: $result');
-  // });
-
 
   runApp(const MyApp());
 }
@@ -148,6 +126,7 @@ class _MyHomePageState extends State<MyHomePage> {
             if (userId != null) {
               prefs.setInt('user_id', userId);
               print(userId);
+
               OneSignal.login(userId.toString());
 
               if (data.containsKey('image')) {
