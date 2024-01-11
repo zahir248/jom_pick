@@ -379,7 +379,6 @@ class _HistoryState extends State<History> {
       appBar: null,
       body: Stack(
         children:[
-
          Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[

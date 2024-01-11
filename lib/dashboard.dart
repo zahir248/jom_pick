@@ -306,85 +306,168 @@ class _DashBoardState extends State<DashBoard> {
     }
   }
 
+  // @override
+  // Widget build(BuildContext context) {
+  //   return Scaffold(
+  //     appBar: null,
+  //     body: Stack(
+  //       children: <Widget>[
+  //         Column(
+  //           children: <Widget>[
+  //             Padding(
+  //               padding: const EdgeInsets.only(left: 16.0, right: 16.0, top: 50.0),
+  //               child: Row(
+  //                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //                 children: <Widget>[
+  //                   IconButton(
+  //                     icon: Icon(Icons.arrow_back, color: Colors.black),
+  //                     onPressed: () {
+  //                       // Navigate to the home page and replace the current page
+  //                       Navigator.pushReplacement(
+  //                         context,
+  //                         MaterialPageRoute(builder: (context) => HomeScreen()),
+  //                       );
+  //                     },
+  //                   ),
+  //                   Text(
+  //                     'Pending Items',
+  //                     style: TextStyle(
+  //                       fontSize: 30.0,
+  //                       fontWeight: FontWeight.bold,
+  //                     ),
+  //                   ),
+  //                   // IconButton(
+  //                   //   icon: Icon(Icons.settings),
+  //                   //   onPressed: () {
+  //                   //     handleSetting(); // Logout when the button is pressed
+  //                   //   },
+  //                   // ),
+  //                 ],
+  //               ),
+  //             ),
+  //             Padding(
+  //               padding: const EdgeInsets.all(8.0),
+  //               child: TextField(
+  //                 controller: searchController,
+  //                 onChanged: filterItems,
+  //                 decoration: InputDecoration(
+  //                   hintText: 'Search',
+  //                   prefixIcon: Icon(Icons.search),
+  //                   filled: true,
+  //                   fillColor: Colors.white24, // Set the background color to grey
+  //                   contentPadding: EdgeInsets.symmetric(vertical: 15.0, horizontal: 20.0), // Adjust the padding as needed
+  //                   border: OutlineInputBorder( // Use OutlineInputBorder for border
+  //                     borderSide: BorderSide(color: Colors.white12), // Set the border color to grey
+  //                     borderRadius: BorderRadius.circular(10.0), // Adjust the border radius as needed
+  //                   ),
+  //                 ),
+  //               ),
+  //             ),
+  //              _buildListView(), // Use the custom ListView
+  //           ],
+  //         ),
+  //
+  //         if (isLoading)
+  //           Positioned.fill(
+  //             child: Container(
+  //               child: Center(
+  //                 // child: SpinKitThreeInOut(
+  //                 //   itemBuilder: (BuildContext context, int index) {
+  //                 //     return DecoratedBox(
+  //                 //       decoration: BoxDecoration(
+  //                 //         shape: BoxShape.circle,
+  //                 //         color: index.isEven ? Colors.blue : Colors.grey,
+  //                 //       ),
+  //                 //     );
+  //                 //   },
+  //                 // ),
+  //               ),
+  //             ),
+  //           ),
+  //       ],
+  //     ),
+  //   );
+  // }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: null,
       body: Stack(
-        children: [
-          Column(
-            children: <Widget>[
-              Padding(
-                padding: const EdgeInsets.only(left: 16.0, right: 16.0, top: 50.0),
-                child: Row(
-                  children: <Widget>[
-                    IconButton(
-                      icon: Icon(Icons.arrow_back, color: Colors.black),
-                      onPressed: () {
-                        // Navigate to the home page and replace the current page
-                        Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(builder: (context) => HomeScreen()),
-                        );
-                      },
-                    ),
-                    Expanded(
-                      child: Center(
-                        child: Text(
-                          'Pending Items',
-                          style: TextStyle(
-                            fontSize: 30.0,
-                            fontWeight: FontWeight.bold,
+          children: [
+            Column(
+              children: <Widget>[
+                Padding(
+                  padding: const EdgeInsets.only(left: 16.0, right: 16.0, top: 50.0),
+                  child: Row(
+                    children: <Widget>[
+                      IconButton(
+                        icon: Icon(Icons.arrow_back, color: Colors.black),
+                        onPressed: () {
+                          // Navigate to the home page and replace the current page
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(builder: (context) => HomeScreen()),
+                          );
+                        },
+                      ),
+                      Expanded(
+                        child: Center(
+                          child: Text(
+                            'Pending Items',
+                            style: TextStyle(
+                              fontSize: 30.0,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: TextField(
-                  controller: searchController,
-                  onChanged: filterItems,
-                  decoration: InputDecoration(
-                    hintText: 'Search',
-                    prefixIcon: Icon(Icons.search),
-                    filled: true,
-                    fillColor: Colors.white24, // Set the background color to grey
-                    contentPadding: EdgeInsets.symmetric(vertical: 15.0, horizontal: 20.0), // Adjust the padding as needed
-                    border: OutlineInputBorder( // Use OutlineInputBorder for border
-                      borderSide: BorderSide(color: Colors.white12), // Set the border color to grey
-                      borderRadius: BorderRadius.circular(10.0), // Adjust the border radius as needed
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: TextField(
+                    controller: searchController,
+                    onChanged: filterItems,
+                    decoration: InputDecoration(
+                      hintText: 'Search',
+                      prefixIcon: Icon(Icons.search),
+                      filled: true,
+                      fillColor: Colors.white24, // Set the background color to grey
+                      contentPadding: EdgeInsets.symmetric(vertical: 15.0, horizontal: 20.0), // Adjust the padding as needed
+                      border: OutlineInputBorder( // Use OutlineInputBorder for border
+                        borderSide: BorderSide(color: Colors.white12), // Set the border color to grey
+                        borderRadius: BorderRadius.circular(10.0), // Adjust the border radius as needed
+                      ),
                     ),
                   ),
                 ),
-              ),
-              Expanded(
-                child: _buildListView(),
-              ),
-            ],
-          ),
-          if (isLoading)
-            Positioned.fill(
-              child: Container(
-                child: Center(
-                  // child: SpinKitThreeInOut(
-                  //   itemBuilder: (BuildContext context, int index) {
-                  //     return DecoratedBox(
-                  //       decoration: BoxDecoration(
-                  //         shape: BoxShape.circle,
-                  //         color: index.isEven ? Colors.blue : Colors.grey,
-                  //       ),
-                  //     );
-                  //   },
-                  // ),
+                Expanded(
+                  child: _buildListView(),
+                ), // Use the custom ListView
+              ],
+            ),
+            if (isLoading)
+              Positioned.fill(
+                child: Container(
+                  child: Center(
+                    // child: SpinKitThreeInOut(
+                    //   itemBuilder: (BuildContext context, int index) {
+                    //     return DecoratedBox(
+                    //       decoration: BoxDecoration(
+                    //         shape: BoxShape.circle,
+                    //         color: index.isEven ? Colors.blue : Colors.grey,
+                    //       ),
+                    //     );
+                    //   },
+                    // ),
+                  ),
                 ),
               ),
-            ),
-        ]
+          ]
       ),
-
     );
   }
+
 }

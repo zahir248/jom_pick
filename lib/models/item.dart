@@ -4,7 +4,7 @@ import 'dart:convert';
 class Item {
   final int itemId;
   final String itemName;
-  final String location;
+  //final String location;
   final String pickUpLocation;
   final DateTime registerDate;
   final String trackingNumber;
@@ -24,7 +24,7 @@ class Item {
   Item({
     required this.itemId,
     required this.itemName,
-    required this.location,
+    //required this.location,
     required this.pickUpLocation,
     required this.registerDate,
     required this.trackingNumber,
@@ -50,7 +50,7 @@ class Item {
     return Item(
       itemId: int.parse(json['item_id'] ?? '0'),
       itemName: json['name'] ?? '',
-      location: json['location'] ?? '',
+      //location: json['location'] ?? '',
       pickUpLocation: json['pickUpName'] ?? '',
       registerDate: DateTime.parse(json['registerDate'] ?? ''),
       trackingNumber: json['trackingNumber'] ?? '',

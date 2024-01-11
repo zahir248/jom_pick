@@ -69,28 +69,58 @@ class _RegisterState extends State<Register> {
         "securityQuestion2": securityQuestion2.text.toString(),
       });
       var data = json.decode(response.body);
-      if (data == "Error") {
-        Fluttertoast.showToast(
-          backgroundColor: Colors.orange,
-          textColor: Colors.white,
-          msg: 'User already exists!',
-          toastLength: Toast.LENGTH_SHORT,
-        );
-      } else {
-        Fluttertoast.showToast(
-          backgroundColor: Colors.green,
-          textColor: Colors.white,
-          msg: 'Registration Successful',
-          toastLength: Toast.LENGTH_SHORT,
-        );
-        Navigator.push(context,
-          MaterialPageRoute(
-            builder: (context) => MyHomePage(),
-          ),
-        );
+
+      switch (data) {
+        case "ErrorEmail":
+          Fluttertoast.showToast(
+            backgroundColor: Colors.orange,
+            textColor: Colors.white,
+            msg: 'User with email address already exists!',
+            toastLength: Toast.LENGTH_SHORT,
+          );
+          break;
+        case "ErrorUsername":
+          Fluttertoast.showToast(
+            backgroundColor: Colors.orange,
+            textColor: Colors.white,
+            msg: 'User with username already exists!',
+            toastLength: Toast.LENGTH_SHORT,
+          );
+          break;
+        case "ErrorPhoneNumber":
+          Fluttertoast.showToast(
+            backgroundColor: Colors.orange,
+            textColor: Colors.white,
+            msg: 'User with phone number already exists!',
+            toastLength: Toast.LENGTH_SHORT,
+          );
+          break;
+        case "ErrorJomPickID":
+          Fluttertoast.showToast(
+            backgroundColor: Colors.orange,
+            textColor: Colors.white,
+            msg: 'User with matric number already exists!',
+            toastLength: Toast.LENGTH_SHORT,
+          );
+          break;
+        case "Success":
+          Fluttertoast.showToast(
+            backgroundColor: Colors.green,
+            textColor: Colors.white,
+            msg: 'Registration Successful',
+            toastLength: Toast.LENGTH_SHORT,
+          );
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => MyHomePage(),
+            ),
+          );
+          break;
       }
     }
   }
+
 
   bool isPasswordVisible = false;
   bool isConfirmPasswordVisible = false; // Add a new boolean variable
@@ -214,17 +244,18 @@ class _RegisterState extends State<Register> {
                 Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: TextFormField(
-                      controller: matriculationNumber,
-                      decoration: InputDecoration(
-                        labelText: 'Matric Number',
-                      ),
-                      // validator: (value){
-                      //   if(value!.isEmpty || RegExp(r'^[a-z A-Z]+$').hasMatch(value!) || RegExp(r'^[0-9]+$').hasMatch(value!)){
-                      //     return 'Invalid format for matric number';
-                      //   }else{
-                      //     return null;
-                      //   }
-                      // }
+                    controller: matriculationNumber,
+                    decoration: InputDecoration(
+                      labelText: 'Matric Number',
+                    ),
+                    enabled: _userType != 'public', // Disable if user type is 'Public'
+                    // validator: (value){
+                    //   if(value!.isEmpty || RegExp(r'^[a-z A-Z]+$').hasMatch(value!) || RegExp(r'^[0-9]+$').hasMatch(value!)){
+                    //     return 'Invalid format for matric number';
+                    //   }else{
+                    //     return null;
+                    //   }
+                    // }
                   ),
                 ),
                 Padding(
@@ -279,94 +310,94 @@ class _RegisterState extends State<Register> {
                 Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: TextFormField(
-                      controller: user,
-                      decoration: InputDecoration(
-                        labelText: 'Username',
-                      ),
-                      // validator: (value){
-                      //   if(value!.isEmpty || !RegExp(r'^[a-zA-Z0-9]+$').hasMatch(value) || value.length<8){
-                      //     return 'Username must contains at lower case, upper case, number and at least 8 character';
-                      //   }else{
-                      //     return null;
-                      //   }
-                      // }
+                    controller: user,
+                    decoration: InputDecoration(
+                      labelText: 'Username',
+                    ),
+                    // validator: (value){
+                    //   if(value!.isEmpty || !RegExp(r'^[a-zA-Z0-9]+$').hasMatch(value) || value.length<8){
+                    //     return 'Username must contains at lower case, upper case, number and at least 8 character';
+                    //   }else{
+                    //     return null;
+                    //   }
+                    // }
                   ),
                 ),
-              Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Security Question 1',
-                      style: TextStyle(
-                        fontSize: 17,
-                        color: Colors.black87, // Specify the text color here
+                Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Security Question 1',
+                        style: TextStyle(
+                          fontSize: 17,
+                          color: Colors.black87, // Specify the text color here
+                        ),
                       ),
-                    ),
-                    const SizedBox(height: 15),
-                    Text(
-                      'What city were you born in?',
-                      style: TextStyle(
-                        fontSize: 16,
-                        color: Colors.black54, // Specify the text color here
+                      const SizedBox(height: 15),
+                      Text(
+                        'What city were you born in?',
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: Colors.black54, // Specify the text color here
+                        ),
                       ),
-                    ),
-                    TextField(
-                      controller: securityQuestion1,
-                    ),
-                  ],
+                      TextField(
+                        controller: securityQuestion1,
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Security Question 2',
-                      style: TextStyle(
-                        fontSize: 17,
-                        color: Colors.black87, // Specify the text color here
+                Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Security Question 2',
+                        style: TextStyle(
+                          fontSize: 17,
+                          color: Colors.black87, // Specify the text color here
+                        ),
                       ),
-                    ),
-                    const SizedBox(height: 15),
-                    Text(
-                      'In what city or town did your parents meet?',
-                      style: TextStyle(
-                        fontSize: 16,
-                        color: Colors.black54, // Specify the text color here
+                      const SizedBox(height: 15),
+                      Text(
+                        'In what city or town did your parents meet?',
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: Colors.black54, // Specify the text color here
+                        ),
                       ),
-                    ),
-                    TextField(
-                      controller: securityQuestion2,
-                    ),
-                  ],
+                      TextField(
+                        controller: securityQuestion2,
+                      ),
+                    ],
+                  ),
                 ),
-              ),
 
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: TextField(
-              controller: pass,
-              obscureText: !isPasswordVisible,
-              decoration: InputDecoration(
-                labelText: 'Password',
-                suffixIcon: GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      isPasswordVisible = !isPasswordVisible;
-                    });
-                  },
-                  child: Icon(
-                    isPasswordVisible
-                        ? Icons.visibility
-                        : Icons.visibility_off,
+                Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: TextField(
+                    controller: pass,
+                    obscureText: !isPasswordVisible,
+                    decoration: InputDecoration(
+                      labelText: 'Password',
+                      suffixIcon: GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            isPasswordVisible = !isPasswordVisible;
+                          });
+                        },
+                        child: Icon(
+                          isPasswordVisible
+                              ? Icons.visibility
+                              : Icons.visibility_off,
+                        ),
+                      ),
+                    ),
                   ),
                 ),
-              ),
-            ),
-          ),
                 Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: TextFormField(
@@ -388,13 +419,13 @@ class _RegisterState extends State<Register> {
                         ),
                       ),
                     ),
-                      validator: (value){
-                        if(value!.isEmpty || !RegExp(r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_-]).+$').hasMatch(value) || value.length<8){
-                          return 'Password must contains at lower case, upper case, number, special character and at least 8 character';
-                        }else{
-                          return null;
-                        }
-                      },
+                    validator: (value){
+                      if(value!.isEmpty || !RegExp(r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_-]).+$').hasMatch(value) || value.length<8){
+                        return 'Password must contains at lower case, upper case, number, special character and at least 8 character';
+                      }else{
+                        return null;
+                      }
+                    },
                   ),
                 ),
                 ElevatedButton(
@@ -405,7 +436,10 @@ class _RegisterState extends State<Register> {
                     }
                   },
                   style: ElevatedButton.styleFrom(
-                    fixedSize: Size(300, 50), // Adjust the width and height as needed
+                    fixedSize: Size(340, 45), // Adjust the width and height as needed
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(100),
+                    ),
                   ),
                   child: Text('Register', style: TextStyle(fontSize: 18)),
                 ),

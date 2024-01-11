@@ -226,7 +226,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     SizedBox(height: 5),
-                    Text('Activities : ',
+                    Text('Activities1234 : ',
                     style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,

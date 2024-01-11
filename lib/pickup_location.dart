@@ -74,7 +74,7 @@ class _pickupLocation extends State<pickupLocation> {
   Widget _buildListView() {
     return isLoading
         ? Center(
-      child: SpinKitThreeInOut(
+      child: SpinKitChasingDots(
         itemBuilder: (BuildContext context, int index) {
           return DecoratedBox(
             decoration: BoxDecoration(
@@ -269,7 +269,7 @@ class _pickupLocation extends State<pickupLocation> {
                     Expanded(
                       child: Center(
                         child: Text(
-                          'Pick Up Point',
+                          'Pick Up Location',
                           style: TextStyle(
                             fontSize: 30.0,
                             fontWeight: FontWeight.bold,
@@ -309,7 +309,7 @@ class _pickupLocation extends State<pickupLocation> {
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(30),
                   ),
-                  color: Colors.red[100],
+                  color: Colors.lightBlueAccent[100],
                   child: ListTile(
                     title: RichText(
                       text:TextSpan(
@@ -323,7 +323,7 @@ class _pickupLocation extends State<pickupLocation> {
                   ),
                 )
                     : Container(),
-                height: 70,
+                height: 100,
               ),
 
               Expanded(

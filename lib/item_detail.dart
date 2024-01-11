@@ -133,7 +133,7 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
         currentIndex: _currentIndex,
         items: [
           buildBottomNavBarItem("Extend Pick-up Due Date"),
-          buildBottomNavBarItem("Pick-up Detail"),
+          buildBottomNavBarItem("Pick-up Details"),
         ],
         onTap: (index) async {
           // Handle button taps here
