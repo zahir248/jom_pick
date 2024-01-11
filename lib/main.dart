@@ -35,8 +35,8 @@ class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
 
 
-  //static final String baseIpAddress = "192.168.0.123";
-  static final String baseIpAddress = "jompickService.000webhostapp.com";
+  static final String baseIpAddress = "192.168.0.123";
+  //static final String baseIpAddress = "jompickService.000webhostapp.com";
   static final String loginPath = "/jompick/login.php";
   static final String registerPath = "/jompick/register.php";
   static final String updateProfilePath = "/jompick/updateProfile.php";

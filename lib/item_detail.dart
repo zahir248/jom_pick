@@ -305,7 +305,7 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
 
       return response.body;
     } catch (e) {
-      print('Error updating confirmation date: $e');
+      print('Error updating due date: $e');
       return ''; // Return an empty string or handle the error as needed
     }
   }

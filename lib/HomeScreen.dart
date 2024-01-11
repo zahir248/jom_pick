@@ -226,7 +226,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     SizedBox(height: 5),
-                    Text('Activities1234 : ',
+                    Text('Activities : ',
                     style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
@@ -436,7 +436,7 @@ class _HomeScreenState extends State<HomeScreen> {
           width: screenWidth *0.8,
           margin: EdgeInsets.only(right: screenWidth*0.02),
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(screenWidth*0.04),
+            borderRadius: BorderRadius.circular(20),
             image: DecorationImage(fit: BoxFit.cover, image: AssetImage(image)),
           ),
           child: Container(
