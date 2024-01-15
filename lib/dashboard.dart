@@ -39,8 +39,8 @@ class _DashBoardState extends State<DashBoard> {
   Future<void> fetchItemData() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     jomPickId = prefs.getString('JomPick_ID');
-
     print(jomPickId);
+
     if (jomPickId != null) {
       try {
         final response = await http.get(
@@ -60,8 +60,6 @@ class _DashBoardState extends State<DashBoard> {
             });
           } catch (e) {
 
-            print(Uri.parse('http://${MyApp.baseIpAddress}${MyApp.itemHomePath}?JomPick_ID=\'${jomPickId}\''));
-            print('Server responded with "0 results". User has no item data.');
             setState(() {
               itemData = [];
               filteredItemData = [];
@@ -443,12 +441,11 @@ class _DashBoardState extends State<DashBoard> {
                     ),
                   ),
                 ),
-                Expanded(
-                  child: _buildListView(),
-                ), // Use the custom ListView
+                  _buildListView(),
+                // Use the custom ListView
               ],
             ),
-            if (isLoading)
+            if (isLoading )
               Positioned.fill(
                 child: Container(
                   child: Center(

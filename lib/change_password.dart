@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:jom_pick/setting.dart';
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -105,26 +106,52 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
         child: Column(
           children: [
             Padding(
-              padding: const EdgeInsets.fromLTRB(16.0, 50, 16.0, 0),
-              child: Container(
-                alignment: Alignment.centerLeft,
-                child: IconButton(
-                  icon: Icon(Icons.arrow_back, color: Colors.black),
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                ),
+              padding: const EdgeInsets.only(left: 16.0, right: 16.0, top: 50.0),
+              child: Row(
+                children: <Widget>[
+                  IconButton(
+                    icon: Icon(Icons.arrow_back, color: Colors.black),
+                    onPressed: () {
+                      // Navigate to the home page and replace the current page
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(builder: (context) => Setting()),
+                      );
+                    },
+                  ),
+                  Expanded(
+                    child: Center(
+                      child: Text(
+                        'Change Password',
+                        style: TextStyle(
+                          fontSize: 30.0,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
               ),
-            ),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(16.0, 1.0, 16.0, 10.0),
-              child: Text(
-                'Change Password',
-                style: TextStyle(
-                  fontSize: 30,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
+            //   padding: const EdgeInsets.fromLTRB(16.0, 50, 16.0, 0),
+            //   child: Container(
+            //     alignment: Alignment.centerLeft,
+            //     child: IconButton(
+            //       icon: Icon(Icons.arrow_back, color: Colors.black),
+            //       onPressed: () {
+            //         Navigator.pop(context);
+            //       },
+            //     ),
+            //   ),
+            // ),
+            // Padding(
+            //   padding: const EdgeInsets.fromLTRB(16.0, 1.0, 16.0, 10.0),
+            //   child: Text(
+            //     'Change Password',
+            //     style: TextStyle(
+            //       fontSize: 30,
+            //       fontWeight: FontWeight.bold,
+            //     ),
+            //   ),
             ),
             const SizedBox(height: 5),
             Padding(

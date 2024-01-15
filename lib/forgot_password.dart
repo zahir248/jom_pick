@@ -165,7 +165,14 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
             ),
             Container(
               child: ElevatedButton(
-                onPressed: checkAndSave,
+                onPressed: (){
+                  checkAndSave();
+                  Navigator.push(context,
+                    MaterialPageRoute(
+                        builder: (context) => MyApp(),
+                  ),
+                  );
+                },
                 style: ElevatedButton.styleFrom(
                   fixedSize: Size(340, 45),
                   shape: RoundedRectangleBorder(

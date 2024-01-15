@@ -15,13 +15,16 @@ class SecurityQuestions extends StatefulWidget {
 class _SecurityQuestionsState extends State<SecurityQuestions> {
   TextEditingController answer1 = TextEditingController();
   TextEditingController answer2 = TextEditingController();
+  TextEditingController email = TextEditingController();
+
 
   Future<void> verifySecurityQuestions() async {
     String answer1Text = answer1.text;
     String answer2Text = answer2.text;
+    String emailText = email.text;
 
     // Validate that both answers are not empty
-    if (answer1Text.isEmpty || answer2Text.isEmpty) {
+    if (answer1Text.isEmpty || answer2Text.isEmpty || emailText.isEmpty) {
       Fluttertoast.showToast(
         backgroundColor: Colors.red,
         textColor: Colors.white,
@@ -38,6 +41,7 @@ class _SecurityQuestionsState extends State<SecurityQuestions> {
       var response = await http.post(
         url,
         body: {
+          "emailAddress" : emailText.toString(),
           "answer1": answer1Text.toString(),
           "answer2": answer2Text.toString(),
         },
@@ -65,7 +69,59 @@ class _SecurityQuestionsState extends State<SecurityQuestions> {
       // Handle network or other errors
       print('Error: $error');
     }
+
   }
+
+
+  // Future<void> verifyEmail() async {
+  //   String emailText = email.text;
+  //
+  //   // Validate that both answers are not empty
+  //   if (emailText.isEmpty) {
+  //     Fluttertoast.showToast(
+  //       backgroundColor: Colors.red,
+  //       textColor: Colors.white,
+  //       msg: 'Please fill in your email',
+  //       toastLength: Toast.LENGTH_SHORT,
+  //     );
+  //     return;
+  //   }
+  //
+  //   // Add your server endpoint for verification
+  //   var url = Uri.http(MyApp.baseIpAddress, MyApp.verifyEmailPath, {'q': '{http}'});
+  //
+  //   try {
+  //     var response = await http.post(
+  //       url,
+  //       body: {
+  //         "email": emailText.toString(),
+  //       },
+  //     );
+  //
+  //     if (response.statusCode == 200) {
+  //       var data = json.decode(response.body);
+  //
+  //       if (data['verified']) {
+  //         // If answers are correct and linked, show a dialog or navigate to a new page
+  //         showUsernameDialog(data['username']);
+  //       } else {
+  //         Fluttertoast.showToast(
+  //           backgroundColor: Colors.red,
+  //           textColor: Colors.white,
+  //           msg: 'Incorrect answers. Please try again.',
+  //           toastLength: Toast.LENGTH_SHORT,
+  //         );
+  //       }
+  //     } else {
+  //       // Handle server error
+  //       print('Server error: ${response.statusCode}');
+  //     }
+  //   } catch (error) {
+  //     // Handle network or other errors
+  //     print('Error: $error');
+  //   }
+  //
+  // }
 
 
   void showUsernameDialog(String username) {
@@ -108,28 +164,30 @@ class _SecurityQuestionsState extends State<SecurityQuestions> {
         child: Column(
           children: [
             Padding(
-              padding: const EdgeInsets.fromLTRB(16.0, 50, 16.0, 0),
-              child: Container(
-                alignment: Alignment.centerLeft,
-                child: IconButton(
-                  icon: Icon(Icons.arrow_back, color: Colors.black),
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                ),
+              padding: const EdgeInsets.only(left: 16.0, right: 16.0, top: 50.0),
+              child: Row(
+                children: <Widget>[
+                  IconButton(
+                    icon: Icon(Icons.arrow_back, color: Colors.black),
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                  ),
+                  Expanded(
+                    child: Center(
+                      child: Text(
+                        'Security Question',
+                        style: TextStyle(
+                          fontSize: 30.0,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(16.0, 1.0, 16.0, 10.0),
-              child: Text(
-                'Security Questions',
-                style: TextStyle(
-                  fontSize: 30,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
-            const SizedBox(height: 10),
+            const SizedBox(height: 20),
             Padding(
               padding: const EdgeInsets.all(16.0),
               child: Column(
@@ -141,7 +199,44 @@ class _SecurityQuestionsState extends State<SecurityQuestions> {
                       fontSize: 17,
                     ),
                   ),
-                  const SizedBox(height: 50),
+                  const SizedBox(height: 30),
+                  Text(
+                    'Email ',
+                    style: TextStyle(
+                      fontSize: 17,
+                      color: Colors.black87, // Specify the text color here
+                    ),
+                  ),
+                  TextField(
+                    controller: email,
+                  ),
+                  // Row(
+                  //   children: [
+                  //     Expanded(
+                  //       child: TextField(
+                  //         controller: email,
+                  //         decoration: InputDecoration(
+                  //           hintText: 'Enter your email',
+                  //         ),
+                  //       ),
+                  //     ),
+                  //     InkWell(
+                  //       onTap: () {
+                  //         //verifyEmail();
+                  //       },
+                  //       // Customize the color as needed
+                  //         child: Text(
+                  //           'Verify Email ',
+                  //           style: TextStyle(
+                  //             color: Colors.black,
+                  //             fontWeight: FontWeight.bold,
+                  //           ),
+                  //         ),
+                  //
+                  //     ),
+                  //   ],
+                  // ),
+                  SizedBox(height: 20,),
                   Text(
                     'Question 1',
                     style: TextStyle(
@@ -163,7 +258,7 @@ class _SecurityQuestionsState extends State<SecurityQuestions> {
                 ],
               ),
             ),
-            const SizedBox(height: 30),
+            //const SizedBox(height: 30),
             Padding(
               padding: const EdgeInsets.all(16.0),
               child: Column(
@@ -190,6 +285,7 @@ class _SecurityQuestionsState extends State<SecurityQuestions> {
                 ],
               ),
             ),
+            SizedBox(height: 10,),
             ElevatedButton(
               onPressed: () {
                 verifySecurityQuestions();

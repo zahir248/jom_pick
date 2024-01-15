@@ -219,6 +219,7 @@ class _HistoryState extends State<History> {
                                 style: TextStyle(
                                   color: Colors.white,
                                   fontSize: 12,
+                                  fontWeight: FontWeight.bold,
                                 ),
                               ),
                             ],
@@ -271,6 +272,7 @@ class _HistoryState extends State<History> {
                                 filteredItemData[index].status,
                                 filteredItemData[index].dueDate,
                                 filteredItemData[index].imageProofData,
+                                filteredItemData[index].pickUpDate,
                               );
                             },
                             style: ElevatedButton.styleFrom(
@@ -294,7 +296,7 @@ class _HistoryState extends State<History> {
 
   }
 
-  void _detailsItem(int itemId, String itemName, String trackingNumber, String itemType, Uint8List imageData, String status, DateTime dueDate, Uint8List imageProofData ) {
+  void _detailsItem(int itemId, String itemName, String trackingNumber, String itemType, Uint8List imageData, String status, DateTime dueDate, Uint8List imageProofData, DateTime pickUpDate ) {
     // Navigate to the item detail page and pass the item_id
     Navigator.push(
       context,
@@ -308,6 +310,7 @@ class _HistoryState extends State<History> {
           status: status,
           dueDate: dueDate,
           imageProofData: imageProofData,
+          pickUpDate : pickUpDate,
         ),
       ),
     );

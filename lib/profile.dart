@@ -327,29 +327,31 @@ class _ProfileState extends State<Profile> {
           child: Column(
             children: [
               Padding(
-                padding: const EdgeInsets.fromLTRB(16.0, 50, 16.0, 0),
-                child: Container(
-                  alignment: Alignment.centerLeft,
-                  child: IconButton(
-                    icon: Icon(Icons.arrow_back, color: Colors.black),
-                    onPressed: () {
-                      // Navigate to the home page and replace the current page
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(builder: (context) => Setting()),
-                      );
-                    },
-                  ),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.fromLTRB(16.0, 0, 16.0, 10.0),
-                child: Text(
-                  'Profile',
-                  style: TextStyle(
-                    fontSize: 30, // Adjust the font size as needed
-                    fontWeight: FontWeight.bold,
-                  ),
+                padding: const EdgeInsets.only(left: 16.0, right: 16.0, top: 50.0),
+                child: Row(
+                  children: <Widget>[
+                    IconButton(
+                      icon: Icon(Icons.arrow_back, color: Colors.black),
+                      onPressed: () {
+                        // Navigate to the home page and replace the current page
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(builder: (context) => Setting()),
+                        );
+                      },
+                    ),
+                    Expanded(
+                      child: Center(
+                        child: Text(
+                          'Profile',
+                          style: TextStyle(
+                            fontSize: 30.0,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
               SizedBox(height: 30),

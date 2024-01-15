@@ -199,6 +199,7 @@ class _PenaltyState extends State<Penalty> {
                                 style: TextStyle(
                                   color: Colors.white,
                                   fontSize: 12,
+                                  fontWeight: FontWeight.bold,
                                 ),
                               ),
                             ],
@@ -247,11 +248,11 @@ class _PenaltyState extends State<Penalty> {
                                   filteredItemData[index].itemName,
                                   filteredItemData[index].itemType,
                                   filteredItemData[index].trackingNumber,
-                                  filteredItemData[index].dueDate,
                                   filteredItemData[index].dueDateStatus,
                                   filteredItemData[index].paymentStatus,
                                   filteredItemData[index].paymentAmount,
                                   filteredItemData[index].pickUpLocation,
+                                  filteredItemData[index].dueDate,
                                  filteredItemData[index].imageData
                               );
                             },
@@ -366,11 +367,11 @@ class _PenaltyState extends State<Penalty> {
       String itemName,
       String itemType,
       String trackingNumber,
-      String dueDate,
       String dueDateStatus,
       String paymentStatus,
       String paymentAmount,
       String pickUpLocation,
+      DateTime dueDate,
       Uint8List imageData
       ){
 
@@ -382,11 +383,11 @@ class _PenaltyState extends State<Penalty> {
           itemName: itemName,
           itemType: itemType,
           trackingNumber : trackingNumber,
-          dueDate : dueDate,
           dueDateStatus: dueDateStatus,
           paymentStatus: paymentStatus,
           paymentAmount: paymentAmount,
           pickUpLocation: pickUpLocation,
+          dueDate : dueDate,
           imageData: imageData,
         ),
       ),

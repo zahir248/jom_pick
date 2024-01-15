@@ -11,6 +11,7 @@ class ItemDetailPage extends StatefulWidget {
   final Uint8List imageData;
   final DateTime dueDate;
   final Uint8List imageProofData;
+  final DateTime pickUpDate;
 
   ItemDetailPage({
     required this.itemId,
@@ -21,6 +22,7 @@ class ItemDetailPage extends StatefulWidget {
     required this.status,
     required this.dueDate,
     required this.imageProofData,
+    required this.pickUpDate,
   });
 
   @override
@@ -55,7 +57,7 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
                         padding: const EdgeInsets.fromLTRB(
                             16.0, 50.0, 16.0, 10.0),
                         child: Text(
-                          'Item Detail',
+                          'History Detail',
                           style: TextStyle(
                             fontSize: 30,
                             fontWeight: FontWeight.bold,
@@ -97,18 +99,18 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
                   Divider(),
                   SizedBox(height: 20),
                   buildDetailItem(
-                      "Pick-up Date",
+                      "Pick Up Date",
                       DateFormat('d MMMM yyyy')
-                          .format(widget.dueDate)),
+                          .format(widget.pickUpDate)),
                   Divider(),
                   SizedBox(height: 20),
-                  buildDetailItem("Pick-up Proof", ""),
+                  buildDetailItem("Pick Up Proof", ""),
                   Center(
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(15.0),
                       child: Container(
                         width: 350,
-                        height: 200,
+                        height: 350,
                         child: Image.memory(
                           widget.imageProofData,
                           fit: BoxFit.cover,

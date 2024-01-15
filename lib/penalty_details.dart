@@ -1,18 +1,14 @@
-import 'dart:convert';
-import 'dart:typed_data';
 
+import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:jom_pick/models/penalty_details_model.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:http/http.dart' as http;
 
 class penaltyDetailPage extends StatefulWidget {
   final int itemId;
   final String itemName;
   final String itemType;
   final String trackingNumber;
-  final String dueDate;
+  final DateTime dueDate;
   final String dueDateStatus;
   Uint8List imageData;
   final String paymentStatus;
@@ -86,6 +82,9 @@ class penaltyDetailPageState extends State<penaltyDetailPage> {
                   buildDetailItem("Type", widget.itemType),
                   Divider(),
                   SizedBox(height: 20),
+                  buildDetailItem("Pick Up Location", widget.pickUpLocation),
+                  Divider(),
+                  SizedBox(height: 20),
                   buildDetailItem("Picture", ""),
                   Center(
                     child: ClipRRect(
@@ -101,15 +100,14 @@ class penaltyDetailPageState extends State<penaltyDetailPage> {
                     ),
                   ),
                   Divider(),
+                  // SizedBox(height: 20),
+                  // buildDetailItem("Status", widget.dueDateStatus),
+                  // Divider(),
                   SizedBox(height: 20),
-                  buildDetailItem("Status", widget.dueDateStatus),
-                  Divider(),
-                  SizedBox(height: 20),
-                  // buildDetailItem(
-                  //     "Due Date",
-                  //     DateFormat('d MMMM yyyy')
-                  //         .format(widget.dueDate)),
-                  buildDetailItem("Due Date", widget.dueDate),
+                  buildDetailItem(
+                    "Due Date",
+                    DateFormat('d MMMM yyyy').format(widget.dueDate),
+                  ),
                   Divider(),
                   SizedBox(height: 20),
                   buildDetailItem("Payment Amount (RM)", widget.paymentAmount),

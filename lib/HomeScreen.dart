@@ -233,6 +233,41 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                     ),
                     SizedBox(height: 10),
+                    // Row(
+                    //   children: [
+                    //     Container(
+                    //       decoration: BoxDecoration(
+                    //         //color: Color(color),
+                    //         borderRadius: BorderRadius.circular(10),
+                    //       ),
+                    //       child: Column(
+                    //         mainAxisAlignment: MainAxisAlignment.center,
+                    //         children: <Widget>[
+                    //           Image.asset(
+                    //             'assets/parcel_icon.jpg', // Provide the correct image path
+                    //             width: MediaQuery.of(context).size.width * 0.3,
+                    //           ),
+                    //         ],
+                    //       ),
+                    //     ),
+                    //     SizedBox(width: 20,),
+                    //     Container(
+                    //       decoration: BoxDecoration(
+                    //         //color: Color(color),
+                    //         borderRadius: BorderRadius.circular(10),
+                    //       ),
+                    //       child: Column(
+                    //         mainAxisAlignment: MainAxisAlignment.center,
+                    //         children: <Widget>[
+                    //           Image.asset(
+                    //             'assets/map_icon2.jpg', // Provide the correct image path
+                    //             width: MediaQuery.of(context).size.width * 0.3,
+                    //           ),
+                    //         ],
+                    //       ),
+                    //     ),
+                    //   ],
+                    // ),
                     Container(
                       height: 220,
                       child: ListView(
@@ -443,8 +478,8 @@ class _HomeScreenState extends State<HomeScreen> {
             padding: EdgeInsets.all(screenWidth*0.03), // Add padding to create space for text
             decoration: BoxDecoration(
               borderRadius: BorderRadius.only(
-                bottomLeft: Radius.circular(screenWidth*0.04),
-                bottomRight: Radius.circular(screenWidth*0.04),
+                bottomLeft: Radius.circular(20),
+                bottomRight: Radius.circular(20),
               ),
               gradient: LinearGradient(
                 begin: Alignment.bottomCenter,

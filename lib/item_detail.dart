@@ -14,11 +14,8 @@ class ItemDetailPage extends StatefulWidget {
   final String status;
   final DateTime dueDate;
   final Uint8List imageData;
-  //final DateTime confirmationDate;
   final DateTime pickUpDate;
   final String address;
-  //final DateTime pickUpDate;
-
   final String fullName;
   final String pickupType;
   final int confirmationId;
@@ -31,10 +28,8 @@ class ItemDetailPage extends StatefulWidget {
     required this.imageData,
     required this.status,
     required this.dueDate,
-    //required this.confirmationDate,
     required this.pickUpDate,
     required this.address,
-    //required this.pickUpDate,
     required this.fullName,
     required this.pickupType,
     required this.confirmationId,
@@ -95,7 +90,7 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
                   buildDetailItem("Type", widget.itemType),
                   Divider(),
                   SizedBox(height: 20),
-                  buildDetailItem("Pick-up Location", widget.address),
+                  buildDetailItem("Pick Up Location", widget.address),
                   Divider(),
                   SizedBox(height: 20),
                   buildDetailItem("Picture", ""),
@@ -118,7 +113,7 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
                   Divider(),
                   SizedBox(height: 20),
                   buildDetailItem(
-                      "Pick-up Due Date",
+                      "Due Date",
                       DateFormat('d MMMM yyyy')
                           .format(widget.dueDate)),
                   Divider(),
@@ -132,7 +127,7 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _currentIndex,
         items: [
-          buildBottomNavBarItem("Extend Pick-up Due Date"),
+          buildBottomNavBarItem("Extend Pick Up Due Date"),
           buildBottomNavBarItem("Pick-up Details"),
         ],
         onTap: (index) async {
@@ -153,7 +148,7 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
                     pickupType: widget.pickupType,
                     confirmationId: widget.confirmationId,
                     pickUpDate: widget.pickUpDate,
-
+                    status : widget.status,
                 ),
               ),
             );

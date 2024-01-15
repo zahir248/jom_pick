@@ -13,7 +13,7 @@ class PenaltyDetails{
     //final DateTime confirmationDate;
     final String dueDateStatus;
     final String pickUpLocation;
-    final String dueDate;
+    final DateTime dueDate;
     final String paymentStatus;
     final String paymentAmount;
     final Uint8List imageData;
@@ -33,7 +33,8 @@ class PenaltyDetails{
     required this.pickUpLocation,
     required this.dueDate,
     required this.paymentStatus,
-    required this.paymentAmount, required this.imageData,
+    required this.paymentAmount,
+        required this.imageData,
 });
 
 factory PenaltyDetails.fromJson(Map<String, dynamic> json){
@@ -50,7 +51,7 @@ factory PenaltyDetails.fromJson(Map<String, dynamic> json){
       //confirmationDate: DateTime.parse(json['confirmationDate'] ?? ''),
       dueDateStatus: json['type'] ?? '',
       pickUpLocation: json['address'] ?? '',
-      dueDate: json['dueDate'] ?? '',
+      dueDate: DateTime.parse(json['dueDate'] ?? ''),
       paymentStatus: json['paymentStatus'] ?? '',
       paymentAmount: json['paymentAmount'] ??'',
       imageData: decodedImageData

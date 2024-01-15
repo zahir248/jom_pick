@@ -19,6 +19,7 @@ class PickupDetailPage extends StatefulWidget {
   final String fullName;
   final String pickupType;
   final int confirmationId;
+  final String status;
 
   // In the constructor, require the address property.
 
@@ -32,6 +33,7 @@ class PickupDetailPage extends StatefulWidget {
     required this.fullName,
     required this.pickupType,
     required this.confirmationId,
+    required this.status,
   }) : super(key: key);
 
   @override
@@ -490,6 +492,73 @@ class _PickupDetailPageState extends State<PickupDetailPage> {
   }
 
 
+  void _showCancelPickNowMessage() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return Dialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16.0),
+          ),
+          child: SizedBox(
+            width: 420, // Adjust the width as needed
+            child: Container(
+              padding: EdgeInsets.all(16.0),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  SizedBox(height: 16),
+                  Text(
+                    'Do you confirm to cancel your pick up process',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  SizedBox(height: 16),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      ElevatedButton(
+                        onPressed: () async {
+                          await _sendPickNowStatusDataToServer(widget.itemId.toString());
+                          Navigator.pop(context); // Close the dialog
+                        },
+                        style: ElevatedButton.styleFrom(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(100),
+                          ),
+                          fixedSize: Size(100, 30),
+                        ),
+                        child: Text('Yes'),
+                      ),
+                      SizedBox(width: 15,),
+                      ElevatedButton(
+                        onPressed: () {
+                          Navigator.pop(context); // Close the dialog
+                        },
+                        style: ElevatedButton.styleFrom(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(100),
+                          ),
+                          fixedSize: Size(100, 30),
+                        ),
+                        child: Text('No'),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+
+
+
   Future<void> _sendDataToServer(String itemId, String? duration, String formattedUserLocation, String pickupType) async {
     try {
       // Print the values before sending
@@ -524,6 +593,36 @@ class _PickupDetailPageState extends State<PickupDetailPage> {
     }
   }
 
+  Future<void> _sendPickNowStatusDataToServer(String itemId) async {
+    try {
+      // Print the values before sending
+      //print('Item ID: $itemId, Pick-up Duration: $duration, User Location: $formattedUserLocation, Pickup Type: $pickupType');
+
+      final url = Uri(
+        scheme: 'http',
+        host: MyApp.baseIpAddress,
+        path: MyApp.updatePickNowStatusPath,
+      );
+
+      // Send a POST request to the server
+      final response = await http.post(
+        url,
+        body: {
+          'itemId': itemId,
+        },
+      );
+
+      if (response.statusCode == 200) {
+        // Handle successful response (if needed)
+        //print('Data sent successfully');
+      } else {
+        // Handle errors or display a message to the user
+        print('Failed to send data. Status code: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Error sending data to the server: $e');
+    }
+  }
 
   Future<String> updateConfirmationStatusOnServer(int itemId, String status) async {
     final url = Uri(
@@ -1028,30 +1127,51 @@ void _unavailableDateMessage(){
                                 ),
                               ),
                               SizedBox(height: 8), // Add some space between notes and button
-                              ElevatedButton(
-                                onPressed: () {
-                                  // Get the current day of the week (1 for Monday, 7 for Sunday)
-                                  int currentDayOfWeek = DateTime.now().weekday;
+                              Row(
+                                children: [
+                                  ElevatedButton(
+                                    onPressed: () {
+                                      // Get the current day of the week (1 for Monday, 7 for Sunday)
+                                      int currentDayOfWeek = DateTime.now().weekday;
 
-                                  // Check if it's a weekend (Saturday or Sunday)
-                                  bool isWeekend = currentDayOfWeek == DateTime.saturday || currentDayOfWeek == DateTime.sunday;
+                                      // Check if it's a weekend (Saturday or Sunday)
+                                      bool isWeekend = currentDayOfWeek == DateTime.saturday || currentDayOfWeek == DateTime.sunday;
 
-                                  if (isWeekend) {
-                                    // Show a message that the service is unavailable on weekends
-                                    _showUnavailableMessage();
-                                  } else {
-                                    // Execute the _showPickUpForm() function
-                                    _showPickupForm();
-                                  }
-                                },
-                                style: ElevatedButton.styleFrom(
-                                  fixedSize: Size(100, 30),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(100),
+                                      if (isWeekend) {
+                                        // Show a message that the service is unavailable on weekends
+                                        _showUnavailableMessage();
+                                      } else {
+                                        // Execute the _showPickUpForm() function
+                                        _showPickupForm();
+                                      }
+                                    },
+                                    style: ElevatedButton.styleFrom(
+                                      fixedSize: Size(100, 30),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(100),
+                                      ),
+                                    ),
+                                    child: Text('Pick Now'),
                                   ),
-                                ),
-                                child: Text('Pick Now'),
-                              )
+                                  SizedBox(width: 20,),
+                                  ElevatedButton(
+                                    onPressed: widget.status == 'Pending' ? null : () {
+                                      _showCancelPickNowMessage();
+                                    },
+                                    style: ElevatedButton.styleFrom(
+                                      fixedSize: Size(100, 30),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(100),
+                                      ),
+                                      backgroundColor: widget.status == 'Pending' ? Colors.grey : Colors.red,
+                                    ),
+                                    child: Text('Cancel'),
+                                  )
+
+
+                                ],
+                              ),
+
                             ],
                           ),
                           SizedBox(height: 50),

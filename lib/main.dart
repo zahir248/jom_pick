@@ -35,7 +35,7 @@ class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
 
 
-  static final String baseIpAddress = "192.168.0.123";
+  static final String baseIpAddress = "10.131.76.223";
   //static final String baseIpAddress = "jompickService.000webhostapp.com";
   static final String loginPath = "/jompick/login.php";
   static final String registerPath = "/jompick/register.php";
@@ -56,6 +56,7 @@ class MyApp extends StatelessWidget {
   static final String user = "/jompick/userDetail.php";
   static final String latestRegisteredItem = "/jompick/latestRegisteredItem.php";
   static final String updateConfirmationStatusAdminPath = "/jompick/updateConfirmationStatusAdmin.php";
+  static final String updatePickNowStatusPath = "/jompick/updatePickNowStatus.php";
 
 
   @override
@@ -83,7 +84,7 @@ class _MyHomePageState extends State<MyHomePage> {
   TextEditingController user = TextEditingController();
   TextEditingController pass = TextEditingController();
 
-  var url = Uri.parse("https://onesignal.com/api/v1/notifications");
+  //var url = Uri.parse("https://onesignal.com/api/v1/notifications");
 
 
   Future login() async {
@@ -184,6 +185,8 @@ class _MyHomePageState extends State<MyHomePage> {
               } else {
                 print('rolename not found in response');
               }
+
+
               //
               // Navigator.push(
               //   context,
