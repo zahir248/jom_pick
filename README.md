@@ -34,4 +34,10 @@ The JomPick System is designed to significantly improve item pick up management 
 - Admin: To take care of the system.
 - Public: Public can also use this app if they drop their item at the University's address.
 
+5. Database
+   - Entity Relationship Diagram (ERD)
+
+     ![image](https://github.com/zahir248/jom_pick/assets/129832790/9ad359a3-3db7-42a5-ae9d-508d9d75e599)
+
+
 
