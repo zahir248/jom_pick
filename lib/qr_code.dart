@@ -23,7 +23,7 @@ class QrCode extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.fromLTRB(16.0, 20.0, 16.0, 50.0),
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 IconButton(
                   icon: Icon(Icons.arrow_back, color: Colors.black),
@@ -32,14 +32,19 @@ class QrCode extends StatelessWidget {
                   },
                 ),
                 SizedBox(width: 70.0),
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(
-                      5.0, 70.0, 16.0, 50.0),
-                  child: Text(
-                    'QR Code',
-                    style: TextStyle(
-                      fontSize: 30,
-                      fontWeight: FontWeight.bold,
+                Expanded(
+                  child: Align(
+                    alignment: Alignment.center,
+                    child: Padding(
+                      padding: const EdgeInsets.fromLTRB(
+                          10.0, 70.0, 16.0, 50.0),
+                      child: Text(
+                        'QR Code',
+                        style: TextStyle(
+                          fontSize: 30,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
                     ),
                   ),
                 ),

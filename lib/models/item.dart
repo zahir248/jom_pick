@@ -13,7 +13,6 @@ class Item {
   final Uint8List imageData; // Use Uint8List for binary image data
   final String status;
   final DateTime dueDate;
-  //final DateTime confirmationDate;
   final DateTime pickUpDate;
   final String penaltyStatus;
   final String fullName;
@@ -33,7 +32,6 @@ class Item {
     required this.imageData,
     required this.status,
     required this.dueDate,
-    //required this.confirmationDate,
     required this.pickUpDate,
     required this.penaltyStatus,
     required this.fullName,

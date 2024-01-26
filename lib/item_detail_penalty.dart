@@ -81,7 +81,7 @@ class _ItemDetailPenaltyPageState extends State<ItemDetailPenaltyPage> {
                       borderRadius: BorderRadius.circular(15.0),
                       child: Container(
                         width: 350,
-                        height: 200,
+                        height: 320,
                         child: Image.memory(
                           widget.imageData,
                           fit: BoxFit.cover,

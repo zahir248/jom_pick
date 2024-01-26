@@ -7,6 +7,7 @@ class penaltyDetailPage extends StatefulWidget {
   final int itemId;
   final String itemName;
   final String itemType;
+  final String confirmationStatus;
   final String trackingNumber;
   final DateTime dueDate;
   final String dueDateStatus;
@@ -20,6 +21,7 @@ class penaltyDetailPage extends StatefulWidget {
     required this.itemName,
     required this.trackingNumber,
     required this.itemType,
+    required this.confirmationStatus,
     required this.imageData,
     required this.dueDate,
     required this.dueDateStatus,

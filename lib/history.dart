@@ -169,7 +169,7 @@ class _HistoryState extends State<History> {
                               fit: BoxFit.cover,
                               //image: AssetImage('assets/jompick.jpg'), // adjust the path accordingly
                               image: MemoryImage(
-                                  filteredItemData[index].imageData
+                                  filterCategory[index].imageData
                               ),
                             ),
                           ),
@@ -198,7 +198,7 @@ class _HistoryState extends State<History> {
                           ],
                         ),
                         subtitle: Text(
-                          'Picked at ${filteredItemData[index].pickUpLocation}',
+                          'Picked at ${filterCategory[index].pickUpLocation}',
                           style: TextStyle(
                             fontSize: 14,
                           ),
@@ -264,15 +264,16 @@ class _HistoryState extends State<History> {
                           ElevatedButton(
                             onPressed: () {
                               _detailsItem(
-                                filteredItemData[index].itemId,
-                                filteredItemData[index].itemName,
-                                filteredItemData[index].trackingNumber,
-                                filteredItemData[index].itemType,
-                                filteredItemData[index].imageData,
-                                filteredItemData[index].status,
-                                filteredItemData[index].dueDate,
-                                filteredItemData[index].imageProofData,
-                                filteredItemData[index].pickUpDate,
+                                filterCategory[index].itemId,
+                                filterCategory[index].itemName,
+                                filterCategory[index].trackingNumber,
+                                filterCategory[index].itemType,
+                                filterCategory[index].imageData,
+                                filterCategory[index].status,
+                                filterCategory[index].dueDate,
+                                filterCategory[index].imageProofData,
+                                filterCategory[index].pickUpDate,
+                                filterCategory[index].address,
                               );
                             },
                             style: ElevatedButton.styleFrom(
@@ -296,7 +297,7 @@ class _HistoryState extends State<History> {
 
   }
 
-  void _detailsItem(int itemId, String itemName, String trackingNumber, String itemType, Uint8List imageData, String status, DateTime dueDate, Uint8List imageProofData, DateTime pickUpDate ) {
+  void _detailsItem(int itemId, String itemName, String trackingNumber, String itemType, Uint8List imageData, String status, DateTime dueDate, Uint8List imageProofData, DateTime pickUpDate, String address, ) {
     // Navigate to the item detail page and pass the item_id
     Navigator.push(
       context,
@@ -311,6 +312,7 @@ class _HistoryState extends State<History> {
           dueDate: dueDate,
           imageProofData: imageProofData,
           pickUpDate : pickUpDate,
+          address : address,
         ),
       ),
     );

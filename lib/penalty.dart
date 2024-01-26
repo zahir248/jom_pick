@@ -99,6 +99,12 @@ class _PenaltyState extends State<Penalty> {
           selectedCategories.contains(PenaltyDetails.paymentStatus);
     }).toList();
 
+    // final filterCategory = filteredItemData.where((PenaltyDetails) {
+    //   return (selectedCategories.isEmpty ||
+    //       selectedCategories.contains(PenaltyDetails.paymentStatus)) &&
+    //   !(PenaltyDetails.confirmationStatus == 'Disposed');
+    // }).toList();
+
 
     return isLoading
         ? Center(
@@ -149,7 +155,7 @@ class _PenaltyState extends State<Penalty> {
                             image: DecorationImage(
                               fit: BoxFit.cover,
                               image: MemoryImage(
-                                  filteredItemData[index].imageData
+                                  filterCategory[index].imageData
                               ),
                             ),
                           ),
@@ -178,7 +184,7 @@ class _PenaltyState extends State<Penalty> {
                           ],
                         ),
                         subtitle: Text(
-                          'Arrived at ${filteredItemData[index].pickUpLocationName}',
+                          'Arrived at ${filterCategory[index].pickUpLocationName}',
                           style: TextStyle(
                             fontSize: 14,
                           ),
@@ -244,16 +250,17 @@ class _PenaltyState extends State<Penalty> {
                           ElevatedButton(
                             onPressed: () {
                               _detailsPenaltyItem(
-                                  filteredItemData[index].itemId,
-                                  filteredItemData[index].itemName,
-                                  filteredItemData[index].itemType,
-                                  filteredItemData[index].trackingNumber,
-                                  filteredItemData[index].dueDateStatus,
-                                  filteredItemData[index].paymentStatus,
-                                  filteredItemData[index].paymentAmount,
-                                  filteredItemData[index].pickUpLocation,
-                                  filteredItemData[index].dueDate,
-                                 filteredItemData[index].imageData
+                                  filterCategory[index].itemId,
+                                  filterCategory[index].itemName,
+                                  filterCategory[index].itemType,
+                                  filterCategory[index].confirmationStatus,
+                                  filterCategory[index].trackingNumber,
+                                  filterCategory[index].dueDateStatus,
+                                  filterCategory[index].paymentStatus,
+                                  filterCategory[index].paymentAmount,
+                                  filterCategory[index].pickUpLocation,
+                                  filterCategory[index].dueDate,
+                                  filterCategory[index].imageData
                               );
                             },
                             style: ElevatedButton.styleFrom(
@@ -366,6 +373,7 @@ class _PenaltyState extends State<Penalty> {
       int itemId,
       String itemName,
       String itemType,
+      String confirmationStatus,
       String trackingNumber,
       String dueDateStatus,
       String paymentStatus,
@@ -382,6 +390,7 @@ class _PenaltyState extends State<Penalty> {
           itemId: itemId,
           itemName: itemName,
           itemType: itemType,
+          confirmationStatus: confirmationStatus,
           trackingNumber : trackingNumber,
           dueDateStatus: dueDateStatus,
           paymentStatus: paymentStatus,

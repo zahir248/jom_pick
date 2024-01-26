@@ -99,7 +99,7 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
                       borderRadius: BorderRadius.circular(15.0),
                       child: Container(
                         width: 350,
-                        height: 200,
+                        height: 320,
                         child: Image.memory(
                           widget.imageData,
                           fit: BoxFit.cover,
@@ -128,7 +128,7 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
         currentIndex: _currentIndex,
         items: [
           buildBottomNavBarItem("Extend Pick Up Due Date"),
-          buildBottomNavBarItem("Pick-up Details"),
+          buildBottomNavBarItem("Pick Up Details"),
         ],
         onTap: (index) async {
           // Handle button taps here
@@ -200,7 +200,7 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
                 ),
                 SizedBox(height: 16),
                 Text(
-                  '*Pick-up deadline will be extended to 3 days from the current date. Beyond this, a RM5 fee applies. If not collected within 7 days after the date, the item may be disposed of by management.',
+                  '*Pick-up deadline will be extended to 3 days from the current date. Beyond this, a RM 1.00/day fee will be charged. If not collected within 7 days after the date, the item may be disposed of by management.',
                   style: TextStyle(
                     fontSize: 16,
                   ),

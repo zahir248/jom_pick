@@ -799,7 +799,7 @@ void _unavailableDateMessage(){
                       padding: const EdgeInsets.fromLTRB(
                           16.0, 50.0, 16.0, 10.0),
                       child: Text(
-                        'Pick-Up Details',
+                        'Pick Up Details',
                         style: TextStyle(
                           fontSize: 30,
                           fontWeight: FontWeight.bold,

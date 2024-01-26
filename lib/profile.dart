@@ -161,6 +161,7 @@ class _ProfileState extends State<Profile> {
       request.fields['phoneNumber'] = phoneNumber;
       request.fields['icNumber'] = icNumber;
       request.fields['emailAddress'] = emailAddress;
+      request.fields['imagePath'] = imagePath;
       request.fields['JomPick_ID'] = jomPickId;
 
       // Send the request
@@ -190,6 +191,7 @@ class _ProfileState extends State<Profile> {
             phoneNumber = responseData['phoneNumber'];
             icNumber = responseData['icNumber'];
             emailAddress = responseData['emailAddress'];
+            imagePath = responseData['imagePath'];
             jomPickId = responseData['JomPick_ID'];
           });
 

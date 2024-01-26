@@ -7,16 +7,12 @@ import 'package:jom_pick/history.dart';
 import 'package:jom_pick/models/item.dart';
 import 'package:jom_pick/penalty.dart';
 import 'package:jom_pick/pickup_location.dart';
-import 'package:jom_pick/profile.dart';
 import 'package:jom_pick/setting.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
-import 'PickUpLocationMap.dart';
 import 'main.dart';
 import 'models/latestRegisteredItem.dart';
-import 'models/notification_model.dart';
 import 'models/user.dart';
-import 'package:onesignal_flutter/onesignal_flutter.dart';
 
 
 class HomeScreen extends StatefulWidget {

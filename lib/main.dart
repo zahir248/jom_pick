@@ -34,8 +34,7 @@ void main() {
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
 
-
-  static final String baseIpAddress = "10.131.76.223";
+  static final String baseIpAddress = "192.168.0.123";
   //static final String baseIpAddress = "jompickService.000webhostapp.com";
   static final String loginPath = "/jompick/login.php";
   static final String registerPath = "/jompick/register.php";
@@ -174,7 +173,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     MaterialPageRoute(
                       builder: (context) => AdminPage(username: user.text), // Pass the username here
                     ),                  );
-                } else if (rolename == 'student' || rolename == 'public') {
+                } else if (rolename == 'student' || rolename == 'public' || rolename == 'staff') {
                   Navigator.push(
                     context,
                     MaterialPageRoute(builder: (context) => HomeScreen()),
@@ -219,56 +218,6 @@ class _MyHomePageState extends State<MyHomePage> {
     }
   }
 
-  // Future<String?> getOneSignalPlayerId() async {
-  //   var status = await OneSignal.shared.getPermissionSubscriptionState();
-  //   return status.subscriptionStatus.userId;
-  // }
-
-  // Future sendNotification(String playerID) async {
-  //
-  //   if (playerID == null || playerID.isEmpty) {
-  //     print("Invalid playerID");
-  //     return; // Exit the function if playerID is invalid
-  //   }
-  //
-  //   SharedPreferences prefs = await SharedPreferences.getInstance();
-  //   String userId = prefs.getInt('user_id').toString();
-  //
-  //   var url = Uri.parse("https://onesignal.com/api/v1/notifications");
-  //
-  //   var headers = {
-  //     "Content-Type": "application/json",
-  //     "Authorization": "Basic MGE5N2Q4YWMtMjQ5Mi00ODNlLWIyMTUtZWU5ZjFlZDA5MGE1",
-  //   };
-  //
-  //   var body = jsonEncode({
-  //     "app_id": "b470c9ed-9cfe-4ae2-8aef-63d312e6bbe8",
-  //     "include_player_ids": [playerID],
-  //     "data": {"foo": "bar"},
-  //     "contents": {"en": "Test notification to $userId"}
-  //   });
-  //
-  //   var response = await http.post(
-  //       url,
-  //       headers: headers,
-  //       body: body
-  //     );
-  //
-  //   if (response.statusCode == 200) {
-  //     // Handle successful notification sent
-  //     print("Notification sent successfully");
-  //   } else {
-  //     // Handle the case of a failed HTTP request
-  //     print('HTTP request failed with status: ${response.statusCode}');
-  //   }
-  // }
-
-  // Future<String?> getOneSignalPlayerId() async {
-  //   // Fetch the OneSignal user ID (Player ID) after OneSignal initialization
-  //   var status = await OneSignal.Notifications.getPermissionSubscriptionState();
-  //   var playerId = status.subscriptionStatus.userId;
-  //   return playerId;
-  // }
 
   Future<String> _saveImageLocally(List<int> imageBytes, int userId) async {
     // Save the image in the app's cache directory with a filename based on the user's ID

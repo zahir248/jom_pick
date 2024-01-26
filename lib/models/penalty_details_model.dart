@@ -10,14 +10,12 @@ class PenaltyDetails{
     final String trackingNumber;
     final String itemType;
     final String confirmationStatus;
-    //final DateTime confirmationDate;
     final String dueDateStatus;
     final String pickUpLocation;
     final DateTime dueDate;
     final String paymentStatus;
     final String paymentAmount;
     final Uint8List imageData;
-
 
     PenaltyDetails({
     required this.itemId,
@@ -28,7 +26,6 @@ class PenaltyDetails{
     required this.trackingNumber,
     required this.itemType,
     required this.confirmationStatus,
-    //required this.confirmationDate,
     required this.dueDateStatus,
     required this.pickUpLocation,
     required this.dueDate,
@@ -47,8 +44,7 @@ factory PenaltyDetails.fromJson(Map<String, dynamic> json){
       registerDate: DateTime.parse(json['registerDate'] ?? ''),
       trackingNumber: json['trackingNumber'] ?? '',
       itemType: json['itemTypeName'] ?? '',
-      confirmationStatus: json['confirmationStatus'] ?? '',
-      //confirmationDate: DateTime.parse(json['confirmationDate'] ?? ''),
+      confirmationStatus: json['status'] ?? '',
       dueDateStatus: json['type'] ?? '',
       pickUpLocation: json['address'] ?? '',
       dueDate: DateTime.parse(json['dueDate'] ?? ''),

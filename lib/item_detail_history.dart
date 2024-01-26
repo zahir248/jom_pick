@@ -12,6 +12,7 @@ class ItemDetailPage extends StatefulWidget {
   final DateTime dueDate;
   final Uint8List imageProofData;
   final DateTime pickUpDate;
+  final String address;
 
   ItemDetailPage({
     required this.itemId,
@@ -23,6 +24,7 @@ class ItemDetailPage extends StatefulWidget {
     required this.dueDate,
     required this.imageProofData,
     required this.pickUpDate,
+    required this.address,
   });
 
   @override
@@ -79,13 +81,16 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
                   buildDetailItem("Type", widget.itemType),
                   Divider(),
                   SizedBox(height: 20),
+                  buildDetailItem("Pick Up Location", widget.address),
+                  Divider(),
+                  SizedBox(height: 20),
                   buildDetailItem("Picture", ""),
                   Center(
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(15.0),
                       child: Container(
                         width: 350,
-                        height: 200,
+                        height: 320,
                         child: Image.memory(
                           widget.imageData,
                           fit: BoxFit.cover,
