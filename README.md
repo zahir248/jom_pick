@@ -43,10 +43,10 @@ The JomPick System is designed to significantly improve item pick up management 
 
 6. Tech Stack Used
 
-For mobile => Dart (Flutter)
+- For mobile => Dart (Flutter)
 
-For web => HTML, CSS, JavaScript, PHP
+- For web => HTML, CSS, JavaScript, PHP
 
-Database => mySQL
+- Database => MySQL
 
 
