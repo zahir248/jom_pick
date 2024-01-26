@@ -10,3 +10,15 @@ efficient distribution of client's documents, letters, and parcels, as well as m
 the proper disposal of unnecessary items. This system will make it easier for clients,
 including students, staff, and others, to always be aware and receive timely alerts
 about the availability of their goods awaiting collection.
+
+
+Tech Stack used
+
+
+For mobile => Dart (Flutter) 
+
+For web => HTML, CSS, JavaScript, PHP
+
+Database => mySQL
+
+
