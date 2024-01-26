@@ -36,19 +36,17 @@ The JomPick System is designed to significantly improve item pick up management 
 - Admin: To take care of the system.
 - Public: Public can also use this app if they drop their item at the University's address.
 
-  
-Tech Stack Used
+5. Conceptual Database Design : 
+
+![photo_2024-01-26_19-40-44](https://github.com/zahir248/jom_pick/assets/129832790/5b8c8b00-8325-41b3-8477-51e20bb93ba9)
+
+
+6. Tech Stack Used
 
 For mobile => Dart (Flutter)
 
 For web => HTML, CSS, JavaScript, PHP
 
 Database => mySQL
-
-Conceptual Database Design : 
-
-
-![photo_2024-01-26_19-40-44](https://github.com/zahir248/jom_pick/assets/129832790/5b8c8b00-8325-41b3-8477-51e20bb93ba9)
-
 
 
