@@ -61,6 +61,6 @@ In the context of our Flutter application, communication with the server is faci
 
 - For web => HTML, CSS, JavaScript, PHP
 
-- Database => MySQL
+- Remote Database (hosted using 000webhost) => MySQL
 
 
