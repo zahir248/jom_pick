@@ -36,8 +36,7 @@ The JomPick System is designed to significantly improve item pick up management 
 
 5. Database
    - Entity Relationship Diagram (ERD)
-
-     ![image](https://github.com/zahir248/jom_pick/assets/129832790/9ad359a3-3db7-42a5-ae9d-508d9d75e599)
+     
 
 
 
