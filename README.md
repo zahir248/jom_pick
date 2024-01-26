@@ -36,12 +36,26 @@ The JomPick System is designed to significantly improve item pick up management 
 - Admin: To take care of the system.
 - Public: Public can also use this app if they drop their item at the University's address.
 
-5. Conceptual Database Design : 
+
+5. Database Used :
+
+MySQL
+
+In our  system, MySQL is employed as the chosen database, and PHP functions as the server-side language responsible for connecting to and managing interactions with this database. MySQL, recognized as a reliable and scalable relational database management system (RDBMS), stores structured data essential for our application. It provides a platform for executing queries, updates, and other operations on the stored data.
+
+PHP, on the other hand, acts as the intermediary between our Flutter application and the MySQL database. Serving as a server-side scripting language, PHP facilitates the execution of server-side logic in response to requests originating from the Flutter app. The interaction begins with configuring PHP to establish a connection to the MySQL database, specifying crucial details such as the database host, username, password, and database name. Extensions like 'mysqli' or 'PDO' are commonly used in PHP for this purpose.
+
+Once the connection is established, PHP scripts are employed to execute SQL queries, covering a spectrum of database operations, including data retrieval, insertion, updating, and deletion. These scripts handle the processing of results obtained from these queries, often formatting the data to be readily consumable by the Flutter app.
+
+In the context of our Flutter application, communication with the server is facilitated through HTTP requests. The Flutter app uses packages like 'http' or 'dio' to send requests to specific endpoints on the PHP server. The PHP server processes these requests, utilizing the PHP scripts to interact with the MySQL database accordingly. Upon completing the requested operations, the server sends back responses to the Flutter app, typically in the form of JSON data. The Flutter app then parses this data to update its user interface or execute further actions based on the received information.
+
+
+6. Conceptual Database Design : 
 
 ![photo_2024-01-26_19-40-44](https://github.com/zahir248/jom_pick/assets/129832790/5b8c8b00-8325-41b3-8477-51e20bb93ba9)
 
 
-6. Tech Stack Used
+7. Tech Stack Used
 
 - For mobile => Dart (Flutter)
 
