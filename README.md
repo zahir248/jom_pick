@@ -22,3 +22,9 @@ For web => HTML, CSS, JavaScript, PHP
 Database => mySQL
 
 
+Conceptual ERD Diagram
+
+![image](https://github.com/zahir248/jom_pick/assets/90888537/4499eafb-35e1-41f9-8983-e08ea7495764)
+
+
+
