@@ -63,7 +63,7 @@ In the context of our Flutter application, communication with the server is faci
 
 - Remote Database (hosted using 000webhost) => MySQL
 
-8. Mobile Application APK file
+8. Mobile Application APK file download
 - https://utemedu-my.sharepoint.com/:u:/g/personal/b032110326_student_utem_edu_my/EbcFL7Z2kelOuedQi34ICxIBgaE28SkYtJE5A8SuKGByOQ?e=Jg1Osn
   
 
